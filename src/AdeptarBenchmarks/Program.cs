@@ -9,14 +9,6 @@ namespace AdeptarBenchmarks
     [MemoryDiagnoser]
     class Program
     {
-        public class MyClass
-        {
-            [AdeptarIgnore]
-            public int Number = 5;
-            public int Number2 = 5;
-            public int Number3 = 5;
-        }
-
         static void Main ( string[] args )
         {
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
