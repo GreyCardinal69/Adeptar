@@ -24,24 +24,14 @@
 #endregion
 
 using System;
-using System.Runtime.CompilerServices;
 
 namespace Adeptar
 {
     /// <summary>
-    /// Class used for applying attributes to .NET objects.
+    /// Instructs the <see cref="AdeptarWriter"/> to not serialize the property or field.
     /// </summary>
     [AttributeUsage( AttributeTargets.Field | AttributeTargets.Struct | AttributeTargets.Class )]
     public class AdeptarIgnore : Attribute
     {
-        /// <summary>
-        /// A constructor that accepts an <see cref="Attributes"/> enum.
-        /// </summary>
-        public AdeptarIgnore ( params string[] targets)
-        {
-            IgnoreTargets = targets;
-        }
-
-        public string[] IgnoreTargets;
     }
 }

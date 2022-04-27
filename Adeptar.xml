@@ -9,6 +9,55 @@
             Provides methods for converting between .NET and .Adeptar types
             </summary>
         </member>
+        <member name="M:Adeptar.AdeptarConverter.Deserialize``1(System.String)">
+             <summary>
+            
+             </summary>
+             <typeparam name="T"></typeparam>
+             <param name="path"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Adeptar.AdeptarConverter.Deserialize(System.String,System.Type)">
+             <summary>
+            
+             </summary>
+             <param name="path"></param>
+             <param name="type"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Adeptar.AdeptarConverter.DeserializeString``1(System.String)">
+             <summary>
+            
+             </summary>
+             <typeparam name="T"></typeparam>
+             <param name="content"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Adeptar.AdeptarConverter.DeserializeString(System.String,System.Type)">
+             <summary>
+            
+             </summary>
+             <param name="content"></param>
+             <param name="type"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Adeptar.AdeptarConverter.DeserializeAppended``1(System.String,System.String)">
+             <summary>
+            
+             </summary>
+             <typeparam name="T"></typeparam>
+             <param name="path"></param>
+             <param name="id"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Adeptar.AdeptarConverter.DeserializeAppended(System.String,System.Type)">
+             <summary>
+            
+             </summary>
+             <param name="content"></param>
+             <param name="type"></param>
+             <returns></returns>
+        </member>
         <member name="M:Adeptar.AdeptarConverter.SerializeWrite(System.String,System.Object)">
             <summary>
             Serializes the object to a .Adeptar string and writes it to a file, the file is overwritten.
@@ -103,12 +152,7 @@
         </member>
         <member name="T:Adeptar.AdeptarIgnore">
             <summary>
-            Class used for applying attributes to .NET objects.
-            </summary>
-        </member>
-        <member name="M:Adeptar.AdeptarIgnore.#ctor(System.String[])">
-            <summary>
-            A constructor that accepts an <see cref="T:Adeptar.Attributes"/> enum.
+            Instructs the <see cref="T:Adeptar.AdeptarWriter"/> to not serialize the property or field.
             </summary>
         </member>
         <member name="T:Adeptar.AdeptarWriter">
@@ -184,6 +228,11 @@
             Does not handle <see cref="F:Adeptar.SerializableType.NULL"/> case.
             </summary>
         </member>
+        <member name="F:Adeptar.ClassWriter._ignoreAttribute">
+            <summary>
+            Cached type for <see cref="T:Adeptar.AdeptarIgnore"/>.
+            </summary>
+        </member>
         <member name="M:Adeptar.ClassWriter.WriteClassStruct(System.Object,System.Int32,System.Text.StringBuilder@)">
             <summary>
             Serializes the class or struct object to a .Adeptarstring.
@@ -194,7 +243,7 @@
         </member>
         <member name="M:Adeptar.DictionaryWriter.WriteDictionaryInternal(System.Object,System.Int32,System.Text.StringBuilder@,System.Boolean)">
             <summary>
-            Serializes <see cref="T:System.Collections.Generic.Dictionary`2"/>s to .Adeptar strings.
+            Serializes <see cref="T:System.Collections.Generic.Dictionary`2"/>s to.Adeptar strings.
             </summary>
             <param name="data">The <see cref="T:System.Collections.Generic.Dictionary`2"/>.</param>
             <param name="Indent">The indentation amount.</param>
@@ -399,6 +448,11 @@
             ChangeAppended serializes the provided object to a .Adeptar string,
             reads the file at the given path, overwrites the old version of the object with the new one and rewrites the file,
             leaving other objects untouched.
+            </summary>
+        </member>
+        <member name="T:Adeptar.TypeGetters">
+            <summary>
+            A class providing methods for determining object types.
             </summary>
         </member>
         <member name="M:Adeptar.TypeGetters.IsList(System.Object)">
