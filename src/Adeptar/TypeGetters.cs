@@ -141,6 +141,53 @@ namespace Adeptar
         }
 
         /// <summary>
+        /// Gets the Type's <see cref="DeserializableType"/>.
+        /// </summary>
+        /// <param name="fInfo">The Type's field type.</param>
+        /// <returns>
+        /// The object's <see cref="DeserializableType"/>. Returns <see cref="DeserializableType.Class"/> if the type
+        /// cant be determined.
+        /// </returns>
+        internal static DeserializableType GetDeserializableType ( Type fInfo )
+        {
+            if (fInfo.IsEnum)
+                return DeserializableType.Enum;
+            if (IsNumericType( fInfo ))
+                return DeserializableType.Numeric;
+            if (fInfo == typeof( string ))
+                return DeserializableType.String;
+            if (fInfo == typeof( char ))
+                return DeserializableType.Char;
+            if (fInfo == typeof( bool ))
+                return DeserializableType.Boolean;
+            if (IsList( fInfo ))
+                return DeserializableType.List;
+            if (IsDictionary( fInfo ))
+                return DeserializableType.Dictionary;
+            if (fInfo == typeof( IDictionary ))
+                return DeserializableType.Dictionary;
+            if (fInfo == typeof( DateTime ))
+                return DeserializableType.DateTime;
+            if (fInfo == typeof( object ))
+                return DeserializableType.Object;
+            if (IsTuple( fInfo ))
+                return DeserializableType.Tuple;
+            if (fInfo.GetInterface( typeof( ICollection<> ).FullName ) != null)
+                return DeserializableType.Array;
+
+            if (fInfo.IsArray)
+            {
+                int rank = fInfo.GetArrayRank();
+                if (rank == 2)
+                    return DeserializableType.DimensionalArray2D;
+                if (rank == 3)
+                    return DeserializableType.DimensionalArray3D;
+            }
+
+            return DeserializableType.Class;
+        }
+
+        /// <summary>
         /// Checks if the object is an array with two or more dimensions.
         /// </summary>
         /// <param name="received">The object to check.</param>
@@ -226,48 +273,6 @@ namespace Adeptar
                 return SerializableType.Array;
 
             return SerializableType.Class;
-        }
-
-        /// <summary>
-        /// Gets the Type's <see cref="SerializableType"/>.
-        /// </summary>
-        /// <param name="fInfo">The Type's field type.</param>
-        /// <returns>
-        /// The object's <see cref="SerializableType"/>. Returns <see cref="SerializableType.NULL"/> if the type cant be
-        /// determined.
-        /// </returns>
-        internal static SerializableType GetSerializableType ( Type fInfo )
-        {
-            if (fInfo.IsEnum)
-                return SerializableType.Enum;
-            if (IsNumericType( fInfo ))
-                return SerializableType.Numeric;
-            if (fInfo == typeof( string ))
-                return SerializableType.String;
-            if (fInfo == typeof( char ))
-                return SerializableType.Char;
-            if (fInfo == typeof( bool ))
-                return SerializableType.Boolean;
-            if (fInfo == typeof( object ))
-                return SerializableType.Class;
-            if (IsList( fInfo ))
-                return SerializableType.Array;
-            if (IsDictionary( fInfo ))
-                return SerializableType.Dictionary;
-            if (fInfo == typeof( IDictionary ))
-                return SerializableType.Dictionary;
-            if (fInfo == typeof( DateTime ))
-                return SerializableType.DateTime;
-            if (IsTuple( fInfo ))
-                return SerializableType.Tuple;
-            if (fInfo.GetInterface( typeof( ICollection<> ).FullName ) != null)
-                return SerializableType.Array;
-
-            if (fInfo.IsArray)
-                if (fInfo.GetArrayRank() > 1)
-                    return SerializableType.DimensionalArray;
-
-            return SerializableType.NULL;
         }
 
         /// <summary>

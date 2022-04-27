@@ -15,7 +15,9 @@ namespace AdeptarBenchmarks
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
 
-            AdeptarConverter.SerializeWrite(serializePath, new int[,] { { 1, 2 }, { 3, 4 } }, Adeptar.Formatting.NoIndentation );
+            AdeptarConverter.SerializeWrite( serializePath, DateTime.Now );
+            var x = AdeptarConverter.DeserializeString<DateTime>( AdeptarConverter.Serialize( DateTime.Now )  );
+            Console.WriteLine(x);
 #else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
             Console.ReadLine();
@@ -40,6 +42,7 @@ namespace AdeptarBenchmarks
             Enum
         }
 
+        /*
         [Benchmark]
         public void SimpleClassAder ()
         {
@@ -195,6 +198,6 @@ namespace AdeptarBenchmarks
         public void WriteDateTimeJson ()
         {
             JsonConvert.SerializeObject( DateTime.Now );
-        }
+        }*/
     }
 }

@@ -254,6 +254,22 @@
             <param name="indent">Indentation amount.</param>
             <param name="builder"><see cref="T:System.Text.StringBuilder"/> instance to append text to.</param>
         </member>
+        <member name="M:Adeptar.DeserializationHelpers.NumericResolver(System.Type,System.String)">
+            <summary>
+            Resolves objects considered numeric, such as: <see cref="T:System.Int32"/>, <see cref="T:System.Int64"/>,
+            <see cref="T:System.Int16"/>, <see cref="T:System.Byte"/> and others..
+            </summary>
+            <param name="typeOf">The type to convert to.</param>
+            <param name="value">The string representation of the number.</param>
+            <returns>The converted number.</returns>
+        </member>
+        <member name="M:Adeptar.DeserializationHelpers.StringResolver(System.ReadOnlySpan{System.Char})">
+            <summary>
+            Resolves objects of type <see cref="T:System.String"/>, takes care of quotation marks.
+            </summary>
+            <param name="line">The line to resolve.</param>
+            <returns>The correctly trimmed and cuտ string.</returns>
+        </member>
         <member name="M:Adeptar.DictionaryWriter.WriteDictionaryInternal(System.Object,System.Int32,System.Text.StringBuilder@,System.Boolean)">
             <summary>
             Serializes <see cref="T:System.Collections.Generic.Dictionary`2"/>s to.Adeptar strings.
@@ -526,6 +542,16 @@
             True if the object is a class or a struct. Returns false if the object is null.
             </returns>
         </member>
+        <member name="M:Adeptar.TypeGetters.GetDeserializableType(System.Type)">
+            <summary>
+            Gets the Type's <see cref="T:Adeptar.DeserializableType"/>.
+            </summary>
+            <param name="fInfo">The Type's field type.</param>
+            <returns>
+            The object's <see cref="T:Adeptar.DeserializableType"/>. Returns <see cref="F:Adeptar.DeserializableType.Class"/> if the type
+            cant be determined.
+            </returns>
+        </member>
         <member name="M:Adeptar.TypeGetters.IsMultiDimensionalArray(System.Object)">
             <summary>
             Checks if the object is an array with two or more dimensions.
@@ -560,16 +586,6 @@
             <returns>
             The provided object's <see cref="T:Adeptar.SerializableType"/>. Returns <see cref="F:Adeptar.SerializableType.NULL"/> if the
             provided object is null or if its type can't be determined.
-            </returns>
-        </member>
-        <member name="M:Adeptar.TypeGetters.GetSerializableType(System.Type)">
-            <summary>
-            Gets the Type's <see cref="T:Adeptar.SerializableType"/>.
-            </summary>
-            <param name="fInfo">The Type's field type.</param>
-            <returns>
-            The object's <see cref="T:Adeptar.SerializableType"/>. Returns <see cref="F:Adeptar.SerializableType.NULL"/> if the type cant be
-            determined.
             </returns>
         </member>
         <member name="M:Adeptar.TypeGetters.IsNumber(System.Object)">

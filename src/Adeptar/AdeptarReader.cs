@@ -47,11 +47,31 @@ namespace Adeptar
         /// <returns></returns>
         internal static object DeserializeByChar ( Type type, ReadOnlySpan<char> text )
         {
-            throw new NotImplementedException();
+            DeserializableType deserializableType = GetDeserializableType( type );
+
+            return deserializableType switch
+            {
+                DeserializableType.Numeric => NumericResolver( type, text.ToString() ),
+                DeserializableType.String => StringResolver( text ),
+                DeserializableType.Boolean => Convert.ToBoolean( text.ToString() ),
+                DeserializableType.Char => Convert.ToChar( text.Slice(1,1).ToString() ),
+                DeserializableType.Enum => ParseToEnumNonGeneric( text.ToString(), type ),
+                DeserializableType.NULL => null,
+                DeserializableType.DateTime => DateTime.Parse( StringResolver( text ) ),
+            //    DeserializableType.Class => ByCharClassStruct( text, type ),
+                DeserializableType.Array => ByCharArray( text, type ),
+            //    DeserializableType.List => ByCharList( text, type ),
+            //    DeserializableType.Dictionary => ByCharDictionary( text, type ),
+           ///     DeserializableType.Tuple => ByCharTuple( text, type ),
+           ////     DeserializableType.DimensionalArray2D => ByCharTwoDimensional( text, type ),
+           //     DeserializableType.DimensionalArray3D => ByCharThreeDimensional( text, type ),
+                _ => throw new NotImplementedException(),
+            };
+
+
+
+
+
         }
-
-
-
-
     }
 }
