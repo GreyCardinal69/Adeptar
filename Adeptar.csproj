@@ -4,6 +4,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <Authors>Michael Kananov</Authors>
     <Company>CardinalSoft</Company>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     <Product>Adeptar .NET</Product>
     <Copyright>Copyright ©Michael Kananov 2021</Copyright>
     <NeutralLanguage>en-GB</NeutralLanguage>
@@ -16,8 +17,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="src\AdeptarBenchmarks\**" />
     <Compile Remove="src\AdeptarTests\**" />
+    <EmbeddedResource Remove="src\AdeptarBenchmarks\**" />
     <EmbeddedResource Remove="src\AdeptarTests\**" />
+    <None Remove="src\AdeptarBenchmarks\**" />
     <None Remove="src\AdeptarTests\**" />
   </ItemGroup>
 

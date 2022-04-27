@@ -32,6 +32,9 @@
 
 src/*bin/*
 src/*obj/*
+src/AdeptarBenchmarks/bin/*
+src/AdeptarBenchmarks/release/*
+src/AdeptarBenchmarks/obj/*
 src/AdeptarTests/bin/*
 src/AdeptarTests/release/*
 src/AdeptarTests/obj/*

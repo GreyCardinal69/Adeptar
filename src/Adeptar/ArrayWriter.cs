@@ -112,6 +112,15 @@ namespace Adeptar
             stack.Push( array.GetEnumerator() );
             int count = 0;
             int len = array.Length;
+            builder.Append('\t').Append( '<' );
+            for (int i = 0; i < array.Rank; i ++)
+            {
+                builder.Append( array.GetLength( i ) );
+                if (i < array.Rank - 1){
+                    builder.Append ( ',' );
+                }
+            }
+            builder.Append( '>' );
             do
             {
                 for (var iterator = stack.Pop(); iterator.MoveNext();)

@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using BenchmarkDotNet.Attributes;
 using Adeptar;
 using Newtonsoft.Json;
-using System.IO;
-using FastMember;
 
-namespace AdeptarTests
+namespace AdeptarBenchmarks
 {
     [MemoryDiagnoser]
     class Program
@@ -21,17 +19,8 @@ namespace AdeptarTests
 
         static void Main ( string[] args )
         {
-#if DEBUG
-            string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
-            string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
-
-
-            AdeptarConverter.SerializeWrite( serializePath, new MyClass() );
-            File.WriteAllText( deserializePath, JsonConvert.SerializeObject( new MyClass() ) );
-#else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
             Console.ReadLine();
-#endif
         }
     }
 
