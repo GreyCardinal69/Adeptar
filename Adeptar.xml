@@ -155,6 +155,19 @@
             Instructs the <see cref="T:Adeptar.AdeptarWriter"/> to not serialize the property or field.
             </summary>
         </member>
+        <member name="T:Adeptar.AdeptarReader">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="M:Adeptar.AdeptarReader.DeserializeByChar(System.Type,System.ReadOnlySpan{System.Char})">
+             <summary>
+            
+             </summary>
+             <param name="type"></param>
+             <param name="text"></param>
+             <returns></returns>
+        </member>
         <member name="T:Adeptar.AdeptarWriter">
             <summary>
             Core class than coordinates serialization via recursion.

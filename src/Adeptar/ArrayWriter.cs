@@ -112,7 +112,10 @@ namespace Adeptar
             stack.Push( array.GetEnumerator() );
             int count = 0;
             int len = array.Length;
-            builder.Append('\t').Append( '<' );
+            if (!DoesntUseIndentation){
+                builder.Append( '\t' );
+            }
+            builder.Append( '<' );
             for (int i = 0; i < array.Rank; i ++)
             {
                 builder.Append( array.GetLength( i ) );
@@ -120,7 +123,10 @@ namespace Adeptar
                     builder.Append ( ',' );
                 }
             }
-            builder.Append( '>' ).Append(' ');
+            builder.Append( '>' );
+            if (!DoesntUseIndentation){
+                builder.Append( ' ' );
+            }
             do
             {
                 for (var iterator = stack.Pop(); iterator.MoveNext();)

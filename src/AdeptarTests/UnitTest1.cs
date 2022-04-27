@@ -27,7 +27,7 @@ namespace AdeptarTests
         {
             Assert.AreEqual(
                 AdeptarConverter.Serialize( new Dictionary<int, int[]> { { 1, new int[] { 1, 2, 3, 4 } }, { 2, new int[] { 3, 4, 5, 6 } } }, Formatting.NoIndentation),
-                @"[1:[1,2,3,4],2:[3,4,5,6]] " );
+                @"[1:[1,2,3,4],2:[3,4,5,6]]" );
         }
 
         [TestMethod]
@@ -35,7 +35,7 @@ namespace AdeptarTests
         {
             Assert.AreEqual(
                 AdeptarConverter.Serialize( new Dictionary<int, int> { { 1, 2 }, { 3, 4 } }, Formatting.NoIndentation ),
-                @"[1:2,3:4] " );
+                @"[1:2,3:4]" );
         }
 
         [TestMethod]
@@ -43,7 +43,7 @@ namespace AdeptarTests
         {
             Assert.AreEqual(
                 AdeptarConverter.Serialize( new int[2, 2, 2, 2] { { { { 1, 2 }, { 3, 4 } }, { { 5, 6 }, { 7, 8 } } }, { { { 1, 2 }, { 3, 4 } }, { { 5, 6 }, { 7, 8 } } } }, Formatting.NoIndentation ),
-                @"[	<2,2,2,2>1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8]" );
+                @"[<2,2,2,2>1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8]" );
         }
 
         [TestMethod]
