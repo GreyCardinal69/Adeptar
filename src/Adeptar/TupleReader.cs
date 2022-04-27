@@ -24,14 +24,14 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Adeptar
 {
-    /// <summary>
-    /// Instructs the <see cref="AdeptarWriter"/> to not serialize the property or field.
-    /// </summary>
-    [AttributeUsage( AttributeTargets.Field | AttributeTargets.Property )]
-    public class AdeptarIgnore : Attribute
+    internal class TupleReader
     {
     }
 }

@@ -25,13 +25,33 @@
 
 using System;
 
+using static Adeptar.TypeGetters;
+using static Adeptar.DeserializationHelpers;
+using static Adeptar.DictionaryReader;
+using static Adeptar.TupleReader;
+using static Adeptar.ClassReader;
+using static Adeptar.ArrayReader;
+
 namespace Adeptar
 {
     /// <summary>
-    /// Instructs the <see cref="AdeptarWriter"/> to not serialize the property or field.
+    ///
     /// </summary>
-    [AttributeUsage( AttributeTargets.Field | AttributeTargets.Property )]
-    public class AdeptarIgnore : Attribute
+    internal class AdeptarReader
     {
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        internal static object DeserializeByChar ( Type type, ReadOnlySpan<char> text )
+        {
+            throw new NotImplementedException();
+        }
+
+
+
+
     }
 }

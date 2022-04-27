@@ -120,12 +120,13 @@ namespace Adeptar
                     builder.Append ( ',' );
                 }
             }
-            builder.Append( '>' );
+            builder.Append( '>' ).Append(' ');
             do
             {
                 for (var iterator = stack.Pop(); iterator.MoveNext();)
                 {
-                    Write( iterator.Current, FetchType( iterator.Current ), ref builder, null, DoesntUseIndentation ? 0 : indent, false, false, count == len - 1 );
+                    Write( iterator.Current, FetchType( iterator.Current ),
+                        ref builder, null, DoesntUseIndentation ? 0 : indent, false, false, count == len - 1 );
                     count++;
                 }
             }

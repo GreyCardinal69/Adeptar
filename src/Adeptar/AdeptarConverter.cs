@@ -27,6 +27,7 @@ using System;
 
 using static Adeptar.AdeptarWriter;
 using static Adeptar.TypeGetters;
+using static Adeptar.AdeptarReader;
 
 namespace Adeptar
 {
@@ -65,7 +66,7 @@ namespace Adeptar
         /// <returns></returns>
         public static T DeserializeString<T> ( string content )
         {
-            throw new NotImplementedException();
+            return ( T ) DeserializeByChar( typeof( T ), content );
         }
 
         /// <summary>

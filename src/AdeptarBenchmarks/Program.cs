@@ -11,8 +11,14 @@ namespace AdeptarBenchmarks
     {
         static void Main ( string[] args )
         {
+#if DEBUG
+            string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
+            string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
+
+#else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
             Console.ReadLine();
+#endif
         }
     }
 
