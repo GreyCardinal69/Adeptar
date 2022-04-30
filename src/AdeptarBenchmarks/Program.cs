@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using BenchmarkDotNet.Attributes;
 using Adeptar;
 using Newtonsoft.Json;
+using System.IO;
+using System.Reflection;
 
 namespace AdeptarBenchmarks
 {
@@ -15,9 +17,9 @@ namespace AdeptarBenchmarks
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
 
-            AdeptarConverter.SerializeWrite( serializePath, DateTime.Now );
-            var x = AdeptarConverter.DeserializeString<DateTime>( AdeptarConverter.Serialize( DateTime.Now )  );
-            Console.WriteLine(x);
+            AdeptarConverter.SerializeWrite( serializePath, new string[] { "Hello world", "Hello \"Sir\"", "Hello \"Mam", "Hello (not) World" } );
+            var x = AdeptarConverter.DeserializeString<string[]>( AdeptarConverter.Serialize( new string[] { "Hello world", "Hello \"Sir\"", "Hello \"Mam", "Hello (not) World" } ) );
+            AdeptarConverter.SerializeWrite( deserializePath, x );
 #else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
             Console.ReadLine();

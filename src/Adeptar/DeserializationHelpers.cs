@@ -50,6 +50,73 @@ namespace Adeptar
         }
 
         /// <summary>
+        ///
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        internal static string CleanText ( string str )
+        {
+            StringBuilder sb = new();
+
+            bool inStr = false;
+            bool falseMark = false;
+
+            foreach (var item in str)
+            {
+                switch (item)
+                {
+                    case '"':
+                        if (falseMark){
+                            inStr = true;
+                            falseMark = false;
+                            sb.Append( item );
+                            continue;
+                        }else{
+                            inStr = !inStr;
+                            sb.Append( item );
+                        }
+                        break;
+                    case '\\':
+                        if (inStr){
+                            sb.Append( item );
+                            falseMark = true;
+                        }
+                        break;
+                    default:
+                        switch (item)
+                        {
+                            case '\t':
+                                if (inStr){
+                                    sb.Append( item );
+                                }else{
+                                    continue;
+                                }
+                                break;
+                            case ' ':
+                                if (inStr){
+                                    sb.Append( item );
+                                }else{
+                                    continue;
+                                }
+                                break;
+                            case '\n':
+                                if (inStr){
+                                    sb.Append( item );
+                                }else{
+                                    continue;
+                                }
+                                break;
+                            default:
+                                sb.Append( item );
+                                break;
+                        }
+                        break;
+                }
+            }
+            return sb.ToString();
+        }
+
+        /// <summary>
         /// Resolves objects considered numeric, such as: <see cref="int"/>, <see cref="long"/>,
         /// <see cref="short"/>, <see cref="byte"/> and others..
         /// </summary>
@@ -59,6 +126,7 @@ namespace Adeptar
         internal static object NumericResolver ( Type typeOf, string value )
         {
             value = value.Replace( ",", "" );
+
             return GetNumericType( typeOf ) switch
             {
                 NumericType.Byte => Convert.ToByte( value ),
@@ -100,20 +168,6 @@ namespace Adeptar
             if (type == typeof( double ))
                 return NumericType.Double;
             return NumericType.NotNumeric;
-        }
-
-        /// <summary>
-        /// Resolves objects of type <see cref="string"/>, takes care of quotation marks.
-        /// </summary>
-        /// <param name="line">The line to resolve.</param>
-        /// <returns>The correctly trimmed and cuտ string.</returns>
-        internal static string StringResolver ( ReadOnlySpan<char> line )
-        {
-            var trim = line.TrimStart( ' ' ).TrimStart( '\t' );
-            trim = trim.EndsWith( "," )
-                ? trim.Slice( 1, trim.Length - 3 )
-                : trim.Slice( 1, trim.Length - 2 );
-            return trim.ToString();
         }
     }
 }

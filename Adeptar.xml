@@ -254,6 +254,13 @@
             <param name="indent">Indentation amount.</param>
             <param name="builder"><see cref="T:System.Text.StringBuilder"/> instance to append text to.</param>
         </member>
+        <member name="M:Adeptar.DeserializationHelpers.CleanText(System.String)">
+             <summary>
+            
+             </summary>
+             <param name="str"></param>
+             <returns></returns>
+        </member>
         <member name="M:Adeptar.DeserializationHelpers.NumericResolver(System.Type,System.String)">
             <summary>
             Resolves objects considered numeric, such as: <see cref="T:System.Int32"/>, <see cref="T:System.Int64"/>,
@@ -262,13 +269,6 @@
             <param name="typeOf">The type to convert to.</param>
             <param name="value">The string representation of the number.</param>
             <returns>The converted number.</returns>
-        </member>
-        <member name="M:Adeptar.DeserializationHelpers.StringResolver(System.ReadOnlySpan{System.Char})">
-            <summary>
-            Resolves objects of type <see cref="T:System.String"/>, takes care of quotation marks.
-            </summary>
-            <param name="line">The line to resolve.</param>
-            <returns>The correctly trimmed and cuտ string.</returns>
         </member>
         <member name="M:Adeptar.DictionaryWriter.WriteDictionaryInternal(System.Object,System.Int32,System.Text.StringBuilder@,System.Boolean)">
             <summary>

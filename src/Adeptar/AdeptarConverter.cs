@@ -28,6 +28,7 @@ using System;
 using static Adeptar.AdeptarWriter;
 using static Adeptar.TypeGetters;
 using static Adeptar.AdeptarReader;
+using static Adeptar.DeserializationHelpers;
 
 namespace Adeptar
 {
@@ -66,7 +67,7 @@ namespace Adeptar
         /// <returns></returns>
         public static T DeserializeString<T> ( string content )
         {
-            return ( T ) DeserializeByChar( typeof( T ), content );
+            return ( T ) DeserializeByChar( typeof( T ), CleanText( content ) );
         }
 
         /// <summary>
