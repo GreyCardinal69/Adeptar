@@ -76,13 +76,9 @@ namespace Adeptar
         /// </summary>
         NULL,
         /// <summary>
-        /// True for two dimensional arrays.
+        /// True for two or more dimensional arrays.
         /// </summary>
-        DimensionalArray2D,
-        /// <summary>
-        /// True for three dimensional arrays.
-        /// </summary>
-        DimensionalArray3D,
+        DimensionalArray,
         /// <summary>
         /// True for objects of type <see cref="System.Object"/>.
         /// </summary>

@@ -95,7 +95,7 @@ namespace Adeptar
                         }
                         else if (level - 1 == -1 && !inString){
                             if (i == text.Length - 1){
-                                value = DeserializeByChar( valueType, reader.ToString() );
+                                value = DeserializeObject( valueType, reader.ToString() );
                                 motherDictionary.Add( key, value );
                                 reader.Clear();
                             }
@@ -110,7 +110,7 @@ namespace Adeptar
                         break;
                     case ',':
                         if (!nested && !inString){
-                            value = DeserializeByChar( valueType, reader.ToString() );
+                            value = DeserializeObject( valueType, reader.ToString() );
                             motherDictionary.Add( key, value );
                             reader.Clear();
                         }
@@ -146,7 +146,7 @@ namespace Adeptar
                         break;
                     case ':':
                         if (!nested && !inString){
-                            key = DeserializeByChar( keyType, reader.ToString() );
+                            key = DeserializeObject( keyType, reader.ToString() );
                             reader.Clear();
                         }
                         break;

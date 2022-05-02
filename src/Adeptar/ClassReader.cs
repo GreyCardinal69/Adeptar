@@ -31,7 +31,22 @@ using System.Threading.Tasks;
 
 namespace Adeptar
 {
+    /// <summary>
+    ///
+    /// </summary>
     internal class ClassReader
     {
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        internal static object DeserializeClassStruct( ReadOnlySpan<char> target, Type type )
+        {
+
+
+            return null;
+        }
     }
 }

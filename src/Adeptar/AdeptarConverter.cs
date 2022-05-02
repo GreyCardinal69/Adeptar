@@ -46,7 +46,7 @@ namespace Adeptar
         /// <returns></returns>
         public static T Deserialize<T> ( string path )
         {
-            return ( T ) DeserializeByChar( typeof( T ), File.ReadAllText( path ) );
+            return ( T ) DeserializeObject( typeof( T ), File.ReadAllText( path ) );
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace Adeptar
         /// <returns></returns>
         public static object Deserialize ( string path, Type type )
         {
-            return DeserializeByChar( type, File.ReadAllText( path ) );
+            return DeserializeObject( type, File.ReadAllText( path ) );
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace Adeptar
         /// <returns></returns>
         public static T DeserializeString<T> ( string content )
         {
-            return ( T ) DeserializeByChar( typeof( T ), CleanText( content ) );
+            return ( T ) DeserializeObject( typeof( T ), CleanText( content ) );
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace Adeptar
         /// <returns></returns>
         public static object DeserializeString ( string content, Type type )
         {
-            return DeserializeByChar( type, CleanText( content ) );
+            return DeserializeObject( type, CleanText( content ) );
         }
 
         /// <summary>

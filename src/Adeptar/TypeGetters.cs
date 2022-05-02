@@ -178,10 +178,8 @@ namespace Adeptar
             if (fInfo.IsArray)
             {
                 int rank = fInfo.GetArrayRank();
-                if (rank == 2)
-                    return DeserializableType.DimensionalArray2D;
-                if (rank == 3)
-                    return DeserializableType.DimensionalArray3D;
+                if (rank > 1)
+                    return DeserializableType.DimensionalArray;
             }
 
             return DeserializableType.Class;

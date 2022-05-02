@@ -172,7 +172,7 @@ namespace Adeptar
                         else if (firstCase - 1 == -1 && !inString){
                             firstCase--;
                             if (i == target.Length - 1){
-                                main[index] = DeserializeByChar( childType, value.ToString() );
+                                main[index] = DeserializeObject( childType, value.ToString() );
                                 value.Clear();
                             }
                         }
@@ -180,7 +180,7 @@ namespace Adeptar
                         break;
                     case ',':
                         if (!inString && !nested){
-                            main[index] = DeserializeByChar( childType, value.ToString() );
+                            main[index] = DeserializeObject( childType, value.ToString() );
                             value.Clear();
                             index++;
                         }else{
@@ -286,7 +286,7 @@ namespace Adeptar
                             firstCase--;
                             if (i == target.Length - 1)
                             {
-                                main.Add( DeserializeByChar( childType, value.ToString() ) );
+                                main.Add( DeserializeObject( childType, value.ToString() ) );
                                 value.Clear();
                             }
                         }
@@ -295,7 +295,7 @@ namespace Adeptar
                     case ',':
                         if (!inString && !nested)
                         {
-                            main.Add( DeserializeByChar( childType, value.ToString() ) );
+                            main.Add( DeserializeObject( childType, value.ToString() ) );
                             value.Clear();
                         }
                         else
@@ -341,6 +341,17 @@ namespace Adeptar
             }
 
             return main;
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        internal static object DeserializeDimensionalArray( ReadOnlySpan<char> target, Type type )
+        {
+            return null;
         }
     }
 }

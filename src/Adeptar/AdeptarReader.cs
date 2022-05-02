@@ -45,7 +45,7 @@ namespace Adeptar
         /// <param name="type"></param>
         /// <param name="text"></param>
         /// <returns></returns>
-        internal static object DeserializeByChar ( Type type, ReadOnlySpan<char> text )
+        internal static object DeserializeObject( Type type, ReadOnlySpan<char> text )
         {
             DeserializableType deserializableType = GetDeserializableType( type );
 
@@ -58,20 +58,14 @@ namespace Adeptar
                 DeserializableType.Enum => ParseToEnumNonGeneric( text.ToString(), type ),
                 DeserializableType.NULL => null,
                 DeserializableType.DateTime => DateTime.Parse( text.ToString() ),
-            //    DeserializableType.Class => ByCharClassStruct( text, type ),
+                DeserializableType.Class => DeserializeClassStruct( text, type ),
                 DeserializableType.Array => DeserializeArray( text, type ),
                 DeserializableType.List => DeserializeList( text, type ),
                 DeserializableType.Dictionary => DeserializeDictionary( text, type ),
+      //          DeserializableType.DimensionalArray => DeserializeDimensionalArray( text, type ),
            ///     DeserializableType.Tuple => ByCharTuple( text, type ),
-           ////     DeserializableType.DimensionalArray2D => ByCharTwoDimensional( text, type ),
-           //     DeserializableType.DimensionalArray3D => ByCharThreeDimensional( text, type ),
                 _ => throw new NotImplementedException(),
             };
-
-
-
-
-
         }
     }
 }
