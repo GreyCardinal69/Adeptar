@@ -160,7 +160,7 @@
             
              </summary>
         </member>
-        <member name="M:Adeptar.AdeptarReader.DeserializeByChar(System.Type,System.ReadOnlySpan{System.Char})">
+        <member name="M:Adeptar.AdeptarReader.DeserializeObject(System.Type,System.ReadOnlySpan{System.Char})">
              <summary>
             
              </summary>
@@ -214,6 +214,35 @@
             <param name="calledByClassWriter">Tells the writer that the function was class from <see cref="T:Adeptar.ClassWriter"/>.</param>
             <param name="last">If true tells the writer to not append a comma.</param>
         </member>
+        <member name="T:Adeptar.ArrayReader">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="M:Adeptar.ArrayReader.DeserializeArray(System.ReadOnlySpan{System.Char},System.Type)">
+             <summary>
+            
+             </summary>
+             <param name="target"></param>
+             <param name="type"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Adeptar.ArrayReader.DeserializeList(System.ReadOnlySpan{System.Char},System.Type)">
+             <summary>
+            
+             </summary>
+             <param name="target"></param>
+             <param name="type"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Adeptar.ArrayReader.DeserializeDimensionalArray(System.ReadOnlySpan{System.Char},System.Type)">
+             <summary>
+            
+             </summary>
+             <param name="target"></param>
+             <param name="type"></param>
+             <returns></returns>
+        </member>
         <member name="T:Adeptar.ArrayWriter">
             <summary>
             Contains methods for serializing arrays, lists and 2 or more dimensional arrays into .Adeptar strings.
@@ -234,6 +263,19 @@
             <param name="target">The object to serialize.</param>
             <param name="indent">The amount of indentation.</param>
             <param name="builder">The <see cref="T:System.Text.StringBuilder"/> to append to.</param>
+        </member>
+        <member name="T:Adeptar.ClassReader">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="M:Adeptar.ClassReader.DeserializeClassStruct(System.ReadOnlySpan{System.Char},System.Type)">
+             <summary>
+            
+             </summary>
+             <param name="target"></param>
+             <param name="type"></param>
+             <returns></returns>
         </member>
         <member name="T:Adeptar.ClassWriter">
             <summary>
@@ -370,14 +412,9 @@
             Represents an unknown type.
             </summary>
         </member>
-        <member name="F:Adeptar.DeserializableType.DimensionalArray2D">
+        <member name="F:Adeptar.DeserializableType.DimensionalArray">
             <summary>
-            True for two dimensional arrays.
-            </summary>
-        </member>
-        <member name="F:Adeptar.DeserializableType.DimensionalArray3D">
-            <summary>
-            True for three dimensional arrays.
+            True for two or more dimensional arrays.
             </summary>
         </member>
         <member name="F:Adeptar.DeserializableType.Object">
