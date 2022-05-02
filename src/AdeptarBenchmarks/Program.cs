@@ -11,26 +11,32 @@ namespace AdeptarBenchmarks
     [MemoryDiagnoser]
     class Program
     {
+        private class TestClass
+        {
+            public int x;
+            public string z;
+            public int[] odds;
+            public string[] words;
+            public Dictionary<int, int> nums;
+            public Dictionary<int, bool[]> numsbools;
+
+        }
+
         static void Main ( string[] args )
         {
 #if DEBUG
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
 
-            var y = new List<List<int>>()
+            var y = new Dictionary<Dictionary<int, int>, Dictionary<int, int>>()
             {
-                new List<int>() { 1,2,3,4 },
-                new List<int>() { 5,6,7,8 },
-                new List<int>() { 9,10,11,12 }
+                { new Dictionary<int,int>() { { 1,2 }, { 3, 4} }, new Dictionary<int, int>() { {5,6 }, { 7, 8 } } },
+                { new Dictionary<int,int>() { { 1,2 }, { 3, 4} }, new Dictionary<int, int>() { {5,6 }, { 7, 8 } } },
+                { new Dictionary<int,int>() { { 1,2 }, { 3, 4} }, new Dictionary<int, int>() { {5,6 }, { 7, 8 } } }
             };
 
             AdeptarConverter.SerializeWrite( serializePath, y  );
-            var x = AdeptarConverter.DeserializeString<List<List<int>>>( AdeptarConverter.Serialize( new List<List<int>>()
-            {
-                new List<int>() { 1,2,3,4 },
-                new List<int>() { 5,6,7,8 },
-                new List<int>() { 9,10,11,12 }
-            } ) );
+            var x = AdeptarConverter.DeserializeString<Dictionary<Dictionary<int, int>, Dictionary<int, int>>>( AdeptarConverter.Serialize( y ) );
             AdeptarConverter.SerializeWrite( deserializePath, x );
 #else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();

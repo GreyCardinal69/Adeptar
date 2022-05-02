@@ -55,6 +55,7 @@ namespace Adeptar
             bool nested = false;
             bool inString = false;
             bool falseEnd = false;
+            bool complexKey = false;
 
             StringBuilder reader = new();
 
@@ -71,6 +72,11 @@ namespace Adeptar
             {
                 switch (item)
                 {
+                    case '@':
+                        if (!inString && !nested){
+                            complexKey = true;
+                        }
+                        break;
                     case '"':
                         if (falseEnd && inString){
                             falseEnd = false;
@@ -84,16 +90,23 @@ namespace Adeptar
                         }
                         break;
                     case '[':
-                        if (!inString){
+                        if (!inString && !complexKey){
                             level++; nested = true;
+                        }
+                        else if (complexKey && !inString){
+                            level++;
                         }
                         reader.Append( item );
                         break;
                     case ']':
-                        if (level - 1 == 0 && !inString){
+                        if (level - 1 == 0 && !inString && complexKey)
+                        {
+                            complexKey = false;
+                        }
+                        else if (level - 1 == 0 && !inString){
                             nested = false;
                         }
-                        else if (level - 1 == -1 && !inString){
+                        else if (level - 1 == -1 && !inString && !complexKey){
                             if (i == text.Length - 1){
                                 value = DeserializeObject( valueType, reader.ToString() );
                                 motherDictionary.Add( key, value );
@@ -109,12 +122,16 @@ namespace Adeptar
                         }
                         break;
                     case ',':
-                        if (!nested && !inString){
-                            value = DeserializeObject( valueType, reader.ToString() );
-                            motherDictionary.Add( key, value );
-                            reader.Clear();
-                        }
-                        else if (nested){
+                        if (!complexKey){
+                            if (!nested && !inString){
+                                value = DeserializeObject( valueType, reader.ToString() );
+                                motherDictionary.Add( key, value );
+                                reader.Clear();
+                            }
+                            else if (nested){
+                                reader.Append( item );
+                            }
+                        }else{
                             reader.Append( item );
                         }
                         break;
@@ -145,9 +162,12 @@ namespace Adeptar
                         reader.Append( item );
                         break;
                     case ':':
-                        if (!nested && !inString){
+                        if (!nested && !inString && !complexKey){
+                            Console.WriteLine( reader.ToString() );
                             key = DeserializeObject( keyType, reader.ToString() );
                             reader.Clear();
+                        }else{
+                            reader.Append( item );
                         }
                         break;
                     default:

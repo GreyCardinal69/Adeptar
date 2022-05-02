@@ -156,7 +156,7 @@ namespace Adeptar
         /// <param name="last">If true tells the writer to not append a comma.</param>
         internal static void Write ( object toSerialize, SerializableType type, ref StringBuilder mainBuilder,
                                      string name = null, int indent = 0, bool ignoreSpaceDec = false,
-                                     bool calledByClassWriter = false, bool last = false )
+                                     bool calledByClassWriter = false, bool last = false, bool addAtSign = false )
         {
             if (type == SerializableType.NULL)
                 return;
@@ -309,6 +309,9 @@ namespace Adeptar
                         }
                     }
                     mainBuilder.Append( name );
+                    if (addAtSign){
+                        mainBuilder.Append('@');
+                    }
                     mainBuilder.Append( '[' );
                     if (!DoesntUseIndentation){
                         mainBuilder.Append( '\n' );
