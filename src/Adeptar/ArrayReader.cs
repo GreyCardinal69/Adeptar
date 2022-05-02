@@ -37,17 +37,18 @@ using static Adeptar.AdeptarReader;
 namespace Adeptar
 {
     /// <summary>
-    ///
+    /// Internal class containing method(s) for deserialization of <see cref="List{T}"/>, <see cref="Array"/>
+    /// and two or more dimensional arrays.
     /// </summary>
     internal class ArrayReader
     {
         /// <summary>
-        ///
+        /// Deserializes the Adeptar string of type <see cref="Array"/> to a .NET object.
         /// </summary>
-        /// <param name="target"></param>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        internal static IList DeserializeArray( ReadOnlySpan<char> target, Type type )
+        /// <param name="text">The Adeptar string representation of the object.</param>
+        /// <param name="type">The type of the <see cref="Array"/>.</param>
+        /// <returns>The .NET version of the <see cref="Array"/>.</returns>
+        internal static IList DeserializeArray( ReadOnlySpan<char> text, Type type )
         {
             bool inString = false;
             double length = 0;
@@ -59,7 +60,7 @@ namespace Adeptar
 
             int i = 0;
 
-            foreach (char Char in target)
+            foreach (char Char in text)
             {
                 switch (Char)
                 {
@@ -137,9 +138,9 @@ namespace Adeptar
 
             StringBuilder value = new();
 
-            target = target.Slice(  1, target.Length - 1 );
+            text = text.Slice(  1, text.Length - 1 );
 
-            foreach (var Char in target)
+            foreach (var Char in text)
             {
                 switch (Char)
                 {
@@ -171,7 +172,7 @@ namespace Adeptar
                         }
                         else if (firstCase - 1 == -1 && !inString){
                             firstCase--;
-                            if (i == target.Length - 1){
+                            if (i == text.Length - 1){
                                 main[index] = DeserializeObject( childType, value.ToString() );
                                 value.Clear();
                             }
@@ -224,12 +225,12 @@ namespace Adeptar
         }
 
         /// <summary>
-        ///
+        /// Deserializes the Adeptar string of type <see cref="List{T}"/> to a .NET object.
         /// </summary>
-        /// <param name="target"></param>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        internal static IList DeserializeList ( ReadOnlySpan<char> target, Type type )
+        /// <param name="text">The Adeptar string representation of the object.</param>
+        /// <param name="type">The type of the <see cref="List{T}"/>.</param>
+        /// <returns>The .NET version of the <see cref="List{T}"/>.</returns>
+        internal static IList DeserializeList ( ReadOnlySpan<char> text, Type type )
         {
             bool inString = false;
 
@@ -244,9 +245,9 @@ namespace Adeptar
 
             StringBuilder value = new();
 
-            target = target.Slice( 1, target.Length - 1 );
+            text = text.Slice( 1, text.Length - 1 );
 
-            foreach (var Char in target)
+            foreach (var Char in text)
             {
                 switch (Char)
                 {
@@ -284,7 +285,7 @@ namespace Adeptar
                         else if (firstCase - 1 == -1 && !inString)
                         {
                             firstCase--;
-                            if (i == target.Length - 1)
+                            if (i == text.Length - 1)
                             {
                                 main.Add( DeserializeObject( childType, value.ToString() ) );
                                 value.Clear();
@@ -349,7 +350,7 @@ namespace Adeptar
         /// <param name="target"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        internal static object DeserializeDimensionalArray( ReadOnlySpan<char> target, Type type )
+        internal static object DeserializeDimensionalArray( ReadOnlySpan<char> text, Type type )
         {
             return null;
         }

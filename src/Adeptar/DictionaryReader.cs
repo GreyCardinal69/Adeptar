@@ -35,16 +35,16 @@ using static Adeptar.AdeptarReader;
 namespace Adeptar
 {
     /// <summary>
-    ///
+    /// Internal class containing method(s) for deserialization of <see cref="Dictionary{TKey, TValue}"/>
     /// </summary>
     internal class DictionaryReader
     {
         /// <summary>
-        ///
+        /// Deserializes the Adeptar string of type <see cref="Dictionary{TKey, TValue}"/> to a .NET object.
         /// </summary>
-        /// <param name="text"></param>
-        /// <param name="type"></param>
-        /// <returns></returns>
+        /// <param name="text">The Adeptar string representation of the object.</param>
+        /// <param name="type">The type of the <see cref="Dictionary{TKey, TValue}"/>.</param>
+        /// <returns>The .NET version of the <see cref="Dictionary{TKey, TValue}"/>.</returns>
         internal static IDictionary DeserializeDictionary( ReadOnlySpan<char> text, Type type )
         {
             int level = 0;
