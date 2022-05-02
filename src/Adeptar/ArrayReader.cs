@@ -213,5 +213,10 @@ namespace Adeptar
 
             return main;
         }
+
+        internal static IList DeserializeList ( ReadOnlySpan<char> target, Type type )
+        {
+            return null;
+        }
     }
 }

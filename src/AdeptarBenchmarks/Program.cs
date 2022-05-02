@@ -17,8 +17,18 @@ namespace AdeptarBenchmarks
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
 
-            AdeptarConverter.SerializeWrite( serializePath, new string[] { "Hello world", "Hello \"Sir\"", "Hello \"Mam", "Hello (not) World" } );
-            var x = AdeptarConverter.DeserializeString<string[]>( AdeptarConverter.Serialize( new string[] { "Hello world", "Hello \"Sir\"", "Hello \"Mam", "Hello (not) World" } ) );
+            var y = new Dictionary<string, string[]>() {
+                { "hello", new string[] { "Hello world", "Hello \"Sir\"", "Hello \"Mam", "Hello (not) World" } },
+                { "big", new string[] { "Hello world", "Hello \"Sir\"", "Hello \"Mam", "Hello (not) World" } },
+                { "world", new string[] { "Hello world", "Hello \"Sir\"", "Hello \"Mam", "Hello (not) World" } }
+            };
+
+            AdeptarConverter.SerializeWrite( serializePath, y  );
+            var x = AdeptarConverter.DeserializeString<Dictionary<string, string[]>>( AdeptarConverter.Serialize( new Dictionary<string, string[]>() {
+                { "hello", new string[] { "Hello world", "Hello \"Sir\"", "Hello \"Mam", "Hello (not) World" } },
+                { "big", new string[] { "Hello world", "Hello \"Sir\"", "Hello \"Mam", "Hello (not) World" } },
+                { "world", new string[] { "Hello world", "Hello \"Sir\"", "Hello \"Mam", "Hello (not) World" } }
+            } ) );
             AdeptarConverter.SerializeWrite( deserializePath, x );
 #else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();

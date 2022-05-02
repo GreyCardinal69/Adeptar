@@ -270,6 +270,19 @@
             <param name="value">The string representation of the number.</param>
             <returns>The converted number.</returns>
         </member>
+        <member name="T:Adeptar.DictionaryReader">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="M:Adeptar.DictionaryReader.DeserializeDictionary(System.ReadOnlySpan{System.Char},System.Type)">
+             <summary>
+            
+             </summary>
+             <param name="text"></param>
+             <param name="type"></param>
+             <returns></returns>
+        </member>
         <member name="M:Adeptar.DictionaryWriter.WriteDictionaryInternal(System.Object,System.Int32,System.Text.StringBuilder@,System.Boolean)">
             <summary>
             Serializes <see cref="T:System.Collections.Generic.Dictionary`2"/>s to.Adeptar strings.
