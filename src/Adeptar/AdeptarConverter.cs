@@ -29,6 +29,7 @@ using static Adeptar.AdeptarWriter;
 using static Adeptar.TypeGetters;
 using static Adeptar.AdeptarReader;
 using static Adeptar.DeserializationHelpers;
+using System.IO;
 
 namespace Adeptar
 {
@@ -45,7 +46,7 @@ namespace Adeptar
         /// <returns></returns>
         public static T Deserialize<T> ( string path )
         {
-            throw new NotImplementedException();
+            return ( T ) DeserializeByChar( typeof( T ), File.ReadAllText( path ) );
         }
 
         /// <summary>
@@ -56,7 +57,7 @@ namespace Adeptar
         /// <returns></returns>
         public static object Deserialize ( string path, Type type )
         {
-            throw new NotImplementedException();
+            return DeserializeByChar( type, File.ReadAllText( path ) );
         }
 
         /// <summary>
@@ -78,7 +79,7 @@ namespace Adeptar
         /// <returns></returns>
         public static object DeserializeString ( string content, Type type )
         {
-            throw new NotImplementedException();
+            return DeserializeByChar( type, CleanText( content ) );
         }
 
         /// <summary>

@@ -17,17 +17,19 @@ namespace AdeptarBenchmarks
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
 
-            var y = new Dictionary<string, string[]>() {
-                { "hello", new string[] { "Hello world", "Hello \"Sir\"", "Hello \"Mam", "Hello (not) World" } },
-                { "big", new string[] { "Hello world", "Hello \"Sir\"", "Hello \"Mam", "Hello (not) World" } },
-                { "world", new string[] { "Hello world", "Hello \"Sir\"", "Hello \"Mam", "Hello (not) World" } }
+            var y = new List<List<int>>()
+            {
+                new List<int>() { 1,2,3,4 },
+                new List<int>() { 5,6,7,8 },
+                new List<int>() { 9,10,11,12 }
             };
 
             AdeptarConverter.SerializeWrite( serializePath, y  );
-            var x = AdeptarConverter.DeserializeString<Dictionary<string, string[]>>( AdeptarConverter.Serialize( new Dictionary<string, string[]>() {
-                { "hello", new string[] { "Hello world", "Hello \"Sir\"", "Hello \"Mam", "Hello (not) World" } },
-                { "big", new string[] { "Hello world", "Hello \"Sir\"", "Hello \"Mam", "Hello (not) World" } },
-                { "world", new string[] { "Hello world", "Hello \"Sir\"", "Hello \"Mam", "Hello (not) World" } }
+            var x = AdeptarConverter.DeserializeString<List<List<int>>>( AdeptarConverter.Serialize( new List<List<int>>()
+            {
+                new List<int>() { 1,2,3,4 },
+                new List<int>() { 5,6,7,8 },
+                new List<int>() { 9,10,11,12 }
             } ) );
             AdeptarConverter.SerializeWrite( deserializePath, x );
 #else
