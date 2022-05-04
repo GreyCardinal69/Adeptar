@@ -49,6 +49,7 @@ namespace Adeptar
         {
             int level = 0;
             int i = 0;
+            int j = 0;
 
             IDictionary motherDictionary = ( IDictionary ) Activator.CreateInstance( type );
 
@@ -56,8 +57,6 @@ namespace Adeptar
             bool inString = false;
             bool falseEnd = false;
             bool complexKey = false;
-
-            StringBuilder reader = new();
 
             Type[] generics = type.GetGenericArguments();
             Type keyType = generics[0];
@@ -80,97 +79,74 @@ namespace Adeptar
                     case '"':
                         if (falseEnd && inString){
                             falseEnd = false;
-                            reader.Append( '\\' );
                         }
-                        else if (!falseEnd){
+                        else if (!falseEnd)
                             inString = !inString;
-                        }
-                        if (nested){
-                            reader.Append( item );
-                        }
                         break;
                     case '[':
                         if (!inString && !complexKey){
                             level++; nested = true;
                         }
-                        else if (complexKey && !inString){
+                        else if (complexKey && !inString)
                             level++;
-                        }
-                        reader.Append( item );
                         break;
                     case ']':
-                        if (level - 1 == 0 && !inString && complexKey)
-                        {
+                        if (level - 1 == 0 && !inString && complexKey){
                             complexKey = false;
                         }
-                        else if (level - 1 == 0 && !inString){
+                        else if (level - 1 == 0 && !inString)
                             nested = false;
-                        }
                         else if (level - 1 == -1 && !inString && !complexKey){
                             if (i == text.Length - 1){
-                                value = DeserializeObject( valueType, reader.ToString() );
+                                value = DeserializeObject( valueType, text.Slice( j, i - j ) );
                                 motherDictionary.Add( key, value );
-                                reader.Clear();
                             }
                         }
                         level--;
-                        reader.Append( item );
                         break;
                     case '\\':
                         if (inString){
                             falseEnd = true;
+                        }else{
+                            throw new AdeptarException( "Invalid character '\\', such a character can appear only inside a string." );
                         }
                         break;
                     case ',':
-                        if (!complexKey){
-                            if (!nested && !inString){
-                                value = DeserializeObject( valueType, reader.ToString() );
-                                motherDictionary.Add( key, value );
-                                reader.Clear();
-                            }
-                            else if (nested){
-                                reader.Append( item );
-                            }
-                        }else{
-                            reader.Append( item );
+                        if (!complexKey && !nested && !inString){
+                            value = DeserializeObject( valueType, text.Slice( j, i - j ) );
+                            j = i + 1;
+                            motherDictionary.Add( key, value );
                         }
                         break;
                     case '{':
                         if (!inString){
-                            level++; nested = true;
+                            level++;
+                            nested = true;
                         }
-                        reader.Append( item );
                         break;
                     case '}':
                         if (level - 1 == 0 && !inString){
                             nested = false;
                             level--;
                         }
-                        reader.Append( item );
                         break;
                     case '(':
                         if (!inString){
-                            level++; nested = true;
+                            level++;
+                            nested = true;
                         }
-                        reader.Append( item );
                         break;
                     case ')':
                         if (level - 1 == 0 && !inString){
                             nested = false;
                             level--;
                         }
-                        reader.Append( item );
                         break;
                     case ':':
                         if (!nested && !inString && !complexKey){
-                            key = DeserializeObject( keyType, reader.ToString() );
-                            reader.Clear();
-                        }else{
-                            reader.Append( item );
+                            key = DeserializeObject( keyType, text.Slice( j, i - j ) );
+                            j = i + 1;
                         }
-                        break;
-                    default:
-                        reader.Append( item );
                         break;
                 }
                 i++;
