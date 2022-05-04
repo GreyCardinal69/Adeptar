@@ -10,36 +10,31 @@
             </summary>
         </member>
         <member name="M:Adeptar.AdeptarConverter.Deserialize``1(System.String)">
-             <summary>
-            
-             </summary>
-             <typeparam name="T"></typeparam>
-             <param name="path"></param>
-             <returns></returns>
+            <summary>
+            Deserializes the Adeptar string from the file at the specified path to the .NET <see cref="T:System.Type"/>.
+            </summary>
+            <param name="path">The path to the object.</param>
         </member>
         <member name="M:Adeptar.AdeptarConverter.Deserialize(System.String,System.Type)">
-             <summary>
-            
-             </summary>
-             <param name="path"></param>
-             <param name="type"></param>
-             <returns></returns>
+            <summary>
+            Deserializes the Adeptar string from the file at the specified path to the .NET <see cref="T:System.Type"/>.
+            </summary>
+            <param name="path">The path to the object.</param>
+            <param name="type">The <see cref="T:System.Type"/> of the .NET object.</param>
         </member>
         <member name="M:Adeptar.AdeptarConverter.DeserializeString``1(System.String)">
-             <summary>
-            
-             </summary>
-             <typeparam name="T"></typeparam>
-             <param name="content"></param>
-             <returns></returns>
+            <summary>
+            Deserializes the Adeptar string to the specified .NET type.
+            </summary>
+            <param name="content">The Adeptar string.</param>
         </member>
         <member name="M:Adeptar.AdeptarConverter.DeserializeString(System.String,System.Type)">
-             <summary>
-            
-             </summary>
-             <param name="content"></param>
-             <param name="type"></param>
-             <returns></returns>
+            <summary>
+            Deserializes the Adeptar string to the specified .NET <see cref="T:System.Type"/>.
+            </summary>
+            <param name="content">The Adeptar string.</param>
+            <param name="type">The <see cref="T:System.Type"/> of the .NET object.</param>
+            <returns></returns>
         </member>
         <member name="M:Adeptar.AdeptarConverter.DeserializeAppended``1(System.String,System.String)">
              <summary>
@@ -267,17 +262,18 @@
             <param name="builder">The <see cref="T:System.Text.StringBuilder"/> to append to.</param>
         </member>
         <member name="T:Adeptar.ClassReader">
-             <summary>
-            
-             </summary>
+            <summary>
+            Internal class containing method(s) for deserialization of class or struct objects.
+            and two or more dimensional arrays.
+            </summary>
         </member>
         <member name="M:Adeptar.ClassReader.DeserializeClassStruct(System.ReadOnlySpan{System.Char},System.Type)">
-             <summary>
-            
-             </summary>
-             <param name="text"></param>
-             <param name="type"></param>
-             <returns></returns>
+            <summary>
+            Deserializes the Adeptar string of a class or a struct to a .NET object.
+            </summary>
+            <param name="text">The Adeptar string representation of the object.</param>
+            <param name="type">The type of the class or struct.</param>
+            <returns>The .NET version of the class or struct.</returns>
         </member>
         <member name="T:Adeptar.ClassWriter">
             <summary>

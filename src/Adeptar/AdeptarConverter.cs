@@ -39,43 +39,38 @@ namespace Adeptar
     public class AdeptarConverter
     {
         /// <summary>
-        ///
+        /// Deserializes the Adeptar string from the file at the specified path to the .NET <see cref="Type"/>.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="path"></param>
-        /// <returns></returns>
+        /// <param name="path">The path to the object.</param>
         public static T Deserialize<T> ( string path )
         {
             return ( T ) DeserializeObject( typeof( T ), File.ReadAllText( path ) );
         }
 
         /// <summary>
-        ///
+        /// Deserializes the Adeptar string from the file at the specified path to the .NET <see cref="Type"/>.
         /// </summary>
-        /// <param name="path"></param>
-        /// <param name="type"></param>
-        /// <returns></returns>
+        /// <param name="path">The path to the object.</param>
+        /// <param name="type">The <see cref="Type"/> of the .NET object.</param>
         public static object Deserialize ( string path, Type type )
         {
             return DeserializeObject( type, File.ReadAllText( path ) );
         }
 
         /// <summary>
-        ///
+        /// Deserializes the Adeptar string to the specified .NET type.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="content"></param>
-        /// <returns></returns>
+        /// <param name="content">The Adeptar string.</param>
         public static T DeserializeString<T> ( string content )
         {
             return ( T ) DeserializeObject( typeof( T ), CleanText( content ) );
         }
 
         /// <summary>
-        ///
+        /// Deserializes the Adeptar string to the specified .NET <see cref="Type"/>.
         /// </summary>
-        /// <param name="content"></param>
-        /// <param name="type"></param>
+        /// <param name="content">The Adeptar string.</param>
+        /// <param name="type">The <see cref="Type"/> of the .NET object.</param>
         /// <returns></returns>
         public static object DeserializeString ( string content, Type type )
         {
