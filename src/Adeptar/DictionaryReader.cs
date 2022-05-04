@@ -163,7 +163,6 @@ namespace Adeptar
                         break;
                     case ':':
                         if (!nested && !inString && !complexKey){
-                            Console.WriteLine( reader.ToString() );
                             key = DeserializeObject( keyType, reader.ToString() );
                             reader.Clear();
                         }else{

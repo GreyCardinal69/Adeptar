@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using FastMember;
@@ -51,7 +52,11 @@ namespace Adeptar
             int i = 0;
 
             var target = Activator.CreateInstance( type );
-            var accessor = TypeAccessor.Create( type );
+            var properties = type.GetProperties() ;
+            var fields = type.GetFields();
+
+            FieldInfo field = null;
+            PropertyInfo property = null;
 
             bool nested = false;
             bool inString = false;
@@ -97,15 +102,6 @@ namespace Adeptar
                         {
                             nested = false;
                         }
-                        else if (level - 1 == -1 && !inString)
-                        {
-                            if (i == text.Length - 1)
-                            {
-                                accessor[target, name] = DeserializeObject( accessor[target, name].GetType(), reader.ToString() );
-                                name = "";
-                                reader.Clear();
-                            }
-                        }
                         level--;
                         reader.Append( item );
                         break;
@@ -118,7 +114,24 @@ namespace Adeptar
                     case ',':
                         if (!nested && !inString)
                         {
-                            accessor[target, name] = DeserializeObject( accessor[target, name].GetType(), reader.ToString() );
+                            foreach (var item2 in fields)
+                            {
+                                if (item2.Name == name)
+                                {
+                                    field = item2;
+                                    field.SetValue( target,
+                                    DeserializeObject( field.FieldType, reader.ToString() ) );
+                                }
+                            }
+                            foreach (var item2 in properties)
+                            {
+                                if (item2.Name == name)
+                                {
+                                    property = item2;
+                                    property.SetValue( target,
+                                    DeserializeObject( property.PropertyType, reader.ToString() ) );
+                                }
+                            }
                             name = "";
                             reader.Clear();
                         }
@@ -138,8 +151,33 @@ namespace Adeptar
                         if (level - 1 == 0 && !inString)
                         {
                             nested = false;
-                            level--;
                         }
+                        else if (level - 1 == -1 && !inString)
+                        {
+                            if (i == text.Length - 1)
+                            {
+                                foreach (var item2 in fields)
+                                {
+                                    if (item2.Name == name)
+                                    {
+                                        field = item2;
+                                        field.SetValue( target,
+                                        DeserializeObject( field.FieldType, reader.ToString() ) );
+                                    }
+                                }
+                                foreach (var item2 in properties)
+                                {
+                                    if (item2.Name == name)
+                                    {
+                                        property = item2;
+                                        property.SetValue( target,
+                                        DeserializeObject( property.PropertyType, reader.ToString() ) );
+                                    }
+                                }
+                                reader.Clear();
+                            }
+                        }
+                        level--;
                         reader.Append( item );
                         break;
                     case '(':

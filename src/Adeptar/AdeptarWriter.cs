@@ -347,8 +347,7 @@ namespace Adeptar
                         }
                     }
                     mainBuilder.Append( ']' );
-                    if (!last)
-                    {
+                    if (!last){
                         mainBuilder.Append( ',' );
                     }
                     break;
