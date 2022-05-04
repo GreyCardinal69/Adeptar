@@ -294,12 +294,77 @@
             <param name="indent">Indentation amount.</param>
             <param name="builder"><see cref="T:System.Text.StringBuilder"/> instance to append text to.</param>
         </member>
+        <member name="T:Adeptar.DeserializationHelpers">
+            <summary>
+            A class that contains methods for deserialization of .Adeptar objects.
+            </summary>
+        </member>
+        <member name="F:Adeptar.DeserializationHelpers._sbyteType">
+            <summary>
+            Cached type for <see cref="T:System.SByte"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.DeserializationHelpers._byteType">
+            <summary>
+            Cached type for <see cref="T:System.Byte"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.DeserializationHelpers._shortType">
+            <summary>
+            Cached type for <see cref="T:System.Int16"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.DeserializationHelpers._ushortType">
+            <summary>
+            Cached type for <see cref="T:System.UInt16"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.DeserializationHelpers._intType">
+            <summary>
+            Cached type for <see cref="T:System.Int32"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.DeserializationHelpers._uintType">
+            <summary>
+            Cached type for <see cref="T:System.UInt32"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.DeserializationHelpers._longType">
+            <summary>
+            Cached type for <see cref="T:System.Int64"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.DeserializationHelpers._ulongType">
+            <summary>
+            Cached type for <see cref="T:System.UInt64"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.DeserializationHelpers._floatType">
+            <summary>
+            Cached type for <see cref="T:System.Single"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.DeserializationHelpers._decimalType">
+            <summary>
+            Cached type for <see cref="T:System.Decimal"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.DeserializationHelpers._doubleType">
+            <summary>
+            Cached type for <see cref="T:System.Double"/>.
+            </summary>
+        </member>
+        <member name="T:Adeptar.DeserializationHelpers.NumericType">
+            <summary>
+            Private enumeration for determining the type of a number.
+            </summary>
+        </member>
         <member name="M:Adeptar.DeserializationHelpers.CleanText(System.String)">
-             <summary>
-            
-             </summary>
-             <param name="str"></param>
-             <returns></returns>
+            <summary>
+            Removes all indentation from the .Adeptar string.
+            </summary>
+            <param name="str">The .Adeptar string to clean.</param>
+            <returns>The .Adeptar string with all the indentation removed.</returns>
         </member>
         <member name="M:Adeptar.DeserializationHelpers.NumericResolver(System.Type,System.String)">
             <summary>
@@ -308,7 +373,14 @@
             </summary>
             <param name="typeOf">The type to convert to.</param>
             <param name="value">The string representation of the number.</param>
-            <returns>The converted number.</returns>
+            <returns>The adeptar string converted to a .NET object.</returns>
+        </member>
+        <member name="M:Adeptar.DeserializationHelpers.GetNumericType(System.Type)">
+             <summary>
+            
+             </summary>
+             <param name="type"></param>
+             <returns></returns>
         </member>
         <member name="M:Adeptar.DeserializationHelpers.StringResolver(System.String)">
              <summary>

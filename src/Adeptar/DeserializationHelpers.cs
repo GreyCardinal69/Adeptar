@@ -31,9 +31,61 @@ using System.Threading.Tasks;
 
 namespace Adeptar
 {
-    internal class DeserializationHelpers
+    /// <summary>
+    /// A class that contains methods for deserialization of .Adeptar objects.
+    /// </summary>
+    public class DeserializationHelpers
     {
-        internal enum NumericType
+        /// <summary>
+        /// Cached type for <see cref="sbyte"/>.
+        /// </summary>
+        private static Type _sbyteType = typeof( sbyte );
+        /// <summary>
+        /// Cached type for <see cref="byte"/>.
+        /// </summary>
+        private static Type _byteType = typeof( byte );
+        /// <summary>
+        /// Cached type for <see cref="short"/>.
+        /// </summary>
+        private static Type _shortType = typeof( short );
+        /// <summary>
+        /// Cached type for <see cref="ushort"/>.
+        /// </summary>
+        private static Type _ushortType = typeof( ushort );
+        /// <summary>
+        /// Cached type for <see cref="int"/>.
+        /// </summary>
+        private static Type _intType = typeof( int );
+        /// <summary>
+        /// Cached type for <see cref="uint"/>.
+        /// </summary>
+        private static Type _uintType = typeof( uint );
+        /// <summary>
+        /// Cached type for <see cref="long"/>.
+        /// </summary>
+        private static Type _longType = typeof( long );
+        /// <summary>
+        /// Cached type for <see cref="ulong"/>.
+        /// </summary>
+        private static Type _ulongType = typeof( ulong );
+        /// <summary>
+        /// Cached type for <see cref="Single"/>.
+        /// </summary>
+        private static Type _floatType = typeof( Single );
+        /// <summary>
+        /// Cached type for <see cref="decimal"/>.
+        /// </summary>
+        private static Type _decimalType = typeof( decimal );
+        /// <summary>
+        /// Cached type for <see cref="double"/>.
+        /// </summary>
+        private static Type _doubleType = typeof( double );
+
+
+        /// <summary>
+        /// Private enumeration for determining the type of a number.
+        /// </summary>
+        private enum NumericType
         {
             Sbyte,
             Byte,
@@ -46,15 +98,15 @@ namespace Adeptar
             Decimal,
             Double,
             Single,
-            NotNumeric
+            NotNumeric,
         }
 
         /// <summary>
-        ///
+        /// Removes all indentation from a .Adeptar string.
         /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        internal static string CleanText ( string str )
+        /// <param name="str">The .Adeptar string to clean.</param>
+        /// <returns>The .Adeptar string with all the indentation removed.</returns>
+        public static string CleanText ( string str )
         {
             StringBuilder sb = new();
 
@@ -122,11 +174,9 @@ namespace Adeptar
         /// </summary>
         /// <param name="typeOf">The type to convert to.</param>
         /// <param name="value">The string representation of the number.</param>
-        /// <returns>The converted number.</returns>
+        /// <returns>The adeptar string converted to a .NET object.</returns>
         internal static object NumericResolver ( Type typeOf, string value )
         {
-            value = value.Replace( ",", "" );
-
             return GetNumericType( typeOf ) switch
             {
                 NumericType.Byte => Convert.ToByte( value ),
@@ -140,41 +190,49 @@ namespace Adeptar
                 NumericType.Double => Convert.ToDouble( value ),
                 NumericType.Uint => Convert.ToUInt64( value ),
                 NumericType.Int => Convert.ToInt32( value ),
+                NumericType.NotNumeric => null
             };
         }
 
-        internal static NumericType GetNumericType ( Type type )
+        /// <summary>
+        /// Gets the <see cref="NumericType"/> of the specified <see cref="Type"/>
+        /// which is presumably a numeric one.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <returns>The <see cref="NumericType"/> of the provided <see cref="Type"/>.</returns>
+        private static NumericType GetNumericType ( Type type )
         {
-            if (type == typeof( sbyte ))
+            if (type == _sbyteType)
                 return NumericType.Sbyte;
-            if (type == typeof( byte ))
+            if (type == _byteType)
                 return NumericType.Byte;
-            if (type == typeof( short ))
+            if (type == _shortType)
                 return NumericType.Short;
-            if (type == typeof( ushort ))
+            if (type == _ushortType)
                 return NumericType.Ushort;
-            if (type == typeof( int ))
+            if (type == _intType)
                 return NumericType.Int;
-            if (type == typeof( uint ))
+            if (type == _uintType)
                 return NumericType.Uint;
-            if (type == typeof( long ))
+            if (type == _longType)
                 return NumericType.Long;
-            if (type == typeof( ulong ))
+            if (type == _ulongType)
                 return NumericType.Ulong;
-            if (type == typeof( Single ))
+            if (type == _floatType)
                 return NumericType.Single;
-            if (type == typeof( decimal ))
+            if (type == _decimalType)
                 return NumericType.Decimal;
-            if (type == typeof( double ))
+            if (type == _doubleType)
                 return NumericType.Double;
             return NumericType.NotNumeric;
         }
 
         /// <summary>
-        ///
+        /// Removes first and last quatation marks of the string as well as
+        /// removes extra backslashes.
         /// </summary>
-        /// <param name="text"></param>
-        /// <returns></returns>
+        /// <param name="text">The string to resolve.</param>
+        /// <returns>The string with first and last as well as extra backslashes removed.</returns>
         internal static string StringResolver ( string text ) => text.Substring( 1, text.Length - 2 ).Replace( "\\\"", "\"" );
     }
 }
