@@ -81,7 +81,6 @@ namespace Adeptar
         /// </summary>
         private static Type _doubleType = typeof( double );
 
-
         /// <summary>
         /// Private enumeration for determining the type of a number.
         /// </summary>
