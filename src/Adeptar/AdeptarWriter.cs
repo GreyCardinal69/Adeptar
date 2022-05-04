@@ -154,6 +154,7 @@ namespace Adeptar
         /// <param name="ignoreSpaceDec">Tells the writer to not append a spcae in certain cases.</param>
         /// <param name="calledByClassWriter">Tells the writer that the function was class from <see cref="ClassWriter"/>.</param>
         /// <param name="last">If true tells the writer to not append a comma.</param>
+        /// <param name="addAtSign">True if the object is a complex key of a dictionary.</param>
         internal static void Write ( object toSerialize, SerializableType type, ref StringBuilder mainBuilder,
                                      string name = null, int indent = 0, bool ignoreSpaceDec = false,
                                      bool calledByClassWriter = false, bool last = false, bool addAtSign = false )
@@ -246,7 +247,12 @@ namespace Adeptar
                             mainBuilder.Append( '\t' );
                         }
                     }
-                    mainBuilder.Append( name );
+                    if (calledByClassWriter){
+                        mainBuilder.Append( name );
+                        mainBuilder.Append( ": " );
+                    }else{
+                        mainBuilder.Append( name );
+                    }
                     mainBuilder.Append( '{' );
                     if (!DoesntUseIndentation){
                         mainBuilder.Append( '\n' );
@@ -270,7 +276,12 @@ namespace Adeptar
                             mainBuilder.Append( '\t' );
                         }
                     }
-                    mainBuilder.Append( name );
+                    if (calledByClassWriter){
+                        mainBuilder.Append( name );
+                        mainBuilder.Append( ": " );
+                    }else{
+                        mainBuilder.Append( name );
+                    }
                     mainBuilder.Append( '[' );
                     if (!DoesntUseIndentation){
                         mainBuilder.Append( '\n' );
@@ -308,7 +319,12 @@ namespace Adeptar
                             mainBuilder.Append( '\t' );
                         }
                     }
-                    mainBuilder.Append( name );
+                    if (calledByClassWriter){
+                        mainBuilder.Append( name );
+                        mainBuilder.Append( ": " );
+                    }else{
+                        mainBuilder.Append( name );
+                    }
                     if (addAtSign){
                         mainBuilder.Append('@');
                     }
@@ -339,7 +355,12 @@ namespace Adeptar
                             mainBuilder.Append( '\t' );
                         }
                     }
-                    mainBuilder.Append( name );
+                    if (calledByClassWriter){
+                        mainBuilder.Append( name );
+                        mainBuilder.Append( ": " );
+                    }else{
+                        mainBuilder.Append( name );
+                    }
                     if (!DoesntUseIndentation){
                         mainBuilder.Append( '(' ).Append( '\n' );
                     }else{
@@ -405,7 +426,12 @@ namespace Adeptar
                             mainBuilder.Append( '\t' );
                         }
                     }
-                    mainBuilder.Append( name );
+                    if (calledByClassWriter){
+                        mainBuilder.Append( name );
+                        mainBuilder.Append( ": " );
+                    }else{
+                        mainBuilder.Append( name );
+                    }
                     mainBuilder.Append( '[' );
                     if (!DoesntUseIndentation){
                         mainBuilder.Append( '\n' );

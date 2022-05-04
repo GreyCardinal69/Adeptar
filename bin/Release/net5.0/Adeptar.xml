@@ -213,6 +213,7 @@
             <param name="ignoreSpaceDec">Tells the writer to not append a spcae in certain cases.</param>
             <param name="calledByClassWriter">Tells the writer that the function was class from <see cref="T:Adeptar.ClassWriter"/>.</param>
             <param name="last">If true tells the writer to not append a comma.</param>
+            <param name="addAtSign">True if the object is a complex key of a dictionary.</param>
         </member>
         <member name="T:Adeptar.ArrayReader">
             <summary>
