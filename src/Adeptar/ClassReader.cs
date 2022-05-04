@@ -35,6 +35,19 @@ using static Adeptar.AdeptarReader;
 
 namespace Adeptar
 {
+    public static class TypeAccessorExtensions
+    {
+        public static void AssignValue ( this TypeAccessor accessor, object t, MemberSet members, string fieldName, object fieldValue )
+        {
+            foreach (var item in members)
+            {
+                if (string.Equals( item.Name, fieldName, StringComparison.OrdinalIgnoreCase ))
+                {
+                    accessor[t, fieldName] = fieldValue;
+                }
+            }
+        }
+    }
     /// <summary>
     ///
     /// </summary>
@@ -50,19 +63,18 @@ namespace Adeptar
         {
             int level = 0;
             int i = 0;
+            int w = 0;
+
+            int j = 0;
 
             var target = Activator.CreateInstance( type );
-            var properties = type.GetProperties() ;
-            var fields = type.GetFields();
 
-            FieldInfo field = null;
-            PropertyInfo property = null;
+            var accessor = TypeAccessor.Create( type, true );
+            var members = accessor.GetMembers();
 
             bool nested = false;
             bool inString = false;
             bool falseEnd = false;
-
-            StringBuilder reader = new();
 
             text = text.Slice( 1, text.Length - 1 );
             string name = "";
@@ -75,15 +87,10 @@ namespace Adeptar
                         if (falseEnd && inString)
                         {
                             falseEnd = false;
-                            reader.Append( '\\' );
                         }
                         else if (!falseEnd)
                         {
                             inString = !inString;
-                        }
-                        if (nested)
-                        {
-                            reader.Append( item );
                         }
                         break;
                     case '[':
@@ -95,7 +102,6 @@ namespace Adeptar
                         {
                             level++;
                         }
-                        reader.Append( item );
                         break;
                     case ']':
                         if (level - 1 == 0 && !inString)
@@ -103,7 +109,6 @@ namespace Adeptar
                             nested = false;
                         }
                         level--;
-                        reader.Append( item );
                         break;
                     case '\\':
                         if (inString)
@@ -114,30 +119,9 @@ namespace Adeptar
                     case ',':
                         if (!nested && !inString)
                         {
-                            foreach (var item2 in fields)
-                            {
-                                if (item2.Name == name)
-                                {
-                                    field = item2;
-                                    field.SetValue( target,
-                                    DeserializeObject( field.FieldType, reader.ToString() ) );
-                                }
-                            }
-                            foreach (var item2 in properties)
-                            {
-                                if (item2.Name == name)
-                                {
-                                    property = item2;
-                                    property.SetValue( target,
-                                    DeserializeObject( property.PropertyType, reader.ToString() ) );
-                                }
-                            }
-                            name = "";
-                            reader.Clear();
-                        }
-                        else if (nested)
-                        {
-                            reader.Append( item );
+                            accessor[target, name] = DeserializeObject( members[i].Type, text.Slice(j,w-j) );
+                            j = w + 1;
+                            i++;
                         }
                         break;
                     case '{':
@@ -145,7 +129,6 @@ namespace Adeptar
                         {
                             level++; nested = true;
                         }
-                        reader.Append( item );
                         break;
                     case '}':
                         if (level - 1 == 0 && !inString)
@@ -154,38 +137,18 @@ namespace Adeptar
                         }
                         else if (level - 1 == -1 && !inString)
                         {
-                            if (i == text.Length - 1)
+                            if (w == text.Length - 1)
                             {
-                                foreach (var item2 in fields)
-                                {
-                                    if (item2.Name == name)
-                                    {
-                                        field = item2;
-                                        field.SetValue( target,
-                                        DeserializeObject( field.FieldType, reader.ToString() ) );
-                                    }
-                                }
-                                foreach (var item2 in properties)
-                                {
-                                    if (item2.Name == name)
-                                    {
-                                        property = item2;
-                                        property.SetValue( target,
-                                        DeserializeObject( property.PropertyType, reader.ToString() ) );
-                                    }
-                                }
-                                reader.Clear();
+                                accessor[target, name] = DeserializeObject( members[i].Type, text.Slice( j, w - j ) );
                             }
                         }
                         level--;
-                        reader.Append( item );
                         break;
                     case '(':
                         if (!inString)
                         {
                             level++; nested = true;
                         }
-                        reader.Append( item );
                         break;
                     case ')':
                         if (level - 1 == 0 && !inString)
@@ -193,24 +156,18 @@ namespace Adeptar
                             nested = false;
                             level--;
                         }
-                        reader.Append( item );
                         break;
                     case ':':
                         if (!nested && !inString)
                         {
-                            name = reader.ToString();
-                            reader.Clear();
-                        }
-                        else
-                        {
-                            reader.Append( item );
+                            name = text.Slice(j,w-j).ToString();
+                            j = w + 1;
                         }
                         break;
                     default:
-                        reader.Append( item );
                         break;
                 }
-                i++;
+                w++;
             }
 
             return target;

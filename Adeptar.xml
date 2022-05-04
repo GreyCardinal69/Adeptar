@@ -314,6 +314,13 @@
             <param name="value">The string representation of the number.</param>
             <returns>The converted number.</returns>
         </member>
+        <member name="M:Adeptar.DeserializationHelpers.StringResolver(System.String)">
+             <summary>
+            
+             </summary>
+             <param name="text"></param>
+             <returns></returns>
+        </member>
         <member name="T:Adeptar.DictionaryReader">
             <summary>
             Internal class containing method(s) for deserialization of <see cref="T:System.Collections.Generic.Dictionary`2"/>

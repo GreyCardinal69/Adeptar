@@ -169,5 +169,12 @@ namespace Adeptar
                 return NumericType.Double;
             return NumericType.NotNumeric;
         }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        internal static string StringResolver ( string text ) => text.Substring( 1, text.Length - 2 ).Replace( "\\\"", "\"" );
     }
 }

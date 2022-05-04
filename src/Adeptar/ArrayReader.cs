@@ -58,6 +58,7 @@ namespace Adeptar
             bool nested = false;
             bool falseEnd = false;
 
+            int j = 0;
             int i = 0;
 
             foreach (char Char in text)
@@ -136,8 +137,6 @@ namespace Adeptar
             nested = false;
             firstCase = 0;
 
-            StringBuilder value = new();
-
             text = text.Slice(  1, text.Length - 1 );
 
             foreach (var Char in text)
@@ -151,7 +150,6 @@ namespace Adeptar
                         break;
                     case '"':
                         if (falseEnd && !nested){
-                            value.Append( Char );
                             falseEnd = false;
                             break;
                         }
@@ -163,7 +161,6 @@ namespace Adeptar
                         if (!inString){
                             firstCase++; nested = true;
                         }
-                        value.Append( Char );
                         break;
                     case ']':
                         if (firstCase - 1 == 0 && !inString){
@@ -173,49 +170,40 @@ namespace Adeptar
                         else if (firstCase - 1 == -1 && !inString){
                             firstCase--;
                             if (i == text.Length - 1){
-                                main[index] = DeserializeObject( childType, value.ToString() );
-                                value.Clear();
+                                main[index] = DeserializeObject( childType, text.Slice( j, i - j ) );
                             }
                         }
-                        value.Append( Char );
                         break;
                     case ',':
                         if (!inString && !nested){
-                            main[index] = DeserializeObject( childType, value.ToString() );
-                            value.Clear();
+                            main[index] = DeserializeObject( childType, text.Slice(j, i - j ) );
+                            j = i+1;
                             index++;
-                        }else{
-                            value.Append( Char );
                         }
                         break;
                     case '{':
                         if (!inString){
                             firstCase++; nested = true;
                         }
-                        value.Append( Char );
                         break;
                     case '}':
                         if (firstCase - 1 == 0 && !inString){
                             nested = false;
                             firstCase--;
                         }
-                        value.Append( Char );
                         break;
                     case '(':
                         if (!inString){
                             firstCase++; nested = true;
                         }
-                        value.Append( Char );
                         break;
                     case ')':
                         if (firstCase - 1 == 0 && !inString){
                             nested = false;
                             firstCase--;
                         }
-                        value.Append( Char );
                         break;
                     default:
-                        value.Append( Char );
                         break;
                 }
                 i++;

@@ -52,7 +52,7 @@ namespace Adeptar
             return deserializableType switch
             {
                 DeserializableType.Numeric => NumericResolver( type, text.ToString() ),
-                DeserializableType.String => text.ToString(),
+                DeserializableType.String => StringResolver( text.ToString() ),
                 DeserializableType.Boolean => Convert.ToBoolean( text.ToString() ),
                 DeserializableType.Char => Convert.ToChar( text.Slice(1,1).ToString() ),
                 DeserializableType.Enum => ParseToEnumNonGeneric( text.ToString(), type ),
