@@ -361,7 +361,7 @@
         </member>
         <member name="M:Adeptar.DeserializationHelpers.CleanText(System.String)">
             <summary>
-            Removes all indentation from the .Adeptar string.
+            Removes all indentation from a .Adeptar string.
             </summary>
             <param name="str">The .Adeptar string to clean.</param>
             <returns>The .Adeptar string with all the indentation removed.</returns>
@@ -376,18 +376,20 @@
             <returns>The adeptar string converted to a .NET object.</returns>
         </member>
         <member name="M:Adeptar.DeserializationHelpers.GetNumericType(System.Type)">
-             <summary>
-            
-             </summary>
-             <param name="type"></param>
-             <returns></returns>
+            <summary>
+            Gets the <see cref="T:Adeptar.DeserializationHelpers.NumericType"/> of the specified <see cref="T:System.Type"/>
+            which is presumably a numeric one.
+            </summary>
+            <param name="type">The type to check.</param>
+            <returns>The <see cref="T:Adeptar.DeserializationHelpers.NumericType"/> of the provided <see cref="T:System.Type"/>.</returns>
         </member>
         <member name="M:Adeptar.DeserializationHelpers.StringResolver(System.String)">
-             <summary>
-            
-             </summary>
-             <param name="text"></param>
-             <returns></returns>
+            <summary>
+            Removes first and last quatation marks of the string as well as
+            removes extra backslashes.
+            </summary>
+            <param name="text">The string to resolve.</param>
+            <returns>The string with first and last quotation marks as well as extra backslashes removed.</returns>
         </member>
         <member name="T:Adeptar.DictionaryReader">
             <summary>
@@ -482,11 +484,6 @@
         <member name="F:Adeptar.DeserializableType.DimensionalArray">
             <summary>
             True for two or more dimensional arrays.
-            </summary>
-        </member>
-        <member name="F:Adeptar.DeserializableType.Object">
-            <summary>
-            True for objects of type <see cref="T:System.Object"/>.
             </summary>
         </member>
         <member name="F:Adeptar.DeserializableType.DateTime">
@@ -731,7 +728,7 @@
             <param name="obj">The object to parse.</param>
             <returns>The converted enum.</returns>
         </member>
-        <member name="M:Adeptar.TypeGetters.ParseToEnumNonGeneric(System.Object,System.Type)">
+        <member name="M:Adeptar.TypeGetters.ParseToEnumNonGeneric(System.ReadOnlySpan{System.Char},System.Type)">
             <summary>
             Parses an object into an enum without a generic T type.
             </summary>

@@ -168,8 +168,6 @@ namespace Adeptar
                 return DeserializableType.Dictionary;
             if (fInfo == typeof( DateTime ))
                 return DeserializableType.DateTime;
-            if (fInfo == typeof( object ))
-                return DeserializableType.Object;
             if (IsTuple( fInfo ))
                 return DeserializableType.Tuple;
             if (fInfo.GetInterface( typeof( ICollection<> ).FullName ) != null)
@@ -338,7 +336,7 @@ namespace Adeptar
         /// <param name="obj">The object that is the enum.</param>
         /// <param name="enumType">The type of the enum to parse to.</param>
         /// <returns>Returns an object casted to the provided enum type.</returns>
-        public static object ParseToEnumNonGeneric ( object obj, Type enumType )
+        public static object ParseToEnumNonGeneric ( ReadOnlySpan<char> obj, Type enumType )
         {
             return Enum.Parse( enumType, obj.ToString() );
         }

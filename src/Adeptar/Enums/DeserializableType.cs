@@ -80,10 +80,6 @@ namespace Adeptar
         /// </summary>
         DimensionalArray,
         /// <summary>
-        /// True for objects of type <see cref="System.Object"/>.
-        /// </summary>
-        Object,
-        /// <summary>
         /// True for objects of type <see cref="System.DateTime"/>.
         /// </summary>
         DateTime
