@@ -68,6 +68,8 @@ namespace Adeptar
                     case '\\':
                         if (inString){
                             falseEnd = true;
+                        }else{
+                            throw new AdeptarException("Invalid character '\\', such a character can appear only inside a string.");
                         }
                         break;
                     case '"':
@@ -125,8 +127,6 @@ namespace Adeptar
                             firstCase--;
                         }
                         break;
-                    default:
-                        break;
                 }
             }
 
@@ -146,6 +146,8 @@ namespace Adeptar
                     case '\\':
                         if (inString){
                             falseEnd = true;
+                        }else{
+                            throw new AdeptarException( "Invalid character '\\', such a character can appear only inside a string." );
                         }
                         break;
                     case '"':
@@ -227,11 +229,10 @@ namespace Adeptar
             bool falseEnd = false;
 
             int i = 0;
+            int j = 0;
 
             Type childType = type.GetGenericArguments()[0];
             var main = ( IList ) Activator.CreateInstance( type );
-
-            StringBuilder value = new();
 
             text = text.Slice( 1, text.Length - 1 );
 
@@ -240,90 +241,69 @@ namespace Adeptar
                 switch (Char)
                 {
                     case '\\':
-                        if (inString)
-                        {
+                        if (inString){
                             falseEnd = true;
+                        }else{
+                            throw new AdeptarException("Invalid character '\\', such a character can appear only inside a string.");
                         }
                         break;
                     case '"':
-                        if (falseEnd && !nested)
-                        {
-                            value.Append( Char );
+                        if (falseEnd && !nested){
                             falseEnd = false;
                             break;
                         }
-                        if (!nested)
-                        {
+                        if (!nested){
                             inString = !inString;
                         }
                         break;
                     case '[':
-                        if (!inString)
-                        {
-                            firstCase++; nested = true;
+                        if (!inString){
+                            firstCase++;
+                            nested = true;
                         }
-                        value.Append( Char );
                         break;
                     case ']':
-                        if (firstCase - 1 == 0 && !inString)
-                        {
+                        if (firstCase - 1 == 0 && !inString){
                             nested = false;
                             firstCase--;
                         }
                         else if (firstCase - 1 == -1 && !inString)
                         {
                             firstCase--;
-                            if (i == text.Length - 1)
-                            {
-                                main.Add( DeserializeObject( childType, value.ToString() ) );
-                                value.Clear();
+                            if (i == text.Length - 1){
+                                main.Add( DeserializeObject( childType, text.Slice( j, i - j ) ) );
                             }
                         }
-                        value.Append( Char );
                         break;
                     case ',':
-                        if (!inString && !nested)
-                        {
-                            main.Add( DeserializeObject( childType, value.ToString() ) );
-                            value.Clear();
-                        }
-                        else
-                        {
-                            value.Append( Char );
+                        if (!inString && !nested){
+                            main.Add( DeserializeObject( childType, text.Slice( j, i - j ) ) );
+                            j = i + 1;
                         }
                         break;
                     case '{':
-                        if (!inString)
-                        {
-                            firstCase++; nested = true;
+                        if (!inString){
+                            firstCase++;
+                            nested = true;
                         }
-                        value.Append( Char );
                         break;
                     case '}':
-                        if (firstCase - 1 == 0 && !inString)
-                        {
+                        if (firstCase - 1 == 0 && !inString){
                             nested = false;
                             firstCase--;
                         }
-                        value.Append( Char );
                         break;
                     case '(':
-                        if (!inString)
-                        {
-                            firstCase++; nested = true;
+                        if (!inString){
+                            firstCase++;
+                            nested = true;
                         }
-                        value.Append( Char );
                         break;
                     case ')':
-                        if (firstCase - 1 == 0 && !inString)
-                        {
+                        if (firstCase - 1 == 0 && !inString){
                             nested = false;
                             firstCase--;
                         }
-                        value.Append( Char );
-                        break;
-                    default:
-                        value.Append( Char );
                         break;
                 }
                 i++;
