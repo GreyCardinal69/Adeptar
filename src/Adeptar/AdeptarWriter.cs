@@ -347,6 +347,10 @@ namespace Adeptar
                         }
                     }
                     mainBuilder.Append( ']' );
+                    if (!last)
+                    {
+                        mainBuilder.Append( ',' );
+                    }
                     break;
                 case SerializableType.Tuple:
                     if (!DoesntUseIndentation){

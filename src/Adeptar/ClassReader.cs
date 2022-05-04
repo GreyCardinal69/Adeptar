@@ -28,6 +28,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FastMember;
+
+using static Adeptar.AdeptarReader;
 
 namespace Adeptar
 {
@@ -39,14 +42,140 @@ namespace Adeptar
         /// <summary>
         ///
         /// </summary>
-        /// <param name="target"></param>
+        /// <param name="text"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        internal static object DeserializeClassStruct( ReadOnlySpan<char> target, Type type )
+        internal static object DeserializeClassStruct ( ReadOnlySpan<char> text, Type type )
         {
+            int level = 0;
+            int i = 0;
 
+            var target = Activator.CreateInstance( type );
+            var accessor = TypeAccessor.Create( type );
 
-            return null;
+            bool nested = false;
+            bool inString = false;
+            bool falseEnd = false;
+
+            StringBuilder reader = new();
+
+            text = text.Slice( 1, text.Length - 1 );
+            string name = "";
+
+            foreach (var item in text)
+            {
+                switch (item)
+                {
+                    case '"':
+                        if (falseEnd && inString)
+                        {
+                            falseEnd = false;
+                            reader.Append( '\\' );
+                        }
+                        else if (!falseEnd)
+                        {
+                            inString = !inString;
+                        }
+                        if (nested)
+                        {
+                            reader.Append( item );
+                        }
+                        break;
+                    case '[':
+                        if (!inString)
+                        {
+                            level++; nested = true;
+                        }
+                        else if (!inString)
+                        {
+                            level++;
+                        }
+                        reader.Append( item );
+                        break;
+                    case ']':
+                        if (level - 1 == 0 && !inString)
+                        {
+                            nested = false;
+                        }
+                        else if (level - 1 == -1 && !inString)
+                        {
+                            if (i == text.Length - 1)
+                            {
+                                accessor[target, name] = DeserializeObject( accessor[target, name].GetType(), reader.ToString() );
+                                name = "";
+                                reader.Clear();
+                            }
+                        }
+                        level--;
+                        reader.Append( item );
+                        break;
+                    case '\\':
+                        if (inString)
+                        {
+                            falseEnd = true;
+                        }
+                        break;
+                    case ',':
+                        if (!nested && !inString)
+                        {
+                            accessor[target, name] = DeserializeObject( accessor[target, name].GetType(), reader.ToString() );
+                            name = "";
+                            reader.Clear();
+                        }
+                        else if (nested)
+                        {
+                            reader.Append( item );
+                        }
+                        break;
+                    case '{':
+                        if (!inString)
+                        {
+                            level++; nested = true;
+                        }
+                        reader.Append( item );
+                        break;
+                    case '}':
+                        if (level - 1 == 0 && !inString)
+                        {
+                            nested = false;
+                            level--;
+                        }
+                        reader.Append( item );
+                        break;
+                    case '(':
+                        if (!inString)
+                        {
+                            level++; nested = true;
+                        }
+                        reader.Append( item );
+                        break;
+                    case ')':
+                        if (level - 1 == 0 && !inString)
+                        {
+                            nested = false;
+                            level--;
+                        }
+                        reader.Append( item );
+                        break;
+                    case ':':
+                        if (!nested && !inString)
+                        {
+                            name = reader.ToString();
+                            reader.Clear();
+                        }
+                        else
+                        {
+                            reader.Append( item );
+                        }
+                        break;
+                    default:
+                        reader.Append( item );
+                        break;
+                }
+                i++;
+            }
+
+            return target;
         }
     }
 }

@@ -275,7 +275,7 @@
              <summary>
             
              </summary>
-             <param name="target"></param>
+             <param name="text"></param>
              <param name="type"></param>
              <returns></returns>
         </member>
