@@ -313,11 +313,11 @@ namespace Adeptar
         }
 
         /// <summary>
-        ///
+        /// Deserializes the Adeptar string of two or more dimensional arrays to a .NET object.
         /// </summary>
-        /// <param name="text"></param>
-        /// <param name="type"></param>
-        /// <returns></returns>
+        /// <param name="text">The Adeptar string representation of the object.</param>
+        /// <param name="type">The type of the dimensional array.</param>
+        /// <returns>The .NET version of the dimensional array.</returns>
         internal static object DeserializeDimensionalArray( ReadOnlySpan<char> text, Type type )
         {
             List<int> sizes = new();
@@ -338,14 +338,14 @@ namespace Adeptar
                         break;
                     case '>':
                         if (inSizes){
-                            sizes.Add( ( int ) NumericResolver( typeof( int ), text.Slice( j, i - j ).ToString() ) );
+                            sizes.Add( ( int ) NumericResolver( IntType, text.Slice( j, i - j ).ToString() ) );
                             j = i + 1;
                             inSizes = false;
                             exit = true;
                         }
                         break;
                     case ',':
-                        sizes.Add( ( int ) NumericResolver( typeof(int), text.Slice( j, i - j ).ToString() ) );
+                        sizes.Add( ( int ) NumericResolver( IntType, text.Slice( j, i - j ).ToString() ) );
                         j = i + 1;
                         break;
                 }
@@ -354,9 +354,10 @@ namespace Adeptar
 
             text = text.Slice( j );
 
-            IList flat = ( IList ) DeserializeArray( "["+text.ToString(), type.GetElementType().MakeArrayType() );
+            var elementType = type.GetElementType();
 
-            Array main = Array.CreateInstance( type.GetElementType(), sizes.ToArray() );
+            IList flat =  DeserializeArray( $"[{text.ToString()}", elementType.MakeArrayType() );
+            Array main = Array.CreateInstance( elementType, sizes.ToArray() );
 
             int[] index = new int[sizes.Count];
 

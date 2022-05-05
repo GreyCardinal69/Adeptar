@@ -54,6 +54,18 @@ namespace AdeptarBenchmarks
         public static string xx = JsonConvert.SerializeObject( x );
         public static string yy = AdeptarConverter.Serialize( x, Adeptar.Formatting.NoIndentation );
 
+        [Benchmark]
+        public void FourDimensionalStringArrayAder ()
+        {
+            AdeptarConverter.DeserializeString<string[,,,]>( yy );
+        }
+
+        [Benchmark]
+        public void FourDimensionalStringArrayJson ()
+        {
+            JsonConvert.DeserializeObject<string[,,,]>( xx );
+        }
+
         /*
         [Benchmark]
         public void SimpleClassAder ()

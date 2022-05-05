@@ -151,17 +151,17 @@
             </summary>
         </member>
         <member name="T:Adeptar.AdeptarReader">
-             <summary>
-            
-             </summary>
+            <summary>
+            A class that contains method(s) for deserializing .Adeptar objects.
+            </summary>
         </member>
         <member name="M:Adeptar.AdeptarReader.DeserializeObject(System.Type,System.ReadOnlySpan{System.Char})">
-             <summary>
-            
-             </summary>
-             <param name="type"></param>
-             <param name="text"></param>
-             <returns></returns>
+            <summary>
+            Serves as a "main" node that coordinates deserialization of elements.
+            </summary>
+            <param name="type">The type of the object.</param>
+            <param name="text">The .Adeptar string representation of the object.</param>
+            <returns>The deserialized .NET object.</returns>
         </member>
         <member name="T:Adeptar.AdeptarWriter">
             <summary>
@@ -319,7 +319,7 @@
             Cached type for <see cref="T:System.UInt16"/>.
             </summary>
         </member>
-        <member name="F:Adeptar.DeserializationHelpers._intType">
+        <member name="F:Adeptar.DeserializationHelpers.IntType">
             <summary>
             Cached type for <see cref="T:System.Int32"/>.
             </summary>
@@ -392,11 +392,15 @@
             <returns>The string with first and last quotation marks as well as extra backslashes removed.</returns>
         </member>
         <member name="M:Adeptar.DeserializationHelpers.BinaryStyleIndexArrayByRefIncrement(System.Collections.Generic.List{System.Int32}@,System.Int32[]@)">
-             <summary>
-            
-             </summary>
-             <param name="sizes"></param>
-             <param name="index"></param>
+            <summary>
+            Increments an array with a binary style.
+            Starting from the end and traversing towards the start.
+            The array serves as an index for a dimensional array.
+            Accepts a <see cref="T:System.Collections.Generic.List`1"/> of ints that server as an upper bound.
+            </summary>
+            <param name="sizes">The sizes of the dimensional array.</param>
+            <param name="index">The current index of the dimensional array to use.</param>
+            <returns>The index array incremented with binary style.</returns>
         </member>
         <member name="T:Adeptar.DictionaryReader">
             <summary>

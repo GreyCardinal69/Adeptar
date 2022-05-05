@@ -59,7 +59,7 @@ namespace Adeptar
         /// <summary>
         /// Cached type for <see cref="int"/>.
         /// </summary>
-        private static Type _intType = typeof( int );
+        internal static Type IntType = typeof( int );
 
         /// <summary>
         /// Cached type for <see cref="uint"/>.
@@ -219,7 +219,7 @@ namespace Adeptar
                 return NumericType.Short;
             if (type == _ushortType)
                 return NumericType.Ushort;
-            if (type == _intType)
+            if (type == IntType)
                 return NumericType.Int;
             if (type == _uintType)
                 return NumericType.Uint;
