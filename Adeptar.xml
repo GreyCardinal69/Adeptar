@@ -278,7 +278,6 @@
         <member name="T:Adeptar.ClassWriter">
             <summary>
             Class that handles serialization of class and struct objects.
-            Does not handle <see cref="F:Adeptar.SerializableType.NULL"/> case.
             </summary>
         </member>
         <member name="F:Adeptar.ClassWriter._ignoreAttribute">

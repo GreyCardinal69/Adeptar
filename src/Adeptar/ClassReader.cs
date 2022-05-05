@@ -115,7 +115,7 @@ namespace Adeptar
                             nested = false;
                         }
                         else if (level - 1 == -1 && !inString){
-                            if (w == text.Length - 1)
+                            if (w == text.Length - 1 && members.Count > 0)
                                 accessor[target, name] = DeserializeObject( members[i].Type, text.Slice( j, w - j ) );
                         }
                         level--;
