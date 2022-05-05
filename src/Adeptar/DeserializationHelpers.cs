@@ -40,42 +40,52 @@ namespace Adeptar
         /// Cached type for <see cref="sbyte"/>.
         /// </summary>
         private static Type _sbyteType = typeof( sbyte );
+
         /// <summary>
         /// Cached type for <see cref="byte"/>.
         /// </summary>
         private static Type _byteType = typeof( byte );
+
         /// <summary>
         /// Cached type for <see cref="short"/>.
         /// </summary>
         private static Type _shortType = typeof( short );
+
         /// <summary>
         /// Cached type for <see cref="ushort"/>.
         /// </summary>
         private static Type _ushortType = typeof( ushort );
+
         /// <summary>
         /// Cached type for <see cref="int"/>.
         /// </summary>
         private static Type _intType = typeof( int );
+
         /// <summary>
         /// Cached type for <see cref="uint"/>.
         /// </summary>
         private static Type _uintType = typeof( uint );
+
         /// <summary>
         /// Cached type for <see cref="long"/>.
         /// </summary>
         private static Type _longType = typeof( long );
+
         /// <summary>
         /// Cached type for <see cref="ulong"/>.
         /// </summary>
         private static Type _ulongType = typeof( ulong );
+
         /// <summary>
         /// Cached type for <see cref="Single"/>.
         /// </summary>
         private static Type _floatType = typeof( Single );
+
         /// <summary>
         /// Cached type for <see cref="decimal"/>.
         /// </summary>
         private static Type _decimalType = typeof( decimal );
+
         /// <summary>
         /// Cached type for <see cref="double"/>.
         /// </summary>
@@ -235,10 +245,14 @@ namespace Adeptar
         internal static string StringResolver ( string text ) => text.Substring( 1, text.Length - 2 ).Replace( "\\\"", "\"" );
 
         /// <summary>
-        ///
+        /// Increments an array with a binary style.
+        /// Starting from the end and traversing towards the start.
+        /// The array serves as an index for a dimensional array.
+        /// Accepts a <see cref="List{T}"/> of ints that server as an upper bound.
         /// </summary>
-        /// <param name="sizes"></param>
-        /// <param name="index"></param>
+        /// <param name="sizes">The sizes of the dimensional array.</param>
+        /// <param name="index">The current index of the dimensional array to use.</param>
+        /// <returns>The index array incremented with binary style.</returns>
         public static void BinaryStyleIndexArrayByRefIncrement ( in List<int> sizes, ref int[] index )
         {
             for (int i = sizes.Count - 1; i >= 0; i--)

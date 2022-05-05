@@ -35,16 +35,16 @@ using static Adeptar.ArrayReader;
 namespace Adeptar
 {
     /// <summary>
-    ///
+    /// A class that contains method(s) for deserializing .Adeptar objects.
     /// </summary>
     internal class AdeptarReader
     {
         /// <summary>
-        ///
+        /// Serves as a "main" node that coordinates deserialization of elements.
         /// </summary>
-        /// <param name="type"></param>
-        /// <param name="text"></param>
-        /// <returns></returns>
+        /// <param name="type">The type of the object.</param>
+        /// <param name="text">The .Adeptar string representation of the object.</param>
+        /// <returns>The deserialized .NET object.</returns>
         internal static object DeserializeObject( Type type, ReadOnlySpan<char> text )
         {
             DeserializableType deserializableType = GetDeserializableType( type );
