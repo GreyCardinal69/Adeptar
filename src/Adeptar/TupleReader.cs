@@ -23,15 +23,128 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
+using FastMember;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using static Adeptar.AdeptarReader;
+
 namespace Adeptar
 {
+    /// <summary>
+    /// Internal class containing method(s) for deserialization of tuples
+    /// </summary>
     internal class TupleReader
     {
+        /// <summary>
+        /// Deserializes the Adeptar string of a tuple to a .NET object.
+        /// </summary>
+        /// <param name="text">The Adeptar string representation of the object.</param>
+        /// <param name="type">The type of the tuple.</param>
+        /// <returns>The .NET version of the tuple.</returns>
+        internal static object DeserializeTuple( ReadOnlySpan<char> text, Type type )
+        {
+            int level = 0;
+            int i = 0;
+            int w = 0;
+            int j = 0;
+
+            var target = Activator.CreateInstance( type );
+
+            var accessor = TypeAccessor.Create( type, true );
+            var members = accessor.GetMembers();
+
+            bool nested = false;
+            bool inString = false;
+            bool falseEnd = false;
+
+            text = text.Slice( 1, text.Length - 1 );
+            string name = "";
+
+            foreach (var item in text)
+            {
+                switch (item)
+                {
+                    case '"':
+                        if (falseEnd && inString){
+                            falseEnd = false;
+                        }
+                        else if (!falseEnd)
+                            inString = !inString;
+                        break;
+                    case '[':
+                        if (!inString){
+                            level++; nested = true;
+                        }
+                        else if (!inString)
+                            level++;
+                        break;
+                    case ']':
+                        if (level - 1 == 0 && !inString){
+                            nested = false;
+                        }
+                        level--;
+                        break;
+                    case '\\':
+                        if (inString){
+                            falseEnd = true;
+                        }else{
+                            throw new AdeptarException( "Invalid character '\\', such a character can appear only inside a string." );
+                        }
+                        break;
+                    case ',':
+                        if (!nested && !inString){
+                            accessor[target, name] = DeserializeObject( members[i].Type, text.Slice( j, w - j ) );
+                            j = w + 1;
+                            i++;
+                        }
+                        break;
+                    case '{':
+                        if (!inString){
+                            level++;
+                            nested = true;
+                        }
+                        break;
+                    case '}':
+                        if (level - 1 == 0 && !inString){
+                            nested = false;
+                        }
+                        level--;
+                        break;
+                    case '(':
+                        if (!inString){
+                            level++;
+                            nested = true;
+                        }
+                        break;
+                    case ')':
+                        if (level - 1 == 0 && !inString){
+                            nested = false;
+                            level--;
+                        }
+                        else if (level - 1 == -1 && !inString){
+                            level--;
+                            if (w == text.Length - 1){
+                                accessor[target, name] = DeserializeObject( members[i].Type, text.Slice( j, w - j ) );
+                                j = w + 1;
+                                i++;
+                            }
+                        }
+                        break;
+                    case ':':
+                        if (!nested && !inString){
+                            name = text.Slice( j, w - j ).ToString();
+                            j = w + 1;
+                        }
+                        break;
+                }
+                w++;
+            }
+
+            return target;
+        }
     }
 }

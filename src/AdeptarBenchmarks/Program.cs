@@ -5,21 +5,30 @@ using Adeptar;
 using Newtonsoft.Json;
 using System.IO;
 using System.Reflection;
+using FastMember;
 
 namespace AdeptarBenchmarks
 {
     [MemoryDiagnoser]
-    class Program
+    public class Program
     {
-        private class TestClass
+        public struct TestStruct
         {
-            public int x;
-            public string z;
+            public AssemblyNameFlags y;
+            public string name;
+            public List<float> floaties;
+        }
+
+        public class MyClass
+        {
+            public int Number;
+            public int Number2;
+            public int Number3;
             public int[] odds;
-            public string[] words;
+            public string[] swords;
             public Dictionary<int, int> nums;
             public Dictionary<int, bool[]> numsbools;
-
+            public TestStruct structy;
         }
 
         static void Main ( string[] args )
@@ -28,15 +37,12 @@ namespace AdeptarBenchmarks
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
 
-            var y = new Dictionary<Dictionary<int, int>, Dictionary<int, int>>()
-            {
-                { new Dictionary<int,int>() { { 1,2 }, { 3, 4} }, new Dictionary<int, int>() { {5,6 }, { 7, 8 } } },
-                { new Dictionary<int,int>() { { 1,2 }, { 3, 4} }, new Dictionary<int, int>() { {5,6 }, { 7, 8 } } },
-                { new Dictionary<int,int>() { { 1,2 }, { 3, 4} }, new Dictionary<int, int>() { {5,6 }, { 7, 8 } } }
-            };
 
-            AdeptarConverter.SerializeWrite( serializePath, y  );
-            var x = AdeptarConverter.DeserializeString<Dictionary<Dictionary<int, int>, Dictionary<int, int>>>( AdeptarConverter.Serialize( y ) );
+            var t = (1, (1,2,3), true, "string", "oh\"", new int[] { 6, 7, 8, 9 }, new MemoryBenchmarkerDemo.MyClass(), System.Xml.Formatting.Indented);
+
+            AdeptarConverter.SerializeWrite( serializePath, t, Adeptar.Formatting.NoIndentation );
+            Console.WriteLine(JsonConvert.SerializeObject(t));
+            var x = AdeptarConverter.DeserializeString( AdeptarConverter.Serialize( t ), t.GetType() );
             AdeptarConverter.SerializeWrite( deserializePath, x );
 #else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
@@ -51,15 +57,32 @@ namespace AdeptarBenchmarks
     {
         public class MyClass
         {
-            public int Number = 5;
-            public int Number2 = 5;
-            public int Number3 = 5;
+            public int Number = 1;
+            public int Number2 = 2;
+            public int Number3 = 3;
         }
 
         public enum TestEnum
         {
             Test,
             Enum
+        }
+
+        public static object x = (1, (1, 2, 3), true, "string", "oh\"", new int[] { 6, 7, 8, 9 }, new MemoryBenchmarkerDemo.MyClass(), System.Xml.Formatting.Indented);
+
+        public static string xx = JsonConvert.SerializeObject( x );
+        public static string yy = AdeptarConverter.Serialize( x, Adeptar.Formatting.NoIndentation );
+
+        [Benchmark]
+        public void ComplexTupleAder ()
+        {
+            AdeptarConverter.DeserializeString<(int, (int,int,int), bool, string, string, int[], MemoryBenchmarkerDemo.MyClass, System.Xml.Formatting)>( yy );
+        }
+
+        [Benchmark]
+        public void ComplexTupleJson ()
+        {
+            JsonConvert.DeserializeObject<(int, (int, int, int), bool, string, string, int[], MemoryBenchmarkerDemo.MyClass, System.Xml.Formatting)>(xx );
         }
 
         /*

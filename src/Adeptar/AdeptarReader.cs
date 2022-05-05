@@ -63,7 +63,7 @@ namespace Adeptar
                 DeserializableType.List => DeserializeList( text, type ),
                 DeserializableType.Dictionary => DeserializeDictionary( text, type ),
       //          DeserializableType.DimensionalArray => DeserializeDimensionalArray( text, type ),
-           ///     DeserializableType.Tuple => ByCharTuple( text, type ),
+                DeserializableType.Tuple => DeserializeTuple( text, type ),
                 _ => throw new NotImplementedException(),
             };
         }

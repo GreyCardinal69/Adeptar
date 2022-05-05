@@ -593,6 +593,19 @@
             leaving other objects untouched.
             </summary>
         </member>
+        <member name="T:Adeptar.TupleReader">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="M:Adeptar.TupleReader.DeserializeTuple(System.ReadOnlySpan{System.Char},System.Type)">
+             <summary>
+            
+             </summary>
+             <param name="text"></param>
+             <param name="type"></param>
+             <returns></returns>
+        </member>
         <member name="T:Adeptar.TypeGetters">
             <summary>
             A class providing methods for determining object types.
