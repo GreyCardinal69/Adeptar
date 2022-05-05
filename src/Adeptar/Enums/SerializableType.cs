@@ -23,6 +23,8 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
+using System.Collections.Generic;
+
 namespace Adeptar
 {
     /// <summary>

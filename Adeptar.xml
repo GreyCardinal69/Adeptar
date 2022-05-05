@@ -465,12 +465,12 @@
         </member>
         <member name="F:Adeptar.DeserializableType.List">
             <summary>
-            True for objects of type <see cref="!:List&lt;T&gt;"/>.
+            True for objects of type <see cref="T:System.Collections.Generic.List`1"/>.
             </summary>
         </member>
         <member name="F:Adeptar.DeserializableType.Dictionary">
             <summary>
-            True for objects of type <see cref="!:Dictionary&lt;TKey, TValue&gt;"/>.
+            True for objects of type <see cref="T:System.Collections.Generic.Dictionary`2"/>.
             </summary>
         </member>
         <member name="F:Adeptar.DeserializableType.Tuple">
@@ -545,12 +545,12 @@
         </member>
         <member name="F:Adeptar.SerializableType.Array">
             <summary>
-            True for objects of type <see cref="T:System.Array"/>. and <see cref="!:List&lt;T&gt;"/>.
+            True for objects of type <see cref="T:System.Array"/>. and <see cref="T:System.Collections.Generic.List`1"/>.
             </summary>
         </member>
         <member name="F:Adeptar.SerializableType.Dictionary">
             <summary>
-            True for objects of type <see cref="!:Dictionary&lt;TKey, TValue&gt;"/>.
+            True for objects of type <see cref="T:System.Collections.Generic.Dictionary`2"/>.
             </summary>
         </member>
         <member name="F:Adeptar.SerializableType.Tuple">
