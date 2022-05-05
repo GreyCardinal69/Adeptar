@@ -20,7 +20,7 @@ TO DO:
 - DeserializationHelpers
 - DictionaryReader
 - DictionaryWriter
-- TupleReader
+- ~~TupleReader~~
 - TypeGetters
 
 
