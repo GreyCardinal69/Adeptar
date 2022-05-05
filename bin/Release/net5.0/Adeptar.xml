@@ -233,12 +233,12 @@
             <returns>The .NET version of the <see cref="T:System.Collections.Generic.List`1"/>.</returns>
         </member>
         <member name="M:Adeptar.ArrayReader.DeserializeDimensionalArray(System.ReadOnlySpan{System.Char},System.Type)">
-             <summary>
-            
-             </summary>
-             <param name="text"></param>
-             <param name="type"></param>
-             <returns></returns>
+            <summary>
+            Deserializes the Adeptar string of two or more dimensional arrays to a .NET object.
+            </summary>
+            <param name="text">The Adeptar string representation of the object.</param>
+            <param name="type">The type of the dimensional array.</param>
+            <returns>The .NET version of the dimensional array.</returns>
         </member>
         <member name="T:Adeptar.ArrayWriter">
             <summary>

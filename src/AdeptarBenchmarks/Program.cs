@@ -14,13 +14,26 @@ namespace AdeptarBenchmarks
     [MemoryDiagnoser]
     public class Program
     {
+        public class MyClass
+        {
+            public int Number = 1;
+            public int Number2 = 2;
+            public int Number3 = 3;
+            public MyClass2 class2 = new();
+        }
+
+        public class MyClass2
+        {
+            public int[] xe = new int[] { 1, 3, 5, 7, 9 };
+        }
+
         static void Main ( string[] args )
         {
 #if DEBUG
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
 
-            var t = new string[2, 2, 2, 2] { { { { "1", "2" }, { "3", "4" } }, { { "5", "6" }, { "7", "8" } } }, { { { "1", "2" }, { "3", "4" } }, { { "5", "6" }, { "7", "8" } } } };
+            var t = new object();
 
             AdeptarConverter.SerializeWrite( serializePath, t, Adeptar.Formatting.Indented );
             var x = AdeptarConverter.DeserializeString( AdeptarConverter.Serialize( t ), t.GetType() );
@@ -49,24 +62,30 @@ namespace AdeptarBenchmarks
             Enum
         }
 
-        public static object x = new string[2, 2, 2, 2] { { { { "1", "2" }, { "3", "4" } }, { { "5", "6" }, { "7", "8" } } }, { { { "1", "2" }, { "3", "4" } }, { { "5", "6" }, { "7", "8" } } } };
+        [Benchmark]
+        public void ComplexTupleAder ()
+        {
+            AdeptarConverter.Serialize( (1,"hello world", true, new MyClass(), new int[] { 1,3,5,7,9}) );
+        }
 
-        public static string xx = JsonConvert.SerializeObject( x );
-        public static string yy = AdeptarConverter.Serialize( x, Adeptar.Formatting.NoIndentation );
+        [Benchmark]
+        public void ComplexTupleJson ()
+        {
+            JsonConvert.SerializeObject( (1, "hello world", true, new MyClass(), new int[] { 1, 3, 5, 7, 9 }) );
+        }
 
         [Benchmark]
         public void FourDimensionalStringArrayAder ()
         {
-            AdeptarConverter.DeserializeString<string[,,,]>( yy );
+            AdeptarConverter.Serialize( new string[2, 2, 2, 2] { { { { "1", "2" }, { "3", "4" } }, { { "5", "6" }, { "7", "8" } } }, { { { "1", "2" }, { "3", "4" } }, { { "5", "6" }, { "7", "8" } } } } );
         }
 
         [Benchmark]
         public void FourDimensionalStringArrayJson ()
         {
-            JsonConvert.DeserializeObject<string[,,,]>( xx );
+            JsonConvert.SerializeObject( new string[2, 2, 2, 2] { { { { "1", "2" }, { "3", "4" } }, { { "5", "6" }, { "7", "8" } } }, { { { "1", "2" }, { "3", "4" } }, { { "5", "6" }, { "7", "8" } } } } );
         }
 
-        /*
         [Benchmark]
         public void SimpleClassAder ()
         {
@@ -222,6 +241,6 @@ namespace AdeptarBenchmarks
         public void WriteDateTimeJson ()
         {
             JsonConvert.SerializeObject( DateTime.Now );
-        }*/
+        }
     }
 }

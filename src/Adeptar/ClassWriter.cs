@@ -35,7 +35,6 @@ namespace Adeptar
 {
     /// <summary>
     /// Class that handles serialization of class and struct objects.
-    /// Does not handle <see cref="SerializableType.NULL"/> case.
     /// </summary>
     internal class ClassWriter
     {
@@ -75,21 +74,15 @@ namespace Adeptar
                         }
                         break;
                     case SerializableType.Class:
-                        // Checks if the object is not a literal new object(), this caused issues.
-                        if (!string.Equals( item.Name, "Object", System.StringComparison.OrdinalIgnoreCase )){
-                            Write( value, type, ref builder, item.Name, indent, false, true, count == vals.Count - 1 );
-                            // Apply a new line if indentation is enabled.
-                            if (!DoesntUseIndentation){
-                                builder.Append( '\n' );
-                            }
+                        Write( value, type, ref builder, item.Name, indent, false, true, count == vals.Count - 1 );
+                        if (!DoesntUseIndentation){
+                            builder.Append( '\n' );
                         }
                         break;
                     default:
-                        if (type != SerializableType.NULL){
-                            Write( value, type, ref builder, item.Name, indent, false, true, count == vals.Count - 1 );
-                            if (!DoesntUseIndentation){
-                                builder.Append( '\n' );
-                            }
+                        Write( value, type, ref builder, item.Name, indent, false, true, count == vals.Count - 1 );
+                        if (!DoesntUseIndentation){
+                            builder.Append( '\n' );
                         }
                         break;
                 }
