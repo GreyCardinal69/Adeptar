@@ -133,7 +133,8 @@ namespace Adeptar
                 {
                     Write( iterator.Current, FetchType( iterator.Current ),
                         ref builder, null, 0, false, false, count == len - 1 );
-                    builder.Append( ' ' );
+                    if (!DoesntUseIndentation)
+                        builder.Append( ' ' );
                     count++;
                 }
             }

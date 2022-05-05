@@ -233,5 +233,23 @@ namespace Adeptar
         /// <param name="text">The string to resolve.</param>
         /// <returns>The string with first and last quotation marks as well as extra backslashes removed.</returns>
         internal static string StringResolver ( string text ) => text.Substring( 1, text.Length - 2 ).Replace( "\\\"", "\"" );
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="sizes"></param>
+        /// <param name="index"></param>
+        public static void BinaryStyleIndexArrayByRefIncrement ( in List<int> sizes, ref int[] index )
+        {
+            for (int i = sizes.Count - 1; i >= 0; i--)
+            {
+                if (sizes[i] > index[i]){
+                    index[i]++;
+                    return;
+                }else{
+                    index[i] = 0;
+                }
+            }
+        }
     }
 }

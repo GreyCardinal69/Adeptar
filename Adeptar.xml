@@ -391,6 +391,13 @@
             <param name="text">The string to resolve.</param>
             <returns>The string with first and last quotation marks as well as extra backslashes removed.</returns>
         </member>
+        <member name="M:Adeptar.DeserializationHelpers.BinaryStyleIndexArrayByRefIncrement(System.Collections.Generic.List{System.Int32}@,System.Int32[]@)">
+             <summary>
+            
+             </summary>
+             <param name="sizes"></param>
+             <param name="index"></param>
+        </member>
         <member name="T:Adeptar.DictionaryReader">
             <summary>
             Internal class containing method(s) for deserialization of <see cref="T:System.Collections.Generic.Dictionary`2"/>

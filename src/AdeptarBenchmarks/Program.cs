@@ -7,31 +7,13 @@ using System.IO;
 using System.Reflection;
 using FastMember;
 using System.Collections;
+using System.Linq;
 
 namespace AdeptarBenchmarks
 {
     [MemoryDiagnoser]
     public class Program
     {
-        public struct TestStruct
-        {
-            public AssemblyNameFlags y;
-            public string name;
-            public List<float> floaties;
-        }
-
-        public class MyClass
-        {
-            public int Number;
-            public int Number2;
-            public int Number3;
-            public int[] odds;
-            public string[] swords;
-            public Dictionary<int, int> nums;
-            public Dictionary<int, bool[]> numsbools;
-            public TestStruct structy;
-        }
-
         static void Main ( string[] args )
         {
 #if DEBUG
@@ -67,22 +49,10 @@ namespace AdeptarBenchmarks
             Enum
         }
 
-        public static object x;
+        public static object x = new string[2, 2, 2, 2] { { { { "1", "2" }, { "3", "4" } }, { { "5", "6" }, { "7", "8" } } }, { { { "1", "2" }, { "3", "4" } }, { { "5", "6" }, { "7", "8" } } } };
 
         public static string xx = JsonConvert.SerializeObject( x );
         public static string yy = AdeptarConverter.Serialize( x, Adeptar.Formatting.NoIndentation );
-
-        [Benchmark]
-        public void ComplexTupleAder ()
-        {
-            AdeptarConverter.DeserializeString<(int, (int,int,int), bool, string, string, int[], MemoryBenchmarkerDemo.MyClass, System.Xml.Formatting)>( yy );
-        }
-
-        [Benchmark]
-        public void ComplexTupleJson ()
-        {
-            JsonConvert.DeserializeObject<(int, (int, int, int), bool, string, string, int[], MemoryBenchmarkerDemo.MyClass, System.Xml.Formatting)>(xx );
-        }
 
         /*
         [Benchmark]

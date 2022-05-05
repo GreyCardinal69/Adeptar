@@ -352,17 +352,26 @@ namespace Adeptar
                 i++;
             }
 
-            text = text.Slice( j );;
+            text = text.Slice( j );
 
-            Array flat = ( Array ) DeserializeArray( "["+text.ToString(), type.GetElementType().MakeArrayType() );
+            IList flat = ( IList ) DeserializeArray( "["+text.ToString(), type.GetElementType().MakeArrayType() );
 
             Array main = Array.CreateInstance( type.GetElementType(), sizes.ToArray() );
 
             int[] index = new int[sizes.Count];
 
+            for (int e = 0; e < sizes.Count; e++)
+            {
+                sizes[e] = sizes[e] - 1;
+            }
 
+            for (int w = 0; w < flat.Count; w++)
+            {
+                main.SetValue( flat[w], index );
+                BinaryStyleIndexArrayByRefIncrement( in sizes, ref index );
+            }
 
-            return flat;
+            return main;
         }
     }
 }
