@@ -315,12 +315,54 @@ namespace Adeptar
         /// <summary>
         ///
         /// </summary>
-        /// <param name="target"></param>
+        /// <param name="text"></param>
         /// <param name="type"></param>
         /// <returns></returns>
         internal static object DeserializeDimensionalArray( ReadOnlySpan<char> text, Type type )
         {
-            return null;
+            List<int> sizes = new();
+            bool inSizes = false;
+            bool exit = false;
+
+            int i = 0, j = 0;
+
+            foreach (var item in text)
+            {
+                if (exit)
+                    break;
+                switch (item)
+                {
+                    case '<':
+                        inSizes = true;
+                        j = i + 1;
+                        break;
+                    case '>':
+                        if (inSizes){
+                            sizes.Add( ( int ) NumericResolver( typeof( int ), text.Slice( j, i - j ).ToString() ) );
+                            j = i + 1;
+                            inSizes = false;
+                            exit = true;
+                        }
+                        break;
+                    case ',':
+                        sizes.Add( ( int ) NumericResolver( typeof(int), text.Slice( j, i - j ).ToString() ) );
+                        j = i + 1;
+                        break;
+                }
+                i++;
+            }
+
+            text = text.Slice( j );;
+
+            Array flat = ( Array ) DeserializeArray( "["+text.ToString(), type.GetElementType().MakeArrayType() );
+
+            Array main = Array.CreateInstance( type.GetElementType(), sizes.ToArray() );
+
+            int[] index = new int[sizes.Count];
+
+
+
+            return flat;
         }
     }
 }

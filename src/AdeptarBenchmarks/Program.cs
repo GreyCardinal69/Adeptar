@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System.IO;
 using System.Reflection;
 using FastMember;
+using System.Collections;
 
 namespace AdeptarBenchmarks
 {
@@ -37,11 +38,9 @@ namespace AdeptarBenchmarks
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
 
+            var t = new string[2, 2, 2, 2] { { { { "1", "2" }, { "3", "4" } }, { { "5", "6" }, { "7", "8" } } }, { { { "1", "2" }, { "3", "4" } }, { { "5", "6" }, { "7", "8" } } } };
 
-            var t = (1, (1,2,3), true, "string", "oh\"", new int[] { 6, 7, 8, 9 }, new MemoryBenchmarkerDemo.MyClass(), System.Xml.Formatting.Indented);
-
-            AdeptarConverter.SerializeWrite( serializePath, t, Adeptar.Formatting.NoIndentation );
-            Console.WriteLine(JsonConvert.SerializeObject(t));
+            AdeptarConverter.SerializeWrite( serializePath, t, Adeptar.Formatting.Indented );
             var x = AdeptarConverter.DeserializeString( AdeptarConverter.Serialize( t ), t.GetType() );
             AdeptarConverter.SerializeWrite( deserializePath, x );
 #else
@@ -68,7 +67,7 @@ namespace AdeptarBenchmarks
             Enum
         }
 
-        public static object x = (1, (1, 2, 3), true, "string", "oh\"", new int[] { 6, 7, 8, 9 }, new MemoryBenchmarkerDemo.MyClass(), System.Xml.Formatting.Indented);
+        public static object x;
 
         public static string xx = JsonConvert.SerializeObject( x );
         public static string yy = AdeptarConverter.Serialize( x, Adeptar.Formatting.NoIndentation );

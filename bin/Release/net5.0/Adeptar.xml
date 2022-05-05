@@ -236,7 +236,7 @@
              <summary>
             
              </summary>
-             <param name="target"></param>
+             <param name="text"></param>
              <param name="type"></param>
              <returns></returns>
         </member>
@@ -594,17 +594,17 @@
             </summary>
         </member>
         <member name="T:Adeptar.TupleReader">
-             <summary>
-            
-             </summary>
+            <summary>
+            Internal class containing method(s) for deserialization of tuples
+            </summary>
         </member>
         <member name="M:Adeptar.TupleReader.DeserializeTuple(System.ReadOnlySpan{System.Char},System.Type)">
-             <summary>
-            
-             </summary>
-             <param name="text"></param>
-             <param name="type"></param>
-             <returns></returns>
+            <summary>
+            Deserializes the Adeptar string of a tuple to a .NET object.
+            </summary>
+            <param name="text">The Adeptar string representation of the object.</param>
+            <param name="type">The type of the tuple.</param>
+            <returns>The .NET version of the tuple.</returns>
         </member>
         <member name="T:Adeptar.TypeGetters">
             <summary>

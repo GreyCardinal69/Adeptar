@@ -132,7 +132,8 @@ namespace Adeptar
                 for (var iterator = stack.Pop(); iterator.MoveNext();)
                 {
                     Write( iterator.Current, FetchType( iterator.Current ),
-                        ref builder, null, DoesntUseIndentation ? 0 : indent, false, false, count == len - 1 );
+                        ref builder, null, 0, false, false, count == len - 1 );
+                    builder.Append( ' ' );
                     count++;
                 }
             }
