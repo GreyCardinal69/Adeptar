@@ -47,6 +47,9 @@ namespace Adeptar
         /// <returns>The .NET version of the <see cref="Dictionary{TKey, TValue}"/>.</returns>
         internal static IDictionary DeserializeDictionary( ReadOnlySpan<char> text, Type type )
         {
+            if (text.Length == 2)
+                return ( IDictionary ) Activator.CreateInstance( type );
+
             int level = 0;
             int i = 0;
             int j = 0;

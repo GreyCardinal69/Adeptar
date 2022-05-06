@@ -50,6 +50,9 @@ namespace Adeptar
         /// <returns>The .NET version of the <see cref="Array"/>.</returns>
         internal static IList DeserializeArray( ReadOnlySpan<char> text, Type type )
         {
+            if (text.Length == 2)
+                return ( IList ) Array.CreateInstance( type.GetElementType(), 0 );
+
             bool inString = false;
             double length = 0;
             int index = 0;
@@ -222,6 +225,9 @@ namespace Adeptar
         /// <returns>The .NET version of the <see cref="List{T}"/>.</returns>
         internal static IList DeserializeList ( ReadOnlySpan<char> text, Type type )
         {
+            if (text.Length == 2)
+                return ( IList ) Array.CreateInstance( type.GetElementType(), 0 );
+
             bool inString = false;
 
             double firstCase = 0;

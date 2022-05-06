@@ -33,7 +33,7 @@ namespace AdeptarBenchmarks
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
 
-            var t = new object();
+            var t = new Dictionary<int,int>() {};
 
             AdeptarConverter.SerializeWrite( serializePath, t, Adeptar.Formatting.Indented );
             var x = AdeptarConverter.DeserializeString( AdeptarConverter.Serialize( t ), t.GetType() );
