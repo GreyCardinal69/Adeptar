@@ -62,6 +62,7 @@ namespace AdeptarBenchmarks
             Enum
         }
 
+        /*
         [Benchmark]
         public void ComplexTupleAder ()
         {
@@ -241,6 +242,6 @@ namespace AdeptarBenchmarks
         public void WriteDateTimeJson ()
         {
             JsonConvert.SerializeObject( DateTime.Now );
-        }
+        }*/
     }
 }

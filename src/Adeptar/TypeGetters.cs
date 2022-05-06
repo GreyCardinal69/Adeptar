@@ -118,29 +118,6 @@ namespace Adeptar
         }
 
         /// <summary>
-        /// Checks if the provided object is a class or a struct.
-        /// </summary>
-        /// <param name="obj">The provided object.</param>
-        /// <returns>
-        /// True if the object is a class or a struct. Returns false if the object is null.
-        /// </returns>
-        public static bool IsClassStruct ( object obj )
-        {
-            if (obj is null)
-                return false;
-
-            var type = obj.GetType();
-
-            if (type.IsClass || ( type.IsValueType && !type.IsEnum ))
-                return true;
-
-            if (!IsList( obj ) && !IsDictionary( obj ) && ( type != typeof( string ) ))
-                return true;
-
-            return false;
-        }
-
-        /// <summary>
         /// Gets the Type's <see cref="DeserializableType"/>.
         /// </summary>
         /// <param name="fInfo">The Type's field type.</param>
