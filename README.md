@@ -77,6 +77,65 @@ Intel Core i7-10750H CPU 2.60GHz, 1 CPU, 12 logical and 6 physical cores
 |                      ListJsonDeserialize |   857.78 ns |  15.744 ns |  21.018 ns |   856.69 ns |   827.02 ns |   898.00 ns | 0.4473 | 0.0038 |   2,808 B |
 
 
+Some examples:
+
+```cs
+public class ComponentClass
+{  
+	public int ItemType;
+	public int Id;
+	public string Name;
+	public int DisplayCategory;
+	public int Availability;
+	public int ComponentStatsId;
+	public int Faction;
+	public int Level;
+	public string Icon;
+	public string Color;
+	public string Layout;
+	public string CellType;
+	public int WeaponId;
+	public int AmmunitionId { get; set; }
+	public string WeaponSlotType;
+	public int[] PossibleModifications;
+	public Dictionary<int, int> dict;
+}
+```
+
+Is serialized as:
+
+```cs
+{
+        AmmunitionId: 1002,
+        Availability: 4,
+        CellType: "M",
+        Color: "#23444",
+        ComponentStatsId: 999,
+        dict: [
+                1:222,
+                2:333
+        ],
+        DisplayCategory: 3,
+        Faction: 123,
+        Icon: "weapon.png",
+        Id: 1000,
+        ItemType: 4,
+        Layout: "1020340303232311222000",
+        Level: 400,
+        Name: "Some weapon",
+        PossibleModifications: [
+                1,
+                2,
+                3,
+                5
+        ],
+        WeaponId: 1001,
+        WeaponSlotType: "L"
+}
+```
+When reading from a file order of properties or fields doesn't matter.
+When deserializing GCC ignores what would be a field or a property if it doesn't belong to the class or struct.
+
 
 
 
