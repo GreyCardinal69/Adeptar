@@ -8,6 +8,8 @@ A small .NET file extension aimed to be fast and easy to use, aimed for modding 
 
 TO DO:
 - Code optimization.
+- Comment support.
+- More features.
 
 First some benchmarks, both serialization and deserialization.
 
@@ -142,6 +144,7 @@ When deserializing GCC ignores what would be a field or a property if it doesn't
 Index feature is used to serialize multiple objects into one.
 For example in a file like this, there are 3 different objects serialized into one file. Each object that is appended to the file using the ID feature must
 have a unique ID. The ID is used to find the necessary object. A file cant contain two objects with the same ID, if you try to serialize an object with an already existing ID, an exception will be thrown. The ID is taken as a string.
+
 
 ```cs
 ~odd_ints~
