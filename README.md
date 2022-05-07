@@ -131,7 +131,7 @@ Is serialized as:
 }
 ```
 When reading from a file order of properties or fields doesn't matter.
-When deserializing GCC ignores what would be a field or a property if it doesn't belong to the class or struct.
+When deserializing Adeptar ignores what would be a field or a property if it doesn't belong to the class or struct.
 
 ----------------------------------------------------------------
 
