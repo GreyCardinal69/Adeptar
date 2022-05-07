@@ -54,9 +54,6 @@ namespace Adeptar
 
             var target = Activator.CreateInstance( type );
 
-            var accessor = TypeAccessor.Create( type, true );
-            var members = accessor.GetMembers();
-
             bool nested = false;
             bool inString = false;
             bool falseEnd = false;
@@ -97,7 +94,8 @@ namespace Adeptar
                         break;
                     case ',':
                         if (!nested && !inString){
-                            accessor[target, name] = DeserializeObject( members[i].Type, text.Slice( j, w - j ) );
+                            var field = type.GetField( name );
+                            field.SetValue( target, DeserializeObject( field.FieldType, text.Slice( j, w - j )));
                             j = w + 1;
                             i++;
                         }
@@ -128,7 +126,8 @@ namespace Adeptar
                         else if (level - 1 == -1 && !inString){
                             level--;
                             if (w == text.Length - 1){
-                                accessor[target, name] = DeserializeObject( members[i].Type, text.Slice( j, w - j ) );
+                                var field = type.GetField( name );
+                                field.SetValue( target, DeserializeObject( field.FieldType, text.Slice( j, w - j ) ) );
                                 j = w + 1;
                                 i++;
                             }
