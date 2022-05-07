@@ -1,6 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Adeptar;
 using System.Collections.Generic;
+using System;
 
 namespace AdeptarTests
 {
@@ -108,6 +109,126 @@ namespace AdeptarTests
             Assert.AreEqual(
                 AdeptarConverter.Serialize( Formatting.Indented, Formatting.NoIndentation ),
                 @"Indented" );
+        }
+
+        [TestMethod]
+        public void SimpleClassTestDeserialize ()
+        {
+            string text = AdeptarConverter.Serialize( new MyClass(), Formatting.NoIndentation );
+            Assert.AreEqual(
+                text,
+                AdeptarConverter.Serialize(
+                AdeptarConverter.DeserializeString<MyClass>( text ), Formatting.NoIndentation ) );
+        }
+
+        [TestMethod]
+        public void NestedDictionaryTestDeserialize ()
+        {
+            string text = AdeptarConverter.Serialize( new Dictionary<int, int[]> { { 1, new int[] { 1, 2, 3, 4 } }, { 2, new int[] { 3, 4, 5, 6 } } }, Formatting.NoIndentation );
+            Assert.AreEqual(
+                text,
+                AdeptarConverter.Serialize(
+                AdeptarConverter.DeserializeString<Dictionary<int, int[]>>( text ), Formatting.NoIndentation ) );
+        }
+
+        [TestMethod]
+        public void DictionaryTestDeserialize ()
+        {
+            string text = AdeptarConverter.Serialize( new Dictionary<int, int> { { 1, 2 }, { 3, 4 } }, Formatting.NoIndentation );
+            Assert.AreEqual(
+                text,
+                AdeptarConverter.Serialize(
+                AdeptarConverter.DeserializeString<Dictionary<int, int>>( text ), Formatting.NoIndentation ) );
+        }
+
+        [TestMethod]
+        public void FourDimensionalArrayTestDeserialize ()
+        {
+            string text = AdeptarConverter.Serialize( new int[2, 2, 2, 2] { { { { 1, 2 }, { 3, 4 } }, { { 5, 6 }, { 7, 8 } } }, { { { 1, 2 }, { 3, 4 } }, { { 5, 6 }, { 7, 8 } } } }, Formatting.NoIndentation );
+            Assert.AreEqual(
+                text,
+                AdeptarConverter.Serialize(
+                AdeptarConverter.DeserializeString<int[,,,]>( text ), Formatting.NoIndentation ) );
+        }
+
+        [TestMethod]
+        public void NestedListTestDeserialize ()
+        {
+            string text = AdeptarConverter.Serialize( new List<List<int>>() { new List<int>() { 1, 2, 3, 4 }, new List<int>() { 5, 6, 7, 8 } }, Formatting.NoIndentation );
+            Assert.AreEqual(
+                text,
+                AdeptarConverter.Serialize(
+                AdeptarConverter.DeserializeString<List<List<int>>>( text ), Formatting.NoIndentation ) );
+        }
+
+        [TestMethod]
+        public void ArrayTestDeserialize ()
+        {
+            string text = AdeptarConverter.Serialize( new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, }, Formatting.NoIndentation );
+            Assert.AreEqual(
+                text,
+                AdeptarConverter.Serialize(
+                AdeptarConverter.DeserializeString<int[]>( text ), Formatting.NoIndentation ) );
+        }
+
+        [TestMethod]
+        public void ListTestDeserialize ()
+        {
+            string text = AdeptarConverter.Serialize( new List<string>() { "Some", "Random", "Words", "Words" }, Formatting.NoIndentation );
+            Assert.AreEqual(
+                text,
+                AdeptarConverter.Serialize(
+                AdeptarConverter.DeserializeString<List<string>>( text ), Formatting.NoIndentation ) );
+        }
+
+        [TestMethod]
+        public void StringTestDeserialize ()
+        {
+            string text = AdeptarConverter.Serialize( @"hello world", Formatting.NoIndentation );
+            Assert.AreEqual(
+                text,
+                AdeptarConverter.Serialize(
+                AdeptarConverter.DeserializeString<string>( text ), Formatting.NoIndentation ) );
+        }
+
+        [TestMethod]
+        public void LongTestDeserialize ()
+        {
+            string text = AdeptarConverter.Serialize( 12414124124, Formatting.NoIndentation );
+            Assert.AreEqual(
+                text,
+                AdeptarConverter.Serialize(
+                AdeptarConverter.DeserializeString<Int64>( text ), Formatting.NoIndentation ) );
+        }
+
+        [TestMethod]
+        public void BoolTestDeserialize ()
+        {
+            string text = AdeptarConverter.Serialize( true, Formatting.NoIndentation );
+            Assert.AreEqual(
+                text,
+                AdeptarConverter.Serialize(
+                AdeptarConverter.DeserializeString<bool>( text ), Formatting.NoIndentation ) );
+        }
+
+        [TestMethod]
+        public void DoubleTestDeserialize ()
+        {
+            string text = AdeptarConverter.Serialize( 5521355.124, Formatting.NoIndentation );
+            Assert.AreEqual(
+                text,
+                AdeptarConverter.Serialize(
+                AdeptarConverter.DeserializeString<double>( text ), Formatting.NoIndentation ) );
+        }
+
+        [TestMethod]
+        public void EnumTestDeserialize ()
+        {
+            string text = AdeptarConverter.Serialize( Formatting.Indented, Formatting.NoIndentation );
+            Assert.AreEqual(
+                text,
+                AdeptarConverter.Serialize(
+                AdeptarConverter.DeserializeString<Formatting>( text ), Formatting.NoIndentation ) );
         }
     }
 }

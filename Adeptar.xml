@@ -37,21 +37,22 @@
             <returns></returns>
         </member>
         <member name="M:Adeptar.AdeptarConverter.DeserializeAppended``1(System.String,System.String)">
-             <summary>
-            
-             </summary>
-             <typeparam name="T"></typeparam>
-             <param name="path"></param>
-             <param name="id"></param>
-             <returns></returns>
+            <summary>
+            Deserializes an object serialized with the ID feature. Accepts a generic <see cref="!:&lt;T&gt;"/> type.
+            </summary>
+            <typeparam name="T">The generic type to deserialize to.</typeparam>
+            <param name="path">The path to the file where the object is serialized.</param>
+            <param name="id">The id used to serialize the object with.</param>
+            <returns>The deserialized .NET object.</returns>
         </member>
-        <member name="M:Adeptar.AdeptarConverter.DeserializeAppended(System.String,System.Type)">
-             <summary>
-            
-             </summary>
-             <param name="content"></param>
-             <param name="type"></param>
-             <returns></returns>
+        <member name="M:Adeptar.AdeptarConverter.DeserializeAppended(System.String,System.Type,System.String)">
+            <summary>
+            Deserializes an object serialized with the ID feature. Accepts <see cref="T:System.Type"/>.
+            </summary>
+            <param name="path">The path to the file where the object is serialized.</param>
+            <param name="type">The type of the object.</param>
+            <param name="id">The id used to serialize the object with.</param>
+            <returns>The deserialized .NET object.</returns>
         </member>
         <member name="M:Adeptar.AdeptarConverter.SerializeWrite(System.String,System.Object)">
             <summary>

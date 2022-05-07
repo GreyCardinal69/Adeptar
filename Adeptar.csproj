@@ -8,7 +8,7 @@
     <Product>Adeptar .NET</Product>
     <Copyright>Copyright ©Michael Kananov 2021</Copyright>
     <NeutralLanguage>en-GB</NeutralLanguage>
-    <Description>A .NET file extension targeted for modding aimed to be fast and easy to work with, especially manually.</Description>
+    <Description>A small .NET file extension targeted for modding, aimed to be fast and easy to work with, especially manually.</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
