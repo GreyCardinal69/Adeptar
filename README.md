@@ -9,7 +9,7 @@ A small .NET file extension aimed to be fast and easy to use, aimed for modding 
 TO DO:
 - Code optimization.
 
-First some benchmarks:
+First some benchmarks, both serialization and deserialization.
 
 ``` ini
 
