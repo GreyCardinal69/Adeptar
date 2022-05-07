@@ -77,7 +77,7 @@ Intel Core i7-10750H CPU 2.60GHz, 1 CPU, 12 logical and 6 physical cores
 |                      ListJsonDeserialize |   857.78 ns |  15.744 ns |  21.018 ns |   856.69 ns |   827.02 ns |   898.00 ns | 0.4473 | 0.0038 |   2,808 B |
 
 
-Some examples:
+An example:
 
 ```cs
 public class ComponentClass
@@ -142,6 +142,7 @@ When deserializing GCC ignores what would be a field or a property if it doesn't
 Index feature is used to serialize multiple objects into one.
 For example in a file like this, there are 3 different objects serialized into one file. Each object that is appended to the file using the ID feature must
 have a unique ID. The ID is used to find the necessary object. A file cant contain two objects with the same ID, if you try to serialize an object with an already existing ID, an exception will be thrown. The ID is taken as a string.
+
 ```cs
 ~odd_ints~
 [1,3,5,7,9]
