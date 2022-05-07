@@ -24,13 +24,13 @@
 #endregion
 
 using System;
+using System.IO;
+using System.Text;
 
 using static Adeptar.AdeptarWriter;
 using static Adeptar.TypeGetters;
 using static Adeptar.AdeptarReader;
 using static Adeptar.DeserializationHelpers;
-using System.IO;
-using System.Text;
 
 namespace Adeptar
 {
