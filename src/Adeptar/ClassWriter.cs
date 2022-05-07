@@ -66,7 +66,7 @@ namespace Adeptar
                     count++;
                     continue;
                 }
-                Console.WriteLine( type );
+
                 switch (type)
                 {
                     case SerializableType.DateTime:
