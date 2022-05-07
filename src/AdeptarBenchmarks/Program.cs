@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
+using System.Linq;
+using System.IO;
+using System.Reflection;
+
 using BenchmarkDotNet.Attributes;
 using Adeptar;
 using Newtonsoft.Json;
-using System.IO;
-using System.Reflection;
 using FastMember;
-using System.Collections;
-using System.Linq;
 
 namespace AdeptarBenchmarks
 {
@@ -19,8 +20,6 @@ namespace AdeptarBenchmarks
 #if DEBUG
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
-
-            Console.WriteLine(AdeptarConverter.Serialize(new MemoryBenchmarkerDemo.MyClass(), Adeptar.Formatting.NoIndentation));
 #else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
             Console.ReadLine();
@@ -32,20 +31,16 @@ namespace AdeptarBenchmarks
     [MemoryDiagnoser]
     public class MemoryBenchmarkerDemo
     {
-        public class MyClass
+        private class MyClass
         {
-            public int Number = 5;
-            public int Number2 = 5;
-            public int Number3 = 5;
-            public int[] Odds = new int[] { 1, 3, 5, 7, 9 };
-            public Dictionary<int, string> Maps = new()
-            {
-                { 1, "Hello" },
-                { 2, "World" }
-            };
+            public int Number;
+            public int Number2;
+            public int Number3;
+            public int[] Odds;
+            public Dictionary<int, string> Maps;
         }
 
-
+        /*
         [Benchmark]
         public void ClassAdeptar ()
         {
@@ -200,6 +195,163 @@ namespace AdeptarBenchmarks
         public void ListJson ()
         {
             JsonConvert.SerializeObject( new List<string>() { "Some", "Random", "Words", "Words" } );
+        }
+        */
+
+        [Benchmark]
+        public void ClassAdeptarDeserialize ()
+        {
+            AdeptarConverter.DeserializeString<MyClass>( @"{Maps: [1:""Hello"",2:""World""],Number: 5,Number2: 5,Number3: 5,Odds: [1,3,5,7,9]}" );
+        }
+
+        [Benchmark]
+        public void ClassJsonDeserialize ()
+        {
+            JsonConvert.DeserializeObject<MyClass>( @"{""Number"":5,""Number2"":5,""Number3"":5,""Odds"":[1,3,5,7,9],""Maps"":{""1"":""Hello"",""2"":""World""}}" );
+        }
+
+        [Benchmark]
+        public void TupleAdeptarDeserialize ()
+        {
+            AdeptarConverter.DeserializeString<(int,string,MyClass,int[])>( @"(Item1: 1,Item2: ""Hello World"",Item3: {Maps: [1:""Hello"",2:""World""],Number: 5,Number2: 5,Number3: 5,Odds: [1,3,5,7,9]},Item4: [1,2,3,4])" );
+        }
+
+        [Benchmark]
+        public void TupleJsonDeserialize ()
+        {
+            JsonConvert.DeserializeObject<(int, string, MyClass, int[])>( @"{""Item1"":1,""Item2"":""Hello World"",""Item3"":{""Number"":5,""Number2"":5,""Number3"":5,""Odds"":[1,3,5,7,9],""Maps"":{""1"":""Hello"",""2"":""World""}},""Item4"":[1,2,3,4]}" );
+        }
+
+        [Benchmark]
+        public void DictionaryWithArrayKeyAdeptarDeserialize ()
+        {
+            AdeptarConverter.DeserializeString<Dictionary<int,int[]>>( @"[1:[1,2,3,4],2:[3,4,5,6]]" );
+        }
+
+        [Benchmark]
+        public void DictionaryWithArrayKeyJsonDeserialize ()
+        {
+            JsonConvert.DeserializeObject<Dictionary<int, int[]>>( @"{""1"":[1,2,3,4],""2"":[3,4,5,6]}" );
+        }
+
+        [Benchmark]
+        public void DictionaryAdeptarDeserialize ()
+        {
+            AdeptarConverter.DeserializeString<Dictionary<int,int>>( @"[1:2,3:4]" );
+        }
+
+        [Benchmark]
+        public void DictionaryJsonDeserialize ()
+        {
+            JsonConvert.DeserializeObject<Dictionary<int, int>>( @"{""1"":2,""3"":4}" );
+        }
+
+        [Benchmark]
+        public void FourDimensionalArrayAdeptarDeserialize ()
+        {
+            AdeptarConverter.DeserializeString<int[,,,]>( @"[<2,2,2,2>1,2,3,4,5,6,7,8,1,2,3,4,5,6,7,8]" );
+        }
+
+        [Benchmark]
+        public void FourDimensionalArrayJsonDeserialize ()
+        {
+            JsonConvert.DeserializeObject<int[,,,]>( @"[[[[1,2],[3,4]],[[5,6],[7,8]]],[[[1,2],[3,4]],[[5,6],[7,8]]]]" );
+        }
+
+        [Benchmark]
+        public void NestedListAdeptarDeserialize ()
+        {
+            AdeptarConverter.DeserializeString<List<List<int>>>( @"[[1,2,3,4],[5,6,7,8]]" );
+        }
+
+        [Benchmark]
+        public void NestedListJsonDeserialize ()
+        {
+            JsonConvert.DeserializeObject<List<List<int>>>( @"[[1,2,3,4],[5,6,7,8]]" );
+        }
+
+        [Benchmark]
+        public void ArrayAdeptarDeserialize ()
+        {
+            AdeptarConverter.DeserializeString<int[]>( @"[1,2,3,4,5,6,7,8,9]" );
+        }
+
+        [Benchmark]
+        public void ArrayJsonDeserialize ()
+        {
+            JsonConvert.DeserializeObject<int[]>( @"[1,2,3,4,5,6,7,8,9]" );
+        }
+
+        [Benchmark]
+        public void StringAdeptarDeserialize ()
+        {
+            AdeptarConverter.DeserializeString<string>( @"""hello world""" );
+        }
+
+        [Benchmark]
+        public void StringJsonDeserialize ()
+        {
+            JsonConvert.DeserializeObject<string>( @"""hello world""" );
+        }
+
+        [Benchmark]
+        public void LongAdeptarDeserialize ()
+        {
+            AdeptarConverter.DeserializeString<long>( 12414124124.ToString() );
+        }
+
+        [Benchmark]
+        public void LongJsonDeserialize ()
+        {
+            JsonConvert.DeserializeObject<long>( 12414124124.ToString() );
+        }
+
+        [Benchmark]
+        public void BoolAdeptarDeserialize ()
+        {
+            AdeptarConverter.DeserializeString<bool>( "True" );
+        }
+
+        [Benchmark]
+        public void BoolJsonDeserialize ()
+        {
+            JsonConvert.DeserializeObject<bool>( "true" );
+        }
+
+        [Benchmark]
+        public void DoubleAdeptarDeserialize ()
+        {
+            AdeptarConverter.DeserializeString<double>( 5521355.124.ToString() );
+        }
+
+        [Benchmark]
+        public void DoubleJsonDeserialize ()
+        {
+            JsonConvert.DeserializeObject<double>( 5521355.124.ToString() );
+        }
+
+        [Benchmark]
+        public void EnumAdeptarDeserialize ()
+        {
+            AdeptarConverter.DeserializeString<System.Xml.Formatting>( "Indented" );
+        }
+
+        [Benchmark]
+        public void EnumJsonDeserialize ()
+        {
+            JsonConvert.DeserializeObject<System.Xml.Formatting>( "1" );
+        }
+
+        [Benchmark]
+        public void ListAdeptarDeserialize ()
+        {
+            AdeptarConverter.DeserializeString<List<string>>( @"[""Some"",""Random"",""Words"",""Words""]" );
+        }
+
+        [Benchmark]
+        public void ListJsonDeserialize ()
+        {
+            JsonConvert.DeserializeObject<List<string>>( @"[""Some"",""Random"",""Words"",""Words""]" );
         }
     }
 }
