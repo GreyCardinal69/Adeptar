@@ -30,6 +30,8 @@ using static Adeptar.TypeGetters;
 using static Adeptar.AdeptarWriter;
 
 using FastMember;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Adeptar
 {
@@ -58,13 +60,13 @@ namespace Adeptar
             foreach (var item in vals)
             {
                 object value = accessor[target, item.Name];
-                var type = FetchType( value );
+                var type = GetSerializableType( item.Type );
 
                 if (item.IsDefined(_ignoreAttribute)){
                     count++;
                     continue;
                 }
-
+                Console.WriteLine( type );
                 switch (type)
                 {
                     case SerializableType.DateTime:

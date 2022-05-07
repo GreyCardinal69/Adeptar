@@ -622,6 +622,76 @@
             A class providing methods for determining object types.
             </summary>
         </member>
+        <member name="F:Adeptar.TypeGetters.CharType">
+            <summary>
+            Cached type for <see cref="T:System.Char"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.TypeGetters.BoolType">
+            <summary>
+            Cached type for <see cref="T:System.Boolean"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.TypeGetters.DateType">
+            <summary>
+            Cached type for <see cref="T:System.DateTime"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.TypeGetters.DictionaryType">
+            <summary>
+            Cached type for <see cref="T:System.Collections.IDictionary"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.TypeGetters.ListType">
+            <summary>
+            Cached type for <see cref="T:System.Collections.IList"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.TypeGetters.StringType">
+            <summary>
+            Cached type for <see cref="T:System.String"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.TypeGetters.TupleType">
+            <summary>
+            Cached type for <see cref="T:System.ValueTuple"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.TypeGetters.TupleTypeOne">
+            <summary>
+            Cached type for <see cref="T:System.ValueTuple`1"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.TypeGetters.TupleTypeTwo">
+            <summary>
+            Cached type for <see cref="T:System.ValueTuple`2"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.TypeGetters.TupleTypeThree">
+            <summary>
+            Cached type for <see cref="T:System.ValueTuple`3"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.TypeGetters.TupleTypeFour">
+            <summary>
+            Cached type for <see cref="T:System.ValueTuple`4"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.TypeGetters.TupleTypeFive">
+            <summary>
+            Cached type for <see cref="T:System.ValueTuple`5"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.TypeGetters.TupleTypeSix">
+            <summary>
+            Cached type for <see cref="T:System.ValueTuple`6"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.TypeGetters.TupleTypeSeven">
+            <summary>
+            Cached type for <see cref="T:System.ValueTuple`8"/>.
+            </summary>
+        </member>
         <member name="M:Adeptar.TypeGetters.IsList(System.Object)">
             <summary>
             Checks if the provided object is a <see cref="T:System.Collections.Generic.List`1"/>.
@@ -644,7 +714,7 @@
             <summary>
             Checks if an object is of type <see cref="T:System.ValueTuple"/>, such as (<see cref="T:System.Int32"/>, <see cref="T:System.Int32"/>).
             </summary>
-            <param name="tuple">The type to check for.</param>
+            <param name="type">The type to check for.</param>
             <returns>True if the object is a <see cref="T:System.ValueTuple"/>.</returns>
         </member>
         <member name="M:Adeptar.TypeGetters.IsDictionary(System.Object)">
@@ -716,6 +786,13 @@
             The provided object's <see cref="T:Adeptar.SerializableType"/>. Returns <see cref="F:Adeptar.SerializableType.NULL"/> if the
             provided object is null or if its type can't be determined.
             </returns>
+        </member>
+        <member name="M:Adeptar.TypeGetters.GetSerializableType(System.Type)">
+            <summary>
+            Gets the <see cref="T:Adeptar.SerializableType"/> from the provided <see cref="T:System.Type"/>.
+            </summary>
+            <param name="fInfo">The <see cref="T:System.Type"/> to check.</param>
+            <returns>The <see cref="T:Adeptar.SerializableType"/> of the <see cref="T:System.Type"/>.</returns>
         </member>
         <member name="M:Adeptar.TypeGetters.IsNumber(System.Object)">
             <summary>

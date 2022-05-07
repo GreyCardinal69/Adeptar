@@ -9,6 +9,7 @@ using BenchmarkDotNet.Attributes;
 using Adeptar;
 using Newtonsoft.Json;
 using FastMember;
+using System.Linq.Expressions;
 
 namespace AdeptarBenchmarks
 {
@@ -40,7 +41,6 @@ namespace AdeptarBenchmarks
             public Dictionary<int, string> Maps;
         }
 
-        /*
         [Benchmark]
         public void ClassAdeptar ()
         {
@@ -196,7 +196,6 @@ namespace AdeptarBenchmarks
         {
             JsonConvert.SerializeObject( new List<string>() { "Some", "Random", "Words", "Words" } );
         }
-        */
 
         [Benchmark]
         public void ClassAdeptarDeserialize ()

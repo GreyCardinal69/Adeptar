@@ -36,6 +36,76 @@ namespace Adeptar
     public static class TypeGetters
     {
         /// <summary>
+        /// Cached type for <see cref="char"/>.
+        /// </summary>
+        internal static Type CharType = typeof( char );
+
+        /// <summary>
+        /// Cached type for <see cref="bool"/>.
+        /// </summary>
+        internal static Type BoolType = typeof( bool );
+
+        /// <summary>
+        /// Cached type for <see cref="DateTime"/>.
+        /// </summary>
+        internal static Type DateType = typeof( DateTime );
+
+        /// <summary>
+        /// Cached type for <see cref="IDictionary"/>.
+        /// </summary>
+        internal static Type DictionaryType = typeof( Dictionary<,> );
+
+        /// <summary>
+        /// Cached type for <see cref="IList"/>.
+        /// </summary>
+        internal static Type ListType = typeof( List<> );
+
+        /// <summary>
+        /// Cached type for <see cref="string"/>.
+        /// </summary>
+        internal static Type StringType = typeof( string );
+
+        /// <summary>
+        /// Cached type for <see cref="ValueTuple"/>.
+        /// </summary>
+        internal static Type TupleType = typeof( ValueTuple<> );
+
+        /// <summary>
+        /// Cached type for <see cref="ValueTuple{T1}"/>.
+        /// </summary>
+        internal static Type TupleTypeOne = typeof( ValueTuple<,> );
+
+        /// <summary>
+        /// Cached type for <see cref="ValueTuple{T1, T2}"/>.
+        /// </summary>
+        internal static Type TupleTypeTwo = typeof( ValueTuple<,,> );
+
+        /// <summary>
+        /// Cached type for <see cref="ValueTuple{T1, T2, T3}"/>.
+        /// </summary>
+        internal static Type TupleTypeThree = typeof( ValueTuple<,,,> );
+
+        /// <summary>
+        /// Cached type for <see cref="ValueTuple{T1, T2, T3, T4}"/>.
+        /// </summary>
+        internal static Type TupleTypeFour = typeof( ValueTuple<,,,,> );
+
+        /// <summary>
+        /// Cached type for <see cref="ValueTuple{T1, T2, T3, T4, T5}"/>.
+        /// </summary>
+        internal static Type TupleTypeFive = typeof( ValueTuple<,,,,,> );
+
+        /// <summary>
+        /// Cached type for <see cref="ValueTuple{T1, T2, T3, T4, T5, T6}"/>.
+        /// </summary>
+        internal static Type TupleTypeSix = typeof( ValueTuple<,,,,,,> );
+
+        /// <summary>
+        /// Cached type for <see cref="ValueTuple{T1, T2, T3, T4, T5, T6, T7, TRest}"/>.
+        /// </summary>
+        internal static Type TupleTypeSeven = typeof( ValueTuple<,,,,,,,> );
+
+        /// <summary>
         /// Checks if the provided object is a <see cref="List{T}"/>.
         /// </summary>
         /// <param name="obj">The object to check.</param>
@@ -58,28 +128,27 @@ namespace Adeptar
         /// </returns>
         public static bool IsList ( Type type )
         {
-            return type.IsGenericType &&
-                 ( type.GetGenericTypeDefinition() == typeof( List<> ) || type.GetGenericTypeDefinition() == typeof( IList<> ) );
+            return type.IsGenericType && ( type.GetGenericTypeDefinition() == ListType );
         }
 
         /// <summary>
         /// Checks if an object is of type <see cref="ValueTuple"/>, such as (<see cref="int"/>, <see cref="int"/>).
         /// </summary>
-        /// <param name="tuple">The type to check for.</param>
+        /// <param name="type">The type to check for.</param>
         /// <returns>True if the object is a <see cref="ValueTuple"/>.</returns>
-        public static bool IsTuple ( Type tuple )
+        public static bool IsTuple ( Type type )
         {
-            if (!tuple.IsGenericType)
+            if (!type.IsGenericType)
                 return false;
-            var openType = tuple.GetGenericTypeDefinition();
-            return openType == typeof( ValueTuple<> )
-                || openType == typeof( ValueTuple<,> )
-                || openType == typeof( ValueTuple<,,> )
-                || openType == typeof( ValueTuple<,,,> )
-                || openType == typeof( ValueTuple<,,,,> )
-                || openType == typeof( ValueTuple<,,,,,> )
-                || openType == typeof( ValueTuple<,,,,,,> )
-                || openType == typeof( ValueTuple<,,,,,,,> ) && IsTuple( tuple.GetGenericArguments()[7] );
+            var openType = type.GetGenericTypeDefinition();
+            return openType == TupleType
+                || openType == TupleTypeOne
+                || openType == TupleTypeTwo
+                || openType == TupleTypeThree
+                || openType == TupleTypeFour
+                || openType == TupleTypeFive
+                || openType == TupleTypeSix
+                || openType == TupleTypeSeven && IsTuple( type.GetGenericArguments()[7] );
         }
 
         /// <summary>
@@ -104,8 +173,7 @@ namespace Adeptar
         /// </returns>
         public static bool IsDictionary ( Type type )
         {
-            if (type == null) return false;
-            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof( Dictionary<,> );
+            return type.IsGenericType && type.GetGenericTypeDefinition() == DictionaryType;
         }
 
         /// <summary>
@@ -244,6 +312,50 @@ namespace Adeptar
                 return SerializableType.Dictionary;
             if (received.GetType().IsGenericType)
                 return SerializableType.Array;
+
+            return SerializableType.Class;
+        }
+
+        /// <summary>
+        /// Gets the <see cref="SerializableType"/> from the provided <see cref="Type"/>.
+        /// </summary>
+        /// <param name="fInfo">The <see cref="Type"/> to check.</param>
+        /// <returns>The <see cref="SerializableType"/> of the <see cref="Type"/>.</returns>
+        public static SerializableType GetSerializableType ( Type fInfo )
+        {
+            if (TypeGetters.IsNumericType( fInfo )){
+                return SerializableType.Numeric;
+            }
+            if (fInfo == StringType){
+                return SerializableType.String;
+            }
+            if (fInfo == CharType){
+                return SerializableType.Char;
+            }
+            if (fInfo == BoolType){
+                return SerializableType.Boolean;
+            }
+            if (fInfo == DictionaryType){
+                return SerializableType.Dictionary;
+            }
+            if (fInfo == DateType){
+                return SerializableType.DateTime;
+            }
+            if (TypeGetters.IsList( fInfo )){
+                return SerializableType.Array;
+            }
+            if (TypeGetters.IsDictionary( fInfo )){
+                return SerializableType.Dictionary;
+            }
+            if (TypeGetters.IsTuple( fInfo )){
+                return SerializableType.Tuple;
+            }
+            if (fInfo.IsArray){
+                return fInfo.GetArrayRank() > 1 ? SerializableType.DimensionalArray : SerializableType.Array;
+            }
+            if (fInfo.IsEnum){
+                return SerializableType.Enum;
+            }
 
             return SerializableType.Class;
         }
