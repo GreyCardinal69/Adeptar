@@ -79,12 +79,12 @@ namespace Adeptar
         }
 
         /// <summary>
-        ///
+        /// Deserializes an object serialized with the ID feature. Accepts a generic <see cref="{T}"/> type.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="path"></param>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">The generic type to deserialize to.</typeparam>
+        /// <param name="path">The path to the file where the object is serialized.</param>
+        /// <param name="id">The id used to serialize the object with.</param>
+        /// <returns>The deserialized .NET object.</returns>
         public static T DeserializeAppended<T> ( string path, string id )
         {
             ReadOnlySpan<char> text = File.ReadAllText( path );
@@ -147,14 +147,71 @@ namespace Adeptar
         }
 
         /// <summary>
-        ///
+        /// Deserializes an object serialized with the ID feature. Accepts <see cref="Type"/>.
         /// </summary>
-        /// <param name="content"></param>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static object DeserializeAppended ( string content, Type type )
+        /// <param name="path">The path to the file where the object is serialized.</param>
+        /// <param name="type">The type of the object.</param>
+        /// <param name="id">The id used to serialize the object with.</param>
+        /// <returns>The deserialized .NET object.</returns>
+        public static object DeserializeAppended ( string path, Type type, string id )
         {
-            throw new NotImplementedException();
+            ReadOnlySpan<char> text = File.ReadAllText( path );
+            StringBuilder name = new();
+            bool inString = false;
+            bool falseEnd = false;
+            bool inId = false;
+            bool exit = false;
+            int i = 0, j = 0, w = 0;
+
+            foreach (var item in text)
+            {
+                if (exit){
+                    break;
+                }
+                switch (item)
+                {
+                    case '"':
+                        if (falseEnd && inString)
+                            falseEnd = false;
+                        else if (!falseEnd)
+                            inString = !inString;
+                        break;
+                    case '\\':
+                        if (inString)
+                            falseEnd = true;
+                        break;
+                    case '~':
+                        if (!inString){
+                            inId = !inId;
+                            if (inId){
+                                if (i == 0 && j == 0){
+                                    i = w;
+                                }
+                                else if (j != 0){
+                                    i = w;
+                                }else{
+                                    j = w;
+                                }
+                            }else{
+                                if (name.ToString() == id){
+                                    exit = true;
+                                    break;
+                                }else{
+                                    name.Clear();
+                                }
+                            }
+                        }
+                        break;
+                    default:
+                        if (inId){
+                            name.Append( item );
+                        }
+                        break;
+                }
+                w++;
+            }
+
+            return DeserializeObject( type, text.Slice( i + 3 + name.Length, text.Length - 4 - ( 2 * i ) - name.Length ) );
         }
 
         /// <summary>
