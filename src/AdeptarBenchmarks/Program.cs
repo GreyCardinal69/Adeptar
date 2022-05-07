@@ -33,11 +33,12 @@ namespace AdeptarBenchmarks
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
 
-            var t = new Dictionary<int,int>() {};
 
-            AdeptarConverter.SerializeWrite( serializePath, t, Adeptar.Formatting.Indented );
-            var x = AdeptarConverter.DeserializeString( AdeptarConverter.Serialize( t ), t.GetType() );
-            AdeptarConverter.SerializeWrite( deserializePath, x );
+            AdeptarConverter.SerializeRewriteAppended(serializePath, new int[] { 1, 2, 3, 4 }, "hell2", Adeptar.Formatting.NoIndentation );
+
+           // AdeptarConverter.SerializeWrite( serializePath, t, Adeptar.Formatting.Indented );
+           // var x = AdeptarConverter.DeserializeString( AdeptarConverter.Serialize( t ), t.GetType() );
+           // AdeptarConverter.SerializeWrite( deserializePath, x );
 #else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
             Console.ReadLine();

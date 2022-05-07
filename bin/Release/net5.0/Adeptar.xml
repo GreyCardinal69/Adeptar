@@ -670,15 +670,6 @@
             </summary>
             <param name="type">The type to check</param>
         </member>
-        <member name="M:Adeptar.TypeGetters.IsClassStruct(System.Object)">
-            <summary>
-            Checks if the provided object is a class or a struct.
-            </summary>
-            <param name="obj">The provided object.</param>
-            <returns>
-            True if the object is a class or a struct. Returns false if the object is null.
-            </returns>
-        </member>
         <member name="M:Adeptar.TypeGetters.GetDeserializableType(System.Type)">
             <summary>
             Gets the Type's <see cref="T:Adeptar.DeserializableType"/>.

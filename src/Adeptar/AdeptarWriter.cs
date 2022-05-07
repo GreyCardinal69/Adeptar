@@ -64,15 +64,15 @@ namespace Adeptar
         {
             bool simple = false;
 
-            if (mode != SerializationMode.Default){
+            if (mode == SerializationMode.Append){
                 List<string> ids = new();
-                foreach (var line in File.ReadAllLines( path ))
+                foreach (var line in File.ReadLines( path ))
                 {
                     if (line.StartsWith( '~' ) && line.Length > 1){
                         ids.Add( line );
                     }
                 }
-                if (ids.Contains( $"~{id}" ) && mode != SerializationMode.ChangeAppended){
+                if (ids.Contains( $"~{id}" )){
                     throw new AdeptarException( "Can not append the object, an object with the same id already exists." );
                 }
             }
@@ -85,41 +85,87 @@ namespace Adeptar
                     bool noText = File.ReadAllLines( path ).Length < 2;
                     if (simple){
                         File.AppendAllText( path, noText
-                            ? $"~{id}\n" + _result.Append( '\n' ).ToString()
-                            : $"\n~{id}\n" + _result.Append( '\n' ).Append( '~' ).ToString() );
+                            ? $"~{id}~\n" + _result.Append( '\n' ).ToString()
+                            : $"\n~{id}~\n" + _result.Append( '\n' ).ToString() );
                     }else{
                         File.AppendAllText( path, noText
-                            ? $"~{id}\n" + _result.Append( '~' ).ToString()
-                            : $"\n~{id}\n" + _result.Append( '~' ).ToString() );
+                            ? $"~{id}~\n" + _result.ToString()
+                            : $"\n~{id}~\n" + _result.ToString() );
                     }
                     break;
                 case SerializationMode.ChangeAppended:
-                    List<string> Lines = File.ReadAllLines( path ).ToList();
-                    int StartLine = Lines.IndexOf( Lines.Find( x => x == $"~{id}" ) );
-                    int Endline = 0;
-                    for (int i = StartLine; i < Lines.Count; i++)
+                    StringBuilder final = new();
+                    StringBuilder name = new();
+                    bool inString = false;
+                    bool falseEnd = false;
+                    bool inId = false;
+                    bool exit = false;
+                    int i = 0, j = 0, w = 0;
+                    ReadOnlySpan<char> text = File.ReadAllText( path );
+
+                    foreach (var item in text)
                     {
-                        if (Lines[i] == "]~" || Lines[i] == ")~" || Lines[i] == "}~" || Lines[i] == "~"){
-                            Endline = i + 1;
+                        if (exit){
                             break;
                         }
-                    }
-                    StringBuilder endCopy = new();
-                    StringBuilder startCopy = new();
-                    endCopy.Append( '\n' );
-                    for (int i = 0; i < StartLine; i++)
-                    {
-                        startCopy.Append( Lines[i] );
-                        startCopy.Append( '\n' );
-                    }
-                    for (int i = Endline; i < Lines.Count; i++)
-                    {
-                        endCopy.Append( Lines[i] );
-                        if (i != Lines.Count - 1){
-                            endCopy.Append( '\n' );
+                        switch (item)
+                        {
+                            case '"':
+                                if (falseEnd && inString)
+                                    falseEnd = false;
+                                else if (!falseEnd)
+                                    inString = !inString;
+                                break;
+                            case '\\':
+                                if (inString)
+                                    falseEnd = true;
+                                break;
+                            case '~':
+                                if (!inString){
+                                    inId = !inId;
+                                    if (inId){
+                                        if (i == 0 && j == 0){
+                                            i = w;
+                                        }
+                                        else if ( j != 0){
+                                            i = w;
+                                        }else{
+                                            j = w;
+                                        }
+                                    }else{
+                                        if (name.ToString() == id){
+                                            for (int e = 0; e < i; e++)
+                                            {
+                                                final.Append( text[e] );
+                                            }
+                                            final
+                                                .Append( '~' )
+                                                .Append( name )
+                                                .Append( '~' )
+                                                .Append('\n')
+                                                .Append( _result )
+                                                .Append('\n');
+                                            for (int e = text.Length - i; e < text.Length; e++)
+                                            {
+                                                final.Append( text[e] );
+                                            }
+                                            File.WriteAllText( path, final.ToString() );
+                                            exit = true;
+                                            break;
+                                        }else{
+                                            name.Clear();
+                                        }
+                                    }
+                                }
+                                break;
+                            default:
+                                if (inId){
+                                    name.Append( item );
+                                }
+                                break;
                         }
+                        w++;
                     }
-                    File.WriteAllText( path, startCopy.Append( $"~{id}\n" ).Append( _result.Append( '~' ).Append( endCopy ) ).ToString() );
                     break;
                 case SerializationMode.Default:
                     File.WriteAllText( path, _result.ToString() );
