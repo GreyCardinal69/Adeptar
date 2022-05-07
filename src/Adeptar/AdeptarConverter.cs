@@ -30,6 +30,7 @@ using static Adeptar.TypeGetters;
 using static Adeptar.AdeptarReader;
 using static Adeptar.DeserializationHelpers;
 using System.IO;
+using System.Text;
 
 namespace Adeptar
 {
@@ -86,7 +87,63 @@ namespace Adeptar
         /// <returns></returns>
         public static T DeserializeAppended<T> ( string path, string id )
         {
-            throw new NotImplementedException();
+            ReadOnlySpan<char> text = File.ReadAllText( path );
+            StringBuilder name = new();
+            bool inString = false;
+            bool falseEnd = false;
+            bool inId = false;
+            bool exit = false;
+            int i = 0, j = 0, w = 0;
+
+            foreach (var item in text)
+            {
+                if (exit){
+                    break;
+                }
+                switch (item)
+                {
+                    case '"':
+                        if (falseEnd && inString)
+                            falseEnd = false;
+                        else if (!falseEnd)
+                            inString = !inString;
+                        break;
+                    case '\\':
+                        if (inString)
+                            falseEnd = true;
+                        break;
+                    case '~':
+                        if (!inString){
+                            inId = !inId;
+                            if (inId){
+                                if (i == 0 && j == 0){
+                                    i = w;
+                                }
+                                else if (j != 0){
+                                    i = w;
+                                }else{
+                                    j = w;
+                                }
+                            }else{
+                                if (name.ToString() == id){
+                                    exit = true;
+                                    break;
+                                }else{
+                                    name.Clear();
+                                }
+                            }
+                        }
+                        break;
+                    default:
+                        if (inId){
+                            name.Append( item );
+                        }
+                        break;
+                }
+                w++;
+            }
+
+            return ( T ) DeserializeObject( typeof( T ), text.Slice( i + 3 + name.Length, text.Length - 4 - ( 2 * i ) - name.Length ) );
         }
 
         /// <summary>
