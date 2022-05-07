@@ -415,7 +415,7 @@ namespace Adeptar
                     }else{
                         mainBuilder.Append( '(' );
                     }
-                    WriteClassStruct( toSerialize, 1 + indent, ref mainBuilder );
+                    WriteTuple( toSerialize, 1 + indent, ref mainBuilder );
                     if (!DoesntUseIndentation){
                         for (int i = 0; i < indent; i++)
                         {

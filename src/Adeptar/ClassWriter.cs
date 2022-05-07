@@ -32,6 +32,7 @@ using static Adeptar.AdeptarWriter;
 using FastMember;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace Adeptar
 {
@@ -46,14 +47,14 @@ namespace Adeptar
         private static readonly Type _ignoreAttribute = typeof( AdeptarIgnore );
 
         /// <summary>
-        /// Serializes the class or struct object to a .Adeptarstring.
+        /// Serializes the class or struct object to a .Adeptar string.
         /// </summary>
         /// <param name="target">The object to serialize.</param>
         /// <param name="indent">Indentation amount.</param>
         /// <param name="builder"><see cref="StringBuilder"/> instance to append text to.</param>
         internal static void WriteClassStruct ( object target, int indent, ref StringBuilder builder )
         {
-            var accessor = TypeAccessor.Create( target.GetType() );
+            var accessor = TypeAccessor.Create( target.GetType());
             int count = 0;
             MemberSet vals = accessor.GetMembers();
 
@@ -83,6 +84,78 @@ namespace Adeptar
                         break;
                     default:
                         Write( value, type, ref builder, item.Name, indent, false, true, count == vals.Count - 1 );
+                        if (!DoesntUseIndentation){
+                            builder.Append( '\n' );
+                        }
+                        break;
+                }
+                count++;
+            }
+        }
+
+        /// <summary>
+        /// Serializes the value tuple to a .Adeptar string.
+        /// </summary>
+        /// <param name="target">The object to serialize.</param>
+        /// <param name="indent">Indentation amount.</param>
+        /// <param name="builder"><see cref="StringBuilder"/> instance to append text to.</param>
+        internal static void WriteTuple ( object target, int indent, ref StringBuilder builder )
+        {
+            var type = target.GetType();
+            int count = 0;
+
+            FieldInfo[] FieldTypes = type.GetFields( BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly );
+
+            foreach (var param in FieldTypes)
+            {
+                var Type = GetSerializableType( param.FieldType );
+
+                switch (Type)
+                {
+                    case SerializableType.DateTime:
+                        Write( param.GetValue( target ), SerializableType.DateTime, ref builder, param.Name, indent, false, true, count == FieldTypes.Length - 1 );
+                        if (!DoesntUseIndentation){
+                            builder.Append( '\n' );
+                        }
+                        break;
+                    case SerializableType.Class:
+                        Write( param.GetValue( target ), Type, ref builder, param.Name, indent, false, true, count == FieldTypes.Length - 1 );
+                        if (!DoesntUseIndentation){
+                            builder.Append( '\n' );
+                        }
+                        break;
+                    default:
+                        Write( param.GetValue( target ), Type, ref builder, param.Name, indent, false, true, count == FieldTypes.Length - 1 );
+                        if (!DoesntUseIndentation){
+                            builder.Append( '\n' );
+                        }
+                        break;
+                }
+                count++;
+            }
+
+            PropertyInfo[] PropertyTypes = type.GetProperties( BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly );
+
+            foreach (var param in PropertyTypes)
+            {
+                var Type = GetSerializableType( param.PropertyType );
+
+                switch (Type)
+                {
+                    case SerializableType.DateTime:
+                        Write( param.GetValue( target ), SerializableType.DateTime, ref builder, param.Name, indent, false, true, count == PropertyTypes.Length - 1 );
+                        if (!DoesntUseIndentation){
+                            builder.Append( '\n' );
+                        }
+                        break;
+                    case SerializableType.Class:
+                        Write( param.GetValue( target ), Type, ref builder, param.Name, indent, false, true, count == PropertyTypes.Length - 1 );
+                        if (!DoesntUseIndentation){
+                            builder.Append( '\n' );
+                        }
+                        break;
+                    default:
+                        Write( param.GetValue( target ), Type, ref builder, param.Name, indent, false, true, count == PropertyTypes.Length - 1 );
                         if (!DoesntUseIndentation){
                             builder.Append( '\n' );
                         }
