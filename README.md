@@ -136,45 +136,17 @@ Is serialized as:
 When reading from a file order of properties or fields doesn't matter.
 When deserializing GCC ignores what would be a field or a property if it doesn't belong to the class or struct.
 
+----------------------------------------------------------------
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<h1>ID Feature</h1>
+Index feature is used to serialize multiple objects into one.
+For example in a file like this, there are 3 different objects serialized into one file. Each object that is appended to the file using the ID feature must
+have a unique ID. The ID is used to find the necessary object. A file cant contain two objects with the same ID, if you try to serialize an object with an already existing ID, an exception will be thrown. The ID is taken as a string.
+```cs
+~odd_ints~
+[1,3,5,7,9]
+~even_ints~
+[2,4,6,8,10]
+~random~
+[1,45,3,6,8,9,220,9]
+```
