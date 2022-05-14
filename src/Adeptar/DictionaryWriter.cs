@@ -61,7 +61,7 @@ namespace Adeptar
                 for (int i = 0; i < x.Count; i++)
                 {
                     if (IsDictionary( x[i].Item2 )){
-                        Write( x[i].Item1, FetchType( x[i].Item1 ), ref Builder, null, Indent, true, false, true, true );
+                        Write( x[i].Item1, FetchType( x[i].Item1 ), ref Builder, null, Indent, false, true, true );
                         Builder.Append( ':' );
                         if (Indent >= 1){
                             Builder.Append( '[' );
@@ -75,16 +75,16 @@ namespace Adeptar
                     }else{
                         SerializableType RootType = FetchType( x[i].Item2 );
                         if (RootType == SerializableType.Array){
-                            Write( x[i].Item1, FetchType( x[i].Item1 ), ref Builder, null, Indent, true, false, true, true );
+                            Write( x[i].Item1, FetchType( x[i].Item1 ), ref Builder, null, Indent, false, true, true );
                             Builder.Append( ':' );
-                            Write( x[i].Item2, FetchType( x[i].Item2 ), ref Builder, null, Indent, true, false, true );
+                            Write( x[i].Item2, FetchType( x[i].Item2 ), ref Builder, null, Indent, false, true );
                             if (count != x.Count - 1){
                                 Builder.Append( ',' );
                             }
                         }else{
-                            Write( x[i].Item1, FetchType( x[i].Item1 ), ref Builder, null, isIndended ? Indent : 0, true, false, true, true );
+                            Write( x[i].Item1, FetchType( x[i].Item1 ), ref Builder, null, isIndended ? Indent : 0, false, true ,true );
                             Builder.Append( ':' );
-                            Write( x[i].Item2, RootType, ref Builder, null, 0, true, false, count == dict.Count - 1 );
+                            Write( x[i].Item2, RootType, ref Builder, null, 0, false, count == dict.Count - 1 );
                         }
                     }
                     count++;
@@ -93,7 +93,7 @@ namespace Adeptar
                 for (int i = 0; i < x.Count; i++)
                 {
                     if (IsDictionary( x[i].Item2 )){
-                        Write( x[i].Item1, FetchType( x[i].Item1 ), ref Builder, null, Indent, true, false, true, true );
+                        Write( x[i].Item1, FetchType( x[i].Item1 ), ref Builder, null, Indent, false, true, true );
                         Builder.Append( ':' ).Append( '\n' );
                         if (Indent >= 1){
                             for (int w = 0; w < Indent; w++)
@@ -116,17 +116,17 @@ namespace Adeptar
                     }else{
                         SerializableType RootType = FetchType( x[i].Item2 );
                         if (RootType == SerializableType.Array){
-                            Write( x[i].Item1, FetchType( x[i].Item1 ), ref Builder, null, Indent, true, false, true, true );
+                            Write( x[i].Item1, FetchType( x[i].Item1 ), ref Builder, null, Indent, false, true, false );
                             Builder.Append( ':' );
                             Builder.Append( '\n' );
-                            Write( x[i].Item2, FetchType( x[i].Item2 ), ref Builder, null, Indent, true, false, true );
+                            Write( x[i].Item2, FetchType( x[i].Item2 ), ref Builder, null, Indent, false, true );
                             if (count != x.Count - 1){
                                 Builder.Append( ',' );
                             }
                         }else{
-                            Write( x[i].Item1, FetchType( x[i].Item1 ), ref Builder, null, isIndended ? Indent : 0, true, false, true, true );
+                            Write( x[i].Item1, FetchType( x[i].Item1 ), ref Builder, null, isIndended ? Indent : 0, false, true, false );
                             Builder.Append( ':' );
-                            Write( x[i].Item2, RootType, ref Builder, null, 0, true, false, count == dict.Count - 1 );
+                            Write( x[i].Item2, RootType, ref Builder, null, 0, false, count == dict.Count - 1 );
                         }
                         if (isIndended){
                             Builder.Append( '\n' );

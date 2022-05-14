@@ -68,26 +68,10 @@ namespace Adeptar
                     continue;
                 }
 
-                switch (type)
-                {
-                    case SerializableType.DateTime:
-                        Write( value, SerializableType.DateTime, ref builder, item.Name, indent, false, true, count == vals.Count - 1 );
-                        if (!DoesntUseIndentation){
-                            builder.Append( '\n' );
-                        }
-                        break;
-                    case SerializableType.Class:
-                        Write( value, type, ref builder, item.Name, indent, false, true, count == vals.Count - 1 );
-                        if (!DoesntUseIndentation){
-                            builder.Append( '\n' );
-                        }
-                        break;
-                    default:
-                        Write( value, type, ref builder, item.Name, indent, false, true, count == vals.Count - 1 );
-                        if (!DoesntUseIndentation){
-                            builder.Append( '\n' );
-                        }
-                        break;
+                Write( value, type, ref builder, item.Name, indent, true, count == vals.Count - 1, false );
+
+                if (!DoesntUseIndentation){
+                    builder.Append( '\n' );
                 }
                 count++;
             }

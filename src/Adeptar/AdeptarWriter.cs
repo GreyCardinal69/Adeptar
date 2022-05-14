@@ -77,7 +77,7 @@ namespace Adeptar
                 }
             }
 
-            Write( target, type, ref _result, null, 0, false, false, true );
+            Write( target, type, ref _result, null, 0, false, true, false );
 
             switch (mode)
             {
@@ -183,7 +183,7 @@ namespace Adeptar
         /// <returns></returns>
         internal static string Serialize ( object target, SerializableType type )
         {
-            Write( target, type, ref _result, null, 0, false, false, true );
+            Write( target, type, ref _result, null, 0, false, true, false );
             string final = _result.ToString();
             _result.Clear();
             return final;
@@ -197,42 +197,30 @@ namespace Adeptar
         /// <param name="mainBuilder">The <see cref="StringBuilder"/> instance text is appended to.</param>
         /// <param name="name">The name of the field or property of a class.</param>
         /// <param name="indent">The amount of indentation.</param>
-        /// <param name="ignoreSpaceDec">Tells the writer to not append a spcae in certain cases.</param>
         /// <param name="calledByClassWriter">Tells the writer that the function was class from <see cref="ClassWriter"/>.</param>
         /// <param name="last">If true tells the writer to not append a comma.</param>
         /// <param name="addAtSign">True if the object is a complex key of a dictionary.</param>
         internal static void Write ( object toSerialize, SerializableType type, ref StringBuilder mainBuilder,
-                                     string name = null, int indent = 0, bool ignoreSpaceDec = false,
-                                     bool calledByClassWriter = false, bool last = false, bool addAtSign = false )
+                                     string name = null, int indent = 0, bool calledByClassWriter = false, bool last = false, bool addAtSign = false )
         {
-            if (type == SerializableType.NULL)
-                return;
+            if (!DoesntUseIndentation)
+            {
+                for (int i = 0; i < indent; i++)
+                {
+                    mainBuilder.Append( '\t' );
+                }
+            }
 
             switch (type)
             {
                 case SerializableType.Numeric:
-                    if (!DoesntUseIndentation){
-                        for (int i = 0; i < indent; i++)
-                        {
-                            mainBuilder.Append( '\t' );
-                        }
-                    }
                     mainBuilder.Append( name );
                     if (calledByClassWriter){
                         mainBuilder.Append( ": " );
                     }
                     mainBuilder.Append( toSerialize );
-                    if (!last){
-                        mainBuilder.Append( ',' );
-                    }
                     break;
                 case SerializableType.String:
-                    if (!DoesntUseIndentation){
-                        for (int i = 0; i < indent; i++)
-                        {
-                            mainBuilder.Append( '\t' );
-                        }
-                    }
                     if (calledByClassWriter){
                         mainBuilder.Append( name );
                         mainBuilder.Append( ": \"" );
@@ -246,17 +234,8 @@ namespace Adeptar
                         .Replace( "\"", "\\\"")
                         );
                     mainBuilder.Append( '"' );
-                    if (!last){
-                        mainBuilder.Append( ',' );
-                    }
                     break;
                 case SerializableType.Boolean:
-                    if (!DoesntUseIndentation){
-                        for (int i = 0; i < indent; i++)
-                        {
-                            mainBuilder.Append( '\t' );
-                        }
-                    }
                     if (calledByClassWriter){
                         mainBuilder.Append( name );
                         mainBuilder.Append( ": " );
@@ -264,17 +243,8 @@ namespace Adeptar
                         mainBuilder.Append( name );
                     }
                     mainBuilder.Append( toSerialize );
-                    if (!last){
-                        mainBuilder.Append( ',' );
-                    }
                     break;
                 case SerializableType.Char:
-                    if (!DoesntUseIndentation){
-                        for (int i = 0; i < indent; i++)
-                        {
-                            mainBuilder.Append( '\t' );
-                        }
-                    }
                     if (calledByClassWriter){
                         mainBuilder.Append( name );
                         mainBuilder.Append( ": " );
@@ -282,17 +252,8 @@ namespace Adeptar
                         mainBuilder.Append( name );
                     }
                     mainBuilder.Append( '\'' ).Append( toSerialize ).Append( '\'' );
-                    if (!last){
-                        mainBuilder.Append( ',' );
-                    }
                     break;
                 case SerializableType.Class:
-                    if (!DoesntUseIndentation){
-                        for (int i = 0; i < indent; i++)
-                        {
-                            mainBuilder.Append( '\t' );
-                        }
-                    }
                     if (calledByClassWriter){
                         mainBuilder.Append( name );
                         mainBuilder.Append( ": " );
@@ -311,17 +272,8 @@ namespace Adeptar
                         }
                     }
                     mainBuilder.Append( '}' );
-                    if (!last){
-                        mainBuilder.Append( ',' );
-                    }
                     break;
                 case SerializableType.Array:
-                    if (!DoesntUseIndentation){
-                        for (int i = 0; i < indent; i++)
-                        {
-                            mainBuilder.Append( '\t' );
-                        }
-                    }
                     if (calledByClassWriter){
                         mainBuilder.Append( name );
                         mainBuilder.Append( ": " );
@@ -341,7 +293,7 @@ namespace Adeptar
                                 WriteArray( toSerialize, 1 + indent, ref mainBuilder );
                                 break;
                             }
-                            Write( item, FetchType( item ), ref mainBuilder, null, indent + 1, false, false, ( final == !enumerator.MoveNext() ) );
+                            Write( item, FetchType( item ), ref mainBuilder, null, indent + 1, false, ( final == !enumerator.MoveNext() ), false );
                             if (!DoesntUseIndentation){
                                 mainBuilder.Append( '\n' );
                             }
@@ -354,17 +306,8 @@ namespace Adeptar
                         }
                     }
                     mainBuilder.Append( ']' );
-                    if (!last){
-                        mainBuilder.Append( ',' );
-                    }
                     break;
                 case SerializableType.Dictionary:
-                    if (!DoesntUseIndentation){
-                        for (int i = 0; i < indent; i++)
-                        {
-                            mainBuilder.Append( '\t' );
-                        }
-                    }
                     if (calledByClassWriter){
                         mainBuilder.Append( name );
                         mainBuilder.Append( ": " );
@@ -393,17 +336,8 @@ namespace Adeptar
                         }
                     }
                     mainBuilder.Append( ']' );
-                    if (!last){
-                        mainBuilder.Append( ',' );
-                    }
                     break;
                 case SerializableType.Tuple:
-                    if (!DoesntUseIndentation){
-                        for (int i = 0; i < indent; i++)
-                        {
-                            mainBuilder.Append( '\t' );
-                        }
-                    }
                     if (calledByClassWriter){
                         mainBuilder.Append( name );
                         mainBuilder.Append( ": " );
@@ -423,34 +357,16 @@ namespace Adeptar
                         }
                     }
                     mainBuilder.Append( ')' );
-                    if (!last){
-                        mainBuilder.Append( ',' );
-                    }
                     break;
                 case SerializableType.Enum:
-                    if (!DoesntUseIndentation){
-                        for (int i = 0; i < indent; i++)
-                        {
-                            mainBuilder.Append( '\t' );
-                        }
-                    }
                     mainBuilder.Append( name );
                     if (calledByClassWriter){
                         mainBuilder.Append( ": " );
                     }
                     mainBuilder.Append( toSerialize );
-                    if (!last){
-                        mainBuilder.Append( ',' );
-                    }
                     break;
                 case SerializableType.DateTime:
-                    if (!DoesntUseIndentation){
-                        for (int i = 0; i < indent; i++)
-                        {
-                            mainBuilder.Append( '\t' );
-                        }
-                    }
-                    if (!ignoreSpaceDec && !calledByClassWriter){
+                    if (!calledByClassWriter){
                         mainBuilder.Append( name );
                         mainBuilder.Append( '"' );
                     }
@@ -464,17 +380,8 @@ namespace Adeptar
                         ? offset.UtcDateTime
                         : DateTime.SpecifyKind( ( DateTime ) toSerialize, DateTimeKind.Utc ) );
                     mainBuilder.Append( '"' );
-                    if (!last){
-                        mainBuilder.Append( ',' );
-                    }
                     break;
                 case SerializableType.DimensionalArray:
-                    if (!DoesntUseIndentation){
-                        for (int i = 0; i < indent; i++)
-                        {
-                            mainBuilder.Append( '\t' );
-                        }
-                    }
                     if (calledByClassWriter){
                         mainBuilder.Append( name );
                         mainBuilder.Append( ": " );
@@ -491,6 +398,10 @@ namespace Adeptar
                     }
                     mainBuilder.Append( ']' );
                     break;
+            }
+
+            if (!last){
+                mainBuilder.Append( ',' );
             }
         }
     }

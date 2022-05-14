@@ -32,6 +32,7 @@ namespace Adeptar
     /// </summary>
     public enum SerializableType
     {
+        Simple,
         /// <summary>
         /// True for objects of type numeric.
         /// </summary>

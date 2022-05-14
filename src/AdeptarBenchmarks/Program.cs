@@ -16,19 +16,21 @@ namespace AdeptarBenchmarks
     [MemoryDiagnoser]
     public class Program
     {
-        private class MyClass
+        static bool IsSimple ( Type type )
         {
-            public int Number;
-            public int Number2;
-            public int Number3;
-            public int[] Odds;
-            public Dictionary<int, string> Maps;
+            return type.IsPrimitive
+              || type.IsEnum
+              || type.Equals( typeof( string ) )
+              || type.Equals( typeof( decimal ) );
         }
+
         static void Main ( string[] args )
         {
 #if DEBUG
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
+
+            AdeptarConverter.SerializeWrite( serializePath, new List<List<int>>() { new List<int>() { 1, 2, 3, 4 }, new List<int>() { 5, 6, 7, 8 } } );
 #else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
             Console.ReadLine();
@@ -40,14 +42,17 @@ namespace AdeptarBenchmarks
     [MemoryDiagnoser]
     public class MemoryBenchmarkerDemo
     {
-        private class MyClass
+        public class MyClass
         {
             public int Number;
             public int Number2;
             public int Number3;
             public int[] Odds;
             public Dictionary<int, string> Maps;
+            public DateTime date = DateTime.Now;
         }
+
+        public static MemberSet mems = TypeAccessor.Create( typeof( MyClass ) ).GetMembers();
 
         [Benchmark]
         public void ClassAdeptar ()
@@ -60,7 +65,7 @@ namespace AdeptarBenchmarks
         {
             JsonConvert.SerializeObject( new MyClass() );
         }
-
+        /*
         [Benchmark]
         public void TupleAdeptar ()
         {
@@ -359,6 +364,6 @@ namespace AdeptarBenchmarks
         public void ListJsonDeserialize ()
         {
             JsonConvert.DeserializeObject<List<string>>( @"[""Some"",""Random"",""Words"",""Words""]" );
-        }
+        }*/
     }
 }

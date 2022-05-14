@@ -62,7 +62,7 @@ namespace Adeptar
                             builder.Append( ',' );
                         }
                     }else{
-                        Write( tempList[i], FetchType( tempList[i] ), ref builder, null, isIntended ? indent - 1 : indent, false, false, count == tempList.Count - 1 );
+                        Write( tempList[i], FetchType( tempList[i] ), ref builder, null, isIntended ? indent - 1 : indent, false, count == tempList.Count - 1 , false );
                     }
                     count++;
                 }
@@ -91,7 +91,7 @@ namespace Adeptar
                         }
                         builder.Append( '\n' );
                     }else{
-                        Write( tempList[i], FetchType( tempList[i] ), ref builder, null, isIntended ? indent - 1 : indent, false, false, count == tempList.Count - 1 );
+                        Write( tempList[i], FetchType( tempList[i] ), ref builder, null, isIntended ? indent - 1 : indent, false, count == tempList.Count - 1, false );
                         builder.Append( '\n' );
                     }
                     count++;
@@ -132,7 +132,7 @@ namespace Adeptar
                 for (var iterator = stack.Pop(); iterator.MoveNext();)
                 {
                     Write( iterator.Current, FetchType( iterator.Current ),
-                        ref builder, null, 0, false, false, count == len - 1 );
+                        ref builder, null, 0, false, count == len - 1, false );
                     if (!DoesntUseIndentation)
                         builder.Append( ' ' );
                     count++;
