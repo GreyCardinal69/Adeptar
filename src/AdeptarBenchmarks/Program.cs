@@ -25,10 +25,29 @@ namespace AdeptarBenchmarks
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
 
+            MemoryBenchmarkerDemo.MyClass x = new()
+            {
+                Number = 1234,
+                Number2 = 14299,
+                Number3 = 10000023,
+                date = DateTime.Now,
+                Maps = new()
+                {
+                    { 1, "Hello" },
+                    { 2, "World!" }
+                },
+                Odds = new int[] { 1, 2, 5, 7, 9 }
+            };
 
-            AdeptarDynamic x = AdeptarDynamic.FromFile(serializePath);
+            AdeptarConverter.SerializeWrite( serializePath, x );
 
+            AdeptarDynamic dynam = AdeptarDynamic.FromString(File.ReadAllText(serializePath));
 
+            foreach (var item in dynam.KeyMaps)
+            {
+                Console.WriteLine(item.Key + " ____ " + item.Value);
+                Console.WriteLine("=============================");
+            }
 
 
 

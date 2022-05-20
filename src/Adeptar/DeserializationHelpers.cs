@@ -115,7 +115,7 @@ namespace Adeptar
         /// </summary>
         /// <param name="str">The .Adeptar string to clean.</param>
         /// <returns>The .Adeptar string with all the indentation removed.</returns>
-        public static string CleanText ( string str )
+        public static ReadOnlySpan<char> CleanText ( string str )
         {
             StringBuilder sb = new();
 

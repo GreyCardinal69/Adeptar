@@ -121,6 +121,11 @@
             
              </summary>
         </member>
+        <member name="P:Adeptar.AdeptarDynamic.KeyMaps">
+             <summary>
+            
+             </summary>
+        </member>
         <member name="F:Adeptar.AdeptarDynamic._textLength">
              <summary>
             
@@ -163,6 +168,13 @@
              <param name="path"></param>
              <returns></returns>
         </member>
+        <member name="M:Adeptar.AdeptarDynamic.FromString(System.String)">
+             <summary>
+            
+             </summary>
+             <param name="str"></param>
+             <returns></returns>
+        </member>
         <member name="T:Adeptar.AdeptarDynamicExtensions">
              <summary>
             
@@ -181,6 +193,19 @@
              </summary>
              <param name="dynm"></param>
              <param name="str"></param>
+        </member>
+        <member name="M:Adeptar.AdeptarDynamicExtensions.Clear(Adeptar.AdeptarDynamic)">
+             <summary>
+            
+             </summary>
+             <param name="dynm"></param>
+        </member>
+        <member name="M:Adeptar.AdeptarDynamicExtensions.Merge(Adeptar.AdeptarMap)">
+             <summary>
+            
+             </summary>
+             <param name="target"></param>
+             <returns></returns>
         </member>
         <member name="T:Adeptar.AdeptarException">
             <summary>
@@ -239,6 +264,13 @@
              <param name="dynamics"></param>
              <param name="types"></param>
              <param name="keys"></param>
+        </member>
+        <member name="M:Adeptar.AdeptarMap.FromType(System.Type)">
+             <summary>
+            
+             </summary>
+             <param name="type"></param>
+             <returns></returns>
         </member>
         <member name="T:Adeptar.AdeptarReader">
             <summary>
