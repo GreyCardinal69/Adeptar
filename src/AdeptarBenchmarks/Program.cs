@@ -4,40 +4,25 @@ using System.Collections;
 using System.Linq;
 using System.IO;
 using System.Reflection;
+using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 
 using BenchmarkDotNet.Attributes;
 using Adeptar;
 using Newtonsoft.Json;
 using FastMember;
-using System.Linq.Expressions;
 using static Adeptar.TypeGetters;
-using System.Runtime.CompilerServices;
 
 namespace AdeptarBenchmarks
 {
     [MemoryDiagnoser]
     public class Program
     {
-        public class MyClass
-        {
-            public int Number3;
-            public int[] Odds;
-            public Dictionary<int, string> Maps;
-            public DateTime date;
-        }
-
         static void Main ( string[] args )
         {
 #if DEBUG
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
-
-            AdeptarDynamic dynam = AdeptarDynamic.FromString(File.ReadAllText(serializePath));
-
-            var val = dynam.Deserialize<Program.MyClass>();
-
-            AdeptarConverter.SerializeWrite( deserializePath, val );
-
 #else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
             Console.ReadLine();
@@ -51,6 +36,7 @@ namespace AdeptarBenchmarks
     {
         public class MyClass
         {
+            [AdeptarIgnore]
             public int Number2;
             public int Number3;
             public int[] Odds;
@@ -58,21 +44,8 @@ namespace AdeptarBenchmarks
             public DateTime date = DateTime.Now;
         }
 
-        public static string x = File.ReadAllText( @"C:\Users\thewa\source\repos\C#\Adeptar\src\AdeptarBenchmarks\bin\Debug\net5.0\seri.ader" );
-
-        public static MemberSet set = TypeAccessor.Create( typeof( MyClass ) ).GetMembers();
-
-        [Benchmark]
-        public void yets ()
-        {
-            foreach (var item in set)
-            {
-                bool x = item.Name == "test";
-            }
-        }
-
          /*
-        [Benchmark]
+       [Benchmark]
        public void ClassAdeptar ()
        {
            AdeptarConverter.Serialize( x);

@@ -30,6 +30,7 @@ using System.Text;
 
 using static Adeptar.AdeptarReader;
 using static Adeptar.DeserializationHelpers;
+using static Adeptar.ClassReader;
 
 namespace Adeptar
 {
@@ -41,9 +42,9 @@ namespace Adeptar
     public class AdeptarDynamic
     {
         /// <summary>
-        /// A private constructor for <see cref="AdeptarDynamic"/>.
+        /// Creates a new instance of <see cref="AdeptarDynamic"/> with no mappings.
         /// </summary>
-        private AdeptarDynamic ()
+        public AdeptarDynamic ()
         {
             _keyMaps = new();
         }
@@ -75,6 +76,11 @@ namespace Adeptar
                 return len;
             }
         }
+
+        /// <summary>
+        /// Clears the <see cref="AdeptarDynamic"/> object's key and value maps.
+        /// </summary>
+        public void Clear () => _keyMaps.Clear();
 
         /// <summary>
         /// Checks if the <see cref="AdeptarDynamic"/> object contains the field/property with the given name.
@@ -160,14 +166,33 @@ namespace Adeptar
         }
 
         /// <summary>
-        ///
+        /// Deserializes the <see cref="AdeptarDynamic"/> object to a .Net object.
+        /// Accepts a <see cref="Dictionary{TKey, TValue}"/> map for field/property mapping.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="map"></param>
-        /// <returns></returns>
-        public dynamic DeserializeWithMap<T>( AdeptarMap map )
+        /// <typeparam name="T">The type of the struct to deserialize to.</typeparam>
+        /// <returns>
+        /// The deserialized .Net object.
+        /// </returns>
+        public T DeserializeWithMap<T>( Dictionary<string, string> map )
         {
-            return null;
+            StringBuilder str = new( _textLength );
+            int i = 0;
+
+            str.Append( '{' );
+            foreach (var value in _keyMaps)
+            {
+                str.Append( value.Key );
+                str.Append( ':' );
+                str.Append( CleanText( value.Value ) );
+                if (i != _keyMaps.Count - 1)
+                {
+                    str.Append( ',' );
+                    i++;
+                }
+            }
+            str.Append( '}' );
+
+            return ( T ) DeserializeClassStructWithMap( str.ToString(), typeof( T ), map );
         }
 
         /// <summary>

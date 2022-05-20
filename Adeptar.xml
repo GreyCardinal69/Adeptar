@@ -107,28 +107,37 @@
             <param name="formatting">The formatting style.</param>
         </member>
         <member name="T:Adeptar.AdeptarDynamic">
-             <summary>
-            
-             </summary>
+            <summary>
+            A class for deserializing .Adeptar objects without knowing their types at first.
+            Such as when multiple different .Adeptar objects are serialized in the the same directory.
+            Allows to deserialize them all, then later determine which object belongs to which .NET type.
+            </summary>
         </member>
         <member name="M:Adeptar.AdeptarDynamic.#ctor">
-             <summary>
-            
-             </summary>
+            <summary>
+            Creates a new instance of <see cref="T:Adeptar.AdeptarDynamic"/> with no mappings.
+            </summary>
         </member>
         <member name="F:Adeptar.AdeptarDynamic._keyMaps">
-             <summary>
-            
-             </summary>
+            <summary>
+            A private field of a <see cref="T:System.Collections.Generic.Dictionary`2"/>. Keys are the
+            property/field names, and the values are their .Adeptar strings.
+            </summary>
         </member>
         <member name="P:Adeptar.AdeptarDynamic.KeyMaps">
-             <summary>
-            
-             </summary>
+            <summary>
+            Fetches the <see cref="T:System.Collections.Generic.Dictionary`2"/> where the keys are the
+            property/field names, and the values are their .Adeptar strings.
+            </summary>
         </member>
         <member name="P:Adeptar.AdeptarDynamic._textLength">
             <summary>
             A property that gets the total string length of all the key and values of the cleaned .Adeptar string.
+            </summary>
+        </member>
+        <member name="M:Adeptar.AdeptarDynamic.Clear">
+            <summary>
+            Clears the <see cref="T:Adeptar.AdeptarDynamic"/> object's key and value maps.
             </summary>
         </member>
         <member name="M:Adeptar.AdeptarDynamic.ContainsKey(System.String)">
@@ -150,19 +159,34 @@
             </returns>
         </member>
         <member name="M:Adeptar.AdeptarDynamic.Deserialize``1">
-             <summary>
-            
-             </summary>
-             <typeparam name="T"></typeparam>
-             <returns></returns>
+            <summary>
+            Deserializes the <see cref="T:Adeptar.AdeptarDynamic"/> object to a .Net object.
+            The type constraint is a class.
+            </summary>
+            <typeparam name="T">The type of the class to deserialize to.</typeparam>
+            <returns>
+            The deserialized .Net object.
+            </returns>
         </member>
-        <member name="M:Adeptar.AdeptarDynamic.DeserializeWithMap``1(Adeptar.AdeptarMap)">
-             <summary>
-            
-             </summary>
-             <typeparam name="T"></typeparam>
-             <param name="map"></param>
-             <returns></returns>
+        <member name="M:Adeptar.AdeptarDynamic.Deserialize``1(System.Object)">
+            <summary>
+            Deserializes the <see cref="T:Adeptar.AdeptarDynamic"/> object to a .Net object.
+            The type constraint is a struct.
+            </summary>
+            <typeparam name="T">The type of the struct to deserialize to.</typeparam>
+            <returns>
+            The deserialized .Net object.
+            </returns>
+        </member>
+        <member name="M:Adeptar.AdeptarDynamic.DeserializeWithMap``1(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Deserializes the <see cref="T:Adeptar.AdeptarDynamic"/> object to a .Net object.
+            Accepts a <see cref="T:System.Collections.Generic.Dictionary`2"/> map for field/property mapping.
+            </summary>
+            <typeparam name="T">The type of the struct to deserialize to.</typeparam>
+            <returns>
+            The deserialized .Net object.
+            </returns>
         </member>
         <member name="M:Adeptar.AdeptarDynamic.FromFile(System.String)">
             <summary>
@@ -184,36 +208,24 @@
             </returns>
         </member>
         <member name="T:Adeptar.AdeptarDynamicExtensions">
-             <summary>
-            
-             </summary>
+            <summary>
+            Provides extension methods for <see cref="T:Adeptar.AdeptarDynamic"/> and <see cref="!:AdeptarMap"/> objects.
+            </summary>
         </member>
         <member name="M:Adeptar.AdeptarDynamicExtensions.FromFile(Adeptar.AdeptarDynamic,System.String)">
-             <summary>
-            
-             </summary>
-             <param name="dynm"></param>
-             <param name="path"></param>
+            <summary>
+            Creates a <see cref="T:Adeptar.AdeptarDynamic"/> object from a file that contains
+            a .Adeptar object.
+            </summary>
+            <param name="dynm"></param>
+            <param name="path"></param>
         </member>
         <member name="M:Adeptar.AdeptarDynamicExtensions.FromString(Adeptar.AdeptarDynamic,System.String)">
-             <summary>
-            
-             </summary>
-             <param name="dynm"></param>
-             <param name="str"></param>
-        </member>
-        <member name="M:Adeptar.AdeptarDynamicExtensions.Clear(Adeptar.AdeptarDynamic)">
-             <summary>
-            
-             </summary>
-             <param name="dynm"></param>
-        </member>
-        <member name="M:Adeptar.AdeptarDynamicExtensions.Merge(Adeptar.AdeptarMap)">
-             <summary>
-            
-             </summary>
-             <param name="target"></param>
-             <returns></returns>
+            <summary>
+            Creates a <see cref="T:Adeptar.AdeptarDynamic"/> object from the .Adeptar string.
+            </summary>
+            <param name="dynm"></param>
+            <param name="str"></param>
         </member>
         <member name="T:Adeptar.AdeptarException">
             <summary>
@@ -259,26 +271,6 @@
             <summary>
             Instructs the <see cref="T:Adeptar.AdeptarWriter"/> to not serialize the property or field.
             </summary>
-        </member>
-        <member name="T:Adeptar.AdeptarMap">
-             <summary>
-            
-             </summary>
-        </member>
-        <member name="M:Adeptar.AdeptarMap.#ctor(Adeptar.DynamicType[],System.Type[],System.String[])">
-             <summary>
-            
-             </summary>
-             <param name="dynamics"></param>
-             <param name="types"></param>
-             <param name="keys"></param>
-        </member>
-        <member name="M:Adeptar.AdeptarMap.FromType(System.Type)">
-             <summary>
-            
-             </summary>
-             <param name="type"></param>
-             <returns></returns>
         </member>
         <member name="T:Adeptar.AdeptarReader">
             <summary>
@@ -402,6 +394,16 @@
             </summary>
             <param name="text">The Adeptar string representation of the object.</param>
             <param name="type">The type of the class or struct.</param>
+            <returns>The .NET version of the class or struct.</returns>
+        </member>
+        <member name="M:Adeptar.ClassReader.DeserializeClassStructWithMap(System.ReadOnlySpan{System.Char},System.Type,System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Deserializes the Adeptar string of a class or a struct to a .NET object. Accepts a <see cref="T:System.Collections.Generic.Dictionary`2"/> map
+            that is used for name mapping.
+            </summary>
+            <param name="text">The Adeptar string representation of the object.</param>
+            <param name="type">The type of the class or struct.</param>
+            <param name="map">The map to use for names.</param>
             <returns>The .NET version of the class or struct.</returns>
         </member>
         <member name="T:Adeptar.ClassWriter">
@@ -567,21 +569,6 @@
             <param name="Dict">The received <see cref="T:System.Collections.Generic.Dictionary`2"/></param>
             <param name="Indent">The indentation amount.</param>
             <param name="MainBuilder">The main instance of a <see cref="T:System.Text.StringBuilder"/> to append to.</param>
-        </member>
-        <member name="T:Adeptar.DynamicType">
-             <summary>
-            
-             </summary>
-        </member>
-        <member name="F:Adeptar.DynamicType.FieldType">
-             <summary>
-            
-             </summary>
-        </member>
-        <member name="F:Adeptar.DynamicType.PropertyType">
-             <summary>
-            
-             </summary>
         </member>
         <member name="T:Adeptar.DeserializableType">
             <summary>
