@@ -25,7 +25,16 @@ namespace AdeptarBenchmarks
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
 
-            AdeptarConverter.SerializeWrite( serializePath, new MemoryBenchmarkerDemo.MyClass() { Number = 1, Number2 = 2, Number3 = 4, date = DateTime.Now, Maps = new(), Odds = new int[] { 1,4,5} } );
+
+            AdeptarDynamic x = AdeptarDynamic.FromFile(serializePath);
+
+
+
+
+
+
+
+
 #else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
             Console.ReadLine();
