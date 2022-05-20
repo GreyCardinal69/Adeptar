@@ -3,7 +3,6 @@ A small .NET file extension aimed to be fast and easy to use, aimed for modding 
 
 TO DO:
 - Code optimization.
-- Comment support.
 - More features.
 
 First some benchmarks, both serialization and deserialization.
