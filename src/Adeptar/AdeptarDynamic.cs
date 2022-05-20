@@ -26,9 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 using static Adeptar.AdeptarReader;
 using static Adeptar.DeserializationHelpers;
@@ -36,12 +34,14 @@ using static Adeptar.DeserializationHelpers;
 namespace Adeptar
 {
     /// <summary>
-    ///
+    /// A class for deserializing .Adeptar objects without knowing their types at first.
+    /// Such as when multiple different .Adeptar objects are serialized in the the same directory.
+    /// Allows to deserialize them all, then later determine which object belongs to which .NET type.
     /// </summary>
     public class AdeptarDynamic
     {
         /// <summary>
-        ///
+        /// A private constructor for <see cref="AdeptarDynamic"/>.
         /// </summary>
         private AdeptarDynamic ()
         {
@@ -49,12 +49,14 @@ namespace Adeptar
         }
 
         /// <summary>
-        ///
+        /// A private field of a <see cref="Dictionary{TKey, TValue}"/>. Keys are the
+        /// property/field names, and the values are their .Adeptar strings.
         /// </summary>
         private Dictionary<string, string> _keyMaps;
 
         /// <summary>
-        ///
+        /// Fetches the <see cref="Dictionary{TKey, TValue}"/> where the keys are the
+        /// property/field names, and the values are their .Adeptar strings.
         /// </summary>
         public Dictionary<string, string> KeyMaps => _keyMaps;
 
@@ -73,8 +75,6 @@ namespace Adeptar
                 return len;
             }
         }
-
-        private bool _isClass;
 
         /// <summary>
         /// Checks if the <see cref="AdeptarDynamic"/> object contains the field/property with the given name.
@@ -102,40 +102,59 @@ namespace Adeptar
         }
 
         /// <summary>
-        ///
+        /// Deserializes the <see cref="AdeptarDynamic"/> object to a .Net object.
+        /// The type constraint is a class.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
+        /// <typeparam name="T">The type of the class to deserialize to.</typeparam>
+        /// <returns>
+        /// The deserialized .Net object.
+        /// </returns>
         public T Deserialize<T> () where T : class
         {
             StringBuilder str = new( _textLength );
+            int i = 0;
 
-            if (_isClass)
+            str.Append( '{' );
+            foreach (var value in _keyMaps)
             {
-                str.Append( '{' );
-            }
-
-            for (int i = 0; i < _keyMaps.Count; i++)
-            {
-                var value = KeyMaps.ElementAt( i );
-
                 str.Append( value.Key );
-                if (_isClass)
-                {
-                    str.Append( ':' );
-                }
+                str.Append( ':' );
                 str.Append( CleanText( value.Value ) );
-
-                if (i != _keyMaps.Count - 1)
-                {
+                if (i != _keyMaps.Count - 1){
                     str.Append( ',' );
+                    i++;
                 }
             }
+            str.Append( '}' );
 
-            if (_isClass)
+            return ( T ) DeserializeObject( typeof( T ), str.ToString() );
+        }
+
+        /// <summary>
+        /// Deserializes the <see cref="AdeptarDynamic"/> object to a .Net object.
+        /// The type constraint is a struct.
+        /// </summary>
+        /// <typeparam name="T">The type of the struct to deserialize to.</typeparam>
+        /// <returns>
+        /// The deserialized .Net object.
+        /// </returns>
+        public T Deserialize<T> ( dynamic ignore = null ) where T : struct
+        {
+            StringBuilder str = new( _textLength );
+            int i = 0;
+
+            str.Append( '{' );
+            foreach (var value in _keyMaps)
             {
-                str.Append( '}' );
+                str.Append( value.Key );
+                str.Append( ':' );
+                str.Append( CleanText( value.Value ) );
+                if (i != _keyMaps.Count - 1){
+                    str.Append( ',' );
+                    i++;
+                }
             }
+            str.Append( '}' );
 
             return ( T ) DeserializeObject( typeof( T ), str.ToString() );
         }
@@ -267,8 +286,6 @@ namespace Adeptar
             ReadOnlySpan<char> clean = ( CleanText( str ) ).Slice( 1 );
 
             AdeptarDynamic result = new();
-
-            result._isClass = clean[clean.Length - 1] == '}';
 
             int level = 0;
             int i = 0;
