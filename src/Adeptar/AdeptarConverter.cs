@@ -45,7 +45,7 @@ namespace Adeptar
         /// <param name="path">The path to the object.</param>
         public static T Deserialize<T> ( string path )
         {
-            return ( T ) DeserializeObject( typeof( T ), File.ReadAllText( path ) );
+            return ( T ) DeserializeObject( typeof( T ), CleanText( File.ReadAllText( path ) ) );
         }
 
         /// <summary>

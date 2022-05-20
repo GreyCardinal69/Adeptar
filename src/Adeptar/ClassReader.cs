@@ -59,7 +59,7 @@ namespace Adeptar
             var accessor = TypeAccessor.Create( type, true );
             var members = accessor.GetMembers();
 
-            List<String> ids = new(members.Count);
+            List<String> ids = new();
 
             foreach (var item in members)
             {
@@ -107,9 +107,9 @@ namespace Adeptar
                     case ',':
                         if (!nested && !inString){
                             if (ids.Contains( name )){
-                                accessor[target, name] = DeserializeObject( members[i].Type, text.Slice( j, w - j ) );
-                                i++;
+                                accessor[target, name] = DeserializeObject( members[ids.IndexOf(name)].Type, text.Slice( j, w - j ) );
                             }
+                            i++;
                             j = w + 1;
                         }
                         break;
@@ -123,8 +123,8 @@ namespace Adeptar
                         if (level - 1 == 0 && !inString){
                             nested = false;
                         }
-                        else if (level - 1 == -1 && !inString && w == text.Length - 1 && members.Count > 0 && ids.Contains( name )){
-                            accessor[target, name] = DeserializeObject( members[i].Type, text.Slice( j, w - j ) );
+                        else if (w == text.Length - 1 && members.Count > 0 && ids.Contains( name )){
+                            accessor[target, name] = DeserializeObject( members[ids.IndexOf( name )].Type, text.Slice( j, w - j ) );
                         }
                         level--;
                         break;
