@@ -87,21 +87,19 @@ namespace Adeptar
         /// </summary>
         /// <param name="fInfo">The <see cref="Type"/> to check.</param>
         /// <returns>The <see cref="SerializableType"/> of the provided <see cref="Type"/>.</returns>
-        internal static SerializableType GetSerializableType ( Type fInfo )
+        public static SerializableType GetSerializableType ( Type fInfo )
         {
+            if (fInfo.IsPrimitive || fInfo.IsEnum)
+                return SerializableType.Simple;
             if (IsNumericType( fInfo ))
                 return SerializableType.Numeric;
             if (fInfo == typeof( string ))
                 return SerializableType.String;
             if (fInfo == typeof( char ))
                 return SerializableType.Char;
-            if (fInfo == typeof( bool ))
-                return SerializableType.Boolean;
             if (IsList( fInfo ))
                 return SerializableType.Array;
             if (IsDictionary( fInfo ))
-                return SerializableType.Dictionary;
-            if (fInfo == typeof( IDictionary ))
                 return SerializableType.Dictionary;
             if (fInfo == typeof( DateTime ))
                 return SerializableType.DateTime;
@@ -109,8 +107,6 @@ namespace Adeptar
                 return SerializableType.Tuple;
             if (fInfo.IsArray)
                 return fInfo.GetArrayRank() > 1 ? SerializableType.DimensionalArray : SerializableType.Array;
-            if (fInfo.IsEnum)
-                return SerializableType.Enum;
 
             return SerializableType.Class;
         }
@@ -137,9 +133,9 @@ namespace Adeptar
         /// </returns>
         public static bool IsDictionary ( Type type )
         {
-            if (type == null) return false;
             return type.IsGenericType && type.GetGenericTypeDefinition() == typeof( Dictionary<,> );
         }
+
         /// <summary>
         /// Checks if the provided object has an empty constructor defined.
         /// </summary>
@@ -249,32 +245,27 @@ namespace Adeptar
         /// </returns>
         public static SerializableType FetchType ( object received )
         {
-            if (received is null)
-                return SerializableType.NULL;
-            if (received is bool)
-                return SerializableType.Boolean;
+            var type = received.GetType();
+            if (type.IsPrimitive || received is Enum)
+                return SerializableType.Simple;
             if (received is char)
                 return SerializableType.Char;
             if (received is string)
                 return SerializableType.String;
-            if (IsNumber( received ))
-                return SerializableType.Numeric;
             if (received is DateTime || received is DateTimeOffset)
                 return SerializableType.DateTime;
             if (received is Array){
-                if (IsMultiDimensionalArray( received )){
+                if (IsMultiDimensionalArray( received )) {
                     return SerializableType.DimensionalArray;
                 }else{
                     return SerializableType.Array;
                 }
             }
-            if (received is Enum)
-                return SerializableType.Enum;
             if (received is ITuple)
                 return SerializableType.Tuple;
-            if (IsDictionary( received ))
+            if (received is IDictionary)
                 return SerializableType.Dictionary;
-            if (received.GetType().IsGenericType)
+            if (received is IList)
                 return SerializableType.Array;
 
             return SerializableType.Class;

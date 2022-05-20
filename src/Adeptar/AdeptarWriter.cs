@@ -45,7 +45,7 @@ namespace Adeptar
         /// <summary>
         /// The main instance of a <see cref="StringBuilder"/> the text is appended to.
         /// </summary>
-        private static StringBuilder _result = new();
+        private static StringBuilder _result = new(32);
 
         /// <summary>
         /// A static bool used across Adeptar serialization files to control indentation.
@@ -203,8 +203,7 @@ namespace Adeptar
         internal static void Write ( object toSerialize, SerializableType type, ref StringBuilder mainBuilder,
                                      string name = null, int indent = 0, bool calledByClassWriter = false, bool last = false, bool addAtSign = false )
         {
-            if (!DoesntUseIndentation)
-            {
+            if (!DoesntUseIndentation){
                 for (int i = 0; i < indent; i++)
                 {
                     mainBuilder.Append( '\t' );
@@ -213,7 +212,7 @@ namespace Adeptar
 
             switch (type)
             {
-                case SerializableType.Numeric:
+                case SerializableType.Simple:
                     mainBuilder.Append( name );
                     if (calledByClassWriter){
                         mainBuilder.Append( ": " );
@@ -234,15 +233,6 @@ namespace Adeptar
                         .Replace( "\"", "\\\"")
                         );
                     mainBuilder.Append( '"' );
-                    break;
-                case SerializableType.Boolean:
-                    if (calledByClassWriter){
-                        mainBuilder.Append( name );
-                        mainBuilder.Append( ": " );
-                    }else{
-                        mainBuilder.Append( name );
-                    }
-                    mainBuilder.Append( toSerialize );
                     break;
                 case SerializableType.Char:
                     if (calledByClassWriter){
@@ -357,13 +347,6 @@ namespace Adeptar
                         }
                     }
                     mainBuilder.Append( ')' );
-                    break;
-                case SerializableType.Enum:
-                    mainBuilder.Append( name );
-                    if (calledByClassWriter){
-                        mainBuilder.Append( ": " );
-                    }
-                    mainBuilder.Append( toSerialize );
                     break;
                 case SerializableType.DateTime:
                     if (!calledByClassWriter){

@@ -54,7 +54,7 @@ namespace Adeptar
         /// <param name="builder"><see cref="StringBuilder"/> instance to append text to.</param>
         internal static void WriteClassStruct ( object target, int indent, ref StringBuilder builder )
         {
-            var accessor = TypeAccessor.Create( target.GetType());
+            var accessor = TypeAccessor.Create( target.GetType() );
             int count = 0;
             MemberSet vals = accessor.GetMembers();
 
