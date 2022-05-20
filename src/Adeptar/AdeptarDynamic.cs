@@ -205,10 +205,33 @@ namespace Adeptar
         /// </returns>
         public static AdeptarDynamic FromFile ( string path )
         {
-            ReadOnlySpan<char> str = ( CleanText( File.ReadAllText( path ) ) ).Slice( 1 );
-
             AdeptarDynamic result = new();
+            PopulateMaps( ( CleanText( File.ReadAllText( path ) ) ).Slice( 1 ), ref result );
+            return result;
+        }
 
+        /// <summary>
+        /// Creates a <see cref="AdeptarDynamic"/> object from the .Adeptar string.
+        /// </summary>
+        /// <param name="str">The .Adeptar string to convert to a <see cref="AdeptarDynamic"/> object.</param>
+        /// <returns>
+        /// A <see cref="AdeptarDynamic"/> object that contains the data of the given .Adeptar string.
+        /// </returns>
+        public static AdeptarDynamic FromString ( string str )
+        {
+            AdeptarDynamic result = new();
+            PopulateMaps( ( CleanText( str ) ).Slice( 1 ), ref result );
+            return result;
+        }
+
+
+        /// <summary>
+        /// Handles the process of populating the <see cref="AdeptarDynamic.KeyMaps"/>.
+        /// </summary>
+        /// <param name="str">The <see cref="ReadOnlySpan{T}"/> text.</param>
+        /// <param name="result">The <see cref="AdeptarDynamic"/> to populate.</param>
+        private static void PopulateMaps( ReadOnlySpan<char> str, ref AdeptarDynamic result )
+        {
             int level = 0;
             int i = 0;
             int j = 0;
@@ -225,181 +248,89 @@ namespace Adeptar
                 switch (item)
                 {
                     case '"':
-                        if (falseEnd && inString){
+                        if (falseEnd && inString)
+                        {
                             falseEnd = false;
                         }
                         else if (!falseEnd)
                             inString = !inString;
                         break;
                     case '[':
-                        if (!inString){
+                        if (!inString)
+                        {
                             level++; nested = true;
                         }
                         else if (!inString)
                             level++;
                         break;
                     case ']':
-                        if (level - 1 == 0 && !inString){
+                        if (level - 1 == 0 && !inString)
+                        {
                             nested = false;
                         }
                         level--;
                         break;
                     case '\\':
-                        if (inString){
+                        if (inString)
+                        {
                             falseEnd = true;
-                        }else{
+                        }
+                        else
+                        {
                             throw new AdeptarException( "Invalid character '\\', such a character can appear only inside a string." );
                         }
                         break;
                     case ',':
-                        if (!nested && !inString){
+                        if (!nested && !inString)
+                        {
                             result._keyMaps.Add( name, str.Slice( j, w - j ).ToString() );
                             j = w + 1;
                             i++;
                         }
                         break;
                     case '{':
-                        if (!inString){
+                        if (!inString)
+                        {
                             level++;
                             nested = true;
                         }
                         break;
                     case '}':
-                        if (level - 1 == 0 && !inString){
+                        if (level - 1 == 0 && !inString)
+                        {
                             nested = false;
                         }
                         level--;
                         break;
                     case '(':
-                        if (!inString){
+                        if (!inString)
+                        {
                             level++;
                             nested = true;
                         }
                         break;
                     case ')':
-                        if (level - 1 == 0 && !inString){
+                        if (level - 1 == 0 && !inString)
+                        {
                             nested = false;
                             level--;
                         }
                         break;
                     case ':':
-                        if (!nested && !inString){
+                        if (!nested && !inString)
+                        {
                             name = str.Slice( j, w - j ).ToString();
                             j = w + 1;
                         }
                         break;
                 }
-                if (level - 1 == -2 && !inString){
+                if (level - 1 == -2 && !inString)
+                {
                     if (w == str.Length - 1)
                         result._keyMaps.Add( name, str.Slice( j, w - j ).ToString() );
                 }
                 w++;
             }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Creates a <see cref="AdeptarDynamic"/> object from the .Adeptar string.
-        /// </summary>
-        /// <param name="str">The .Adeptar string to convert to a <see cref="AdeptarDynamic"/> object.</param>
-        /// <returns>
-        /// A <see cref="AdeptarDynamic"/> object that contains the data of the given .Adeptar string.
-        /// </returns>
-        public static AdeptarDynamic FromString ( string str )
-        {
-            ReadOnlySpan<char> clean = ( CleanText( str ) ).Slice( 1 );
-
-            AdeptarDynamic result = new();
-
-            int level = 0;
-            int i = 0;
-            int j = 0;
-            int w = 0;
-
-            bool nested = false;
-            bool inString = false;
-            bool falseEnd = false;
-
-            string name = "";
-
-            foreach (var item in clean)
-            {
-                switch (item)
-                {
-                    case '"':
-                        if (falseEnd && inString){
-                            falseEnd = false;
-                        }
-                        else if (!falseEnd)
-                            inString = !inString;
-                        break;
-                    case '[':
-                        if (!inString){
-                            level++; nested = true;
-                        }
-                        else if (!inString)
-                            level++;
-                        break;
-                    case ']':
-                        if (level - 1 == 0 && !inString){
-                            nested = false;
-                        }
-                        level--;
-                        break;
-                    case '\\':
-                        if (inString){
-                            falseEnd = true;
-                        }else{
-                            throw new AdeptarException( "Invalid character '\\', such a character can appear only inside a string." );
-                        }
-                        break;
-                    case ',':
-                        if (!nested && !inString){
-                            result._keyMaps.Add( name, clean.Slice( j, w - j ).ToString() );
-                            j = w + 1;
-                            i++;
-                        }
-                        break;
-                    case '{':
-                        if (!inString){
-                            level++;
-                            nested = true;
-                        }
-                        break;
-                    case '}':
-                        if (level - 1 == 0 && !inString){
-                            nested = false;
-                        }
-                        level--;
-                        break;
-                    case '(':
-                        if (!inString){
-                            level++;
-                            nested = true;
-                        }
-                        break;
-                    case ')':
-                        if (level - 1 == 0 && !inString){
-                            nested = false;
-                            level--;
-                        }
-                        break;
-                    case ':':
-                        if (!nested && !inString){
-                            name = clean.Slice( j, w - j ).ToString();
-                            j = w + 1;
-                        }
-                        break;
-                }
-                if (level - 1 == -2 && !inString){
-                    if (w == clean.Length - 1)
-                        result._keyMaps.Add( name, clean.Slice( j, w - j ).ToString() );
-                }
-                w++;
-            }
-
-            return result;
         }
     }
 }

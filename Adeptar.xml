@@ -207,6 +207,13 @@
             A <see cref="T:Adeptar.AdeptarDynamic"/> object that contains the data of the given .Adeptar string.
             </returns>
         </member>
+        <member name="M:Adeptar.AdeptarDynamic.PopulateMaps(System.ReadOnlySpan{System.Char},Adeptar.AdeptarDynamic@)">
+            <summary>
+            Handles the process of populating the <see cref="P:Adeptar.AdeptarDynamic.KeyMaps"/>.
+            </summary>
+            <param name="str">The <see cref="T:System.ReadOnlySpan`1"/> text.</param>
+            <param name="result">The <see cref="T:Adeptar.AdeptarDynamic"/> to populate.</param>
+        </member>
         <member name="T:Adeptar.AdeptarDynamicExtensions">
             <summary>
             Provides extension methods for <see cref="T:Adeptar.AdeptarDynamic"/> and <see cref="!:AdeptarMap"/> objects.

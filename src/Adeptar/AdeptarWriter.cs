@@ -102,7 +102,6 @@ namespace Adeptar
                     bool exit = false;
                     int i = 0, j = 0, w = 0;
                     ReadOnlySpan<char> text = File.ReadAllText( path );
-
                     foreach (var item in text)
                     {
                         if (exit){
@@ -231,15 +230,13 @@ namespace Adeptar
                         .Replace( "\t", "\\t" )
                         .Replace( "\n", "\\n" )
                         .Replace( "\"", "\\\"")
-                        );
+                    );
                     mainBuilder.Append( '"' );
                     break;
                 case SerializableType.Char:
                     if (calledByClassWriter){
                         mainBuilder.Append( name );
                         mainBuilder.Append( ": " );
-                    }else{
-                        mainBuilder.Append( name );
                     }
                     mainBuilder.Append( '\'' ).Append( toSerialize ).Append( '\'' );
                     break;
@@ -247,8 +244,6 @@ namespace Adeptar
                     if (calledByClassWriter){
                         mainBuilder.Append( name );
                         mainBuilder.Append( ": " );
-                    }else{
-                        mainBuilder.Append( name );
                     }
                     mainBuilder.Append( '{' );
                     if (!DoesntUseIndentation){
@@ -267,8 +262,6 @@ namespace Adeptar
                     if (calledByClassWriter){
                         mainBuilder.Append( name );
                         mainBuilder.Append( ": " );
-                    }else{
-                        mainBuilder.Append( name );
                     }
                     mainBuilder.Append( '[' );
                     if (!DoesntUseIndentation){
@@ -301,8 +294,6 @@ namespace Adeptar
                     if (calledByClassWriter){
                         mainBuilder.Append( name );
                         mainBuilder.Append( ": " );
-                    }else{
-                        mainBuilder.Append( name );
                     }
                     if (addAtSign){
                         mainBuilder.Append('@');
@@ -331,8 +322,6 @@ namespace Adeptar
                     if (calledByClassWriter){
                         mainBuilder.Append( name );
                         mainBuilder.Append( ": " );
-                    }else{
-                        mainBuilder.Append( name );
                     }
                     if (!DoesntUseIndentation){
                         mainBuilder.Append( '(' ).Append( '\n' );
@@ -362,8 +351,6 @@ namespace Adeptar
                     if (calledByClassWriter){
                         mainBuilder.Append( name );
                         mainBuilder.Append( ": " );
-                    }else{
-                        mainBuilder.Append( name );
                     }
                     mainBuilder.Append( '[' );
                     if (!DoesntUseIndentation){
