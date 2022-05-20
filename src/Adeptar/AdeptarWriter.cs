@@ -349,19 +349,13 @@ namespace Adeptar
                     mainBuilder.Append( ')' );
                     break;
                 case SerializableType.DateTime:
-                    if (!calledByClassWriter){
-                        mainBuilder.Append( name );
-                        mainBuilder.Append( '"' );
-                    }
-                    else if (calledByClassWriter){
-                        mainBuilder.Append( name );
+                    mainBuilder.Append( name );
+                    if (calledByClassWriter){
                         mainBuilder.Append( ": \"" );
                     }else{
                         mainBuilder.Append( '"' );
                     }
-                    mainBuilder.Append( toSerialize is DateTimeOffset offset
-                        ? offset.UtcDateTime
-                        : DateTime.SpecifyKind( ( DateTime ) toSerialize, DateTimeKind.Utc ) );
+                    mainBuilder.Append( toSerialize.ToString() );
                     mainBuilder.Append( '"' );
                     break;
                 case SerializableType.DimensionalArray:

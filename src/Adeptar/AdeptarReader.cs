@@ -57,7 +57,7 @@ namespace Adeptar
                 DeserializableType.Char => Convert.ToChar( text.Slice(1,1).ToString() ),
                 DeserializableType.Enum => ParseToEnumNonGeneric( text, type ),
                 DeserializableType.NULL => null,
-                DeserializableType.DateTime => DateTime.Parse( text ),
+                DeserializableType.DateTime => DateTime.Parse( StringResolver(text.ToString()) ),
                 DeserializableType.Class => DeserializeClassStruct( text, type ),
                 DeserializableType.Array => DeserializeArray( text, type ),
                 DeserializableType.List => DeserializeList( text, type ),

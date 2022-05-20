@@ -18,6 +18,13 @@ namespace AdeptarBenchmarks
     [MemoryDiagnoser]
     public class Program
     {
+        public class MyClass
+        {
+            public int Number3;
+            public int[] Odds;
+            public Dictionary<int, string> Maps;
+            public DateTime date;
+        }
 
         static void Main ( string[] args )
         {
@@ -25,34 +32,11 @@ namespace AdeptarBenchmarks
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
 
-            MemoryBenchmarkerDemo.MyClass x = new()
-            {
-                Number = 1234,
-                Number2 = 14299,
-                Number3 = 10000023,
-                date = DateTime.Now,
-                Maps = new()
-                {
-                    { 1, "Hello" },
-                    { 2, "World!" }
-                },
-                Odds = new int[] { 1, 2, 5, 7, 9 }
-            };
-
-            AdeptarConverter.SerializeWrite( serializePath, x );
-
             AdeptarDynamic dynam = AdeptarDynamic.FromString(File.ReadAllText(serializePath));
 
-            foreach (var item in dynam.KeyMaps)
-            {
-                Console.WriteLine(item.Key + " ____ " + item.Value);
-                Console.WriteLine("=============================");
-            }
+            var val = dynam.Deserialize<Program.MyClass>();
 
-
-
-
-
+            AdeptarConverter.SerializeWrite( deserializePath, val );
 
 #else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
@@ -67,8 +51,6 @@ namespace AdeptarBenchmarks
     {
         public class MyClass
         {
-            [AdeptarIgnore]
-            public int Number;
             public int Number2;
             public int Number3;
             public int[] Odds;
@@ -76,8 +58,20 @@ namespace AdeptarBenchmarks
             public DateTime date = DateTime.Now;
         }
 
-        public static MyClass x = new MyClass();
+        public static string x = File.ReadAllText( @"C:\Users\thewa\source\repos\C#\Adeptar\src\AdeptarBenchmarks\bin\Debug\net5.0\seri.ader" );
 
+        public static MemberSet set = TypeAccessor.Create( typeof( MyClass ) ).GetMembers();
+
+        [Benchmark]
+        public void yets ()
+        {
+            foreach (var item in set)
+            {
+                bool x = item.Name == "test";
+            }
+        }
+
+         /*
         [Benchmark]
        public void ClassAdeptar ()
        {

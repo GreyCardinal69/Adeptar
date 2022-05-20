@@ -126,34 +126,37 @@
             
              </summary>
         </member>
-        <member name="F:Adeptar.AdeptarDynamic._textLength">
-             <summary>
-            
-             </summary>
+        <member name="P:Adeptar.AdeptarDynamic._textLength">
+            <summary>
+            A property that gets the total string length of all the key and values of the cleaned .Adeptar string.
+            </summary>
         </member>
         <member name="M:Adeptar.AdeptarDynamic.ContainsKey(System.String)">
-             <summary>
-            
-             </summary>
-             <param name="key"></param>
-             <returns></returns>
+            <summary>
+            Checks if the <see cref="T:Adeptar.AdeptarDynamic"/> object contains the field/property with the given name.
+            </summary>
+            <param name="key">The key name to check for.</param>
+            <returns>True if the <see cref="T:Adeptar.AdeptarDynamic"/> object contains a field/property with the provided name.</returns>
         </member>
         <member name="M:Adeptar.AdeptarDynamic.GetValue``1(System.String)">
+            <summary>
+            Takes a key name of a field/property. If the key is not found throws an exception.
+            If the key is found deserializes its .Adeptar string to the provided type.
+            </summary>
+            <typeparam name="T">The type to deserialize to.</typeparam>
+            <param name="key">The key to deserialize for.</param>
+            <returns>
+            The deserialized .NET object.
+            </returns>
+        </member>
+        <member name="M:Adeptar.AdeptarDynamic.Deserialize``1">
              <summary>
             
              </summary>
              <typeparam name="T"></typeparam>
-             <param name="key"></param>
              <returns></returns>
         </member>
-        <member name="M:Adeptar.AdeptarDynamic.DeserializeToWhole``1">
-             <summary>
-            
-             </summary>
-             <typeparam name="T"></typeparam>
-             <returns></returns>
-        </member>
-        <member name="M:Adeptar.AdeptarDynamic.DeserializeToMap``1(Adeptar.AdeptarMap)">
+        <member name="M:Adeptar.AdeptarDynamic.DeserializeWithMap``1(Adeptar.AdeptarMap)">
              <summary>
             
              </summary>
@@ -162,18 +165,23 @@
              <returns></returns>
         </member>
         <member name="M:Adeptar.AdeptarDynamic.FromFile(System.String)">
-             <summary>
-            
-             </summary>
-             <param name="path"></param>
-             <returns></returns>
+            <summary>
+            Creates a <see cref="T:Adeptar.AdeptarDynamic"/> object from a file that contains
+            a .Adeptar object.
+            </summary>
+            <param name="path">The path of the file.</param>
+            <returns>
+            A <see cref="T:Adeptar.AdeptarDynamic"/> object that contains the data of the given .Adeptar string.
+            </returns>
         </member>
         <member name="M:Adeptar.AdeptarDynamic.FromString(System.String)">
-             <summary>
-            
-             </summary>
-             <param name="str"></param>
-             <returns></returns>
+            <summary>
+            Creates a <see cref="T:Adeptar.AdeptarDynamic"/> object from the .Adeptar string.
+            </summary>
+            <param name="str">The .Adeptar string to convert to a <see cref="T:Adeptar.AdeptarDynamic"/> object.</param>
+            <returns>
+            A <see cref="T:Adeptar.AdeptarDynamic"/> object that contains the data of the given .Adeptar string.
+            </returns>
         </member>
         <member name="T:Adeptar.AdeptarDynamicExtensions">
              <summary>
@@ -487,7 +495,7 @@
             Private enumeration for determining the type of a number.
             </summary>
         </member>
-        <member name="M:Adeptar.DeserializationHelpers.CleanText(System.String)">
+        <member name="M:Adeptar.DeserializationHelpers.CleanText(System.ReadOnlySpan{System.Char})">
             <summary>
             Removes all indentation from a .Adeptar string.
             </summary>
