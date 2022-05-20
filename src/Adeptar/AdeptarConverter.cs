@@ -55,7 +55,7 @@ namespace Adeptar
         /// <param name="type">The <see cref="Type"/> of the .NET object.</param>
         public static object Deserialize ( string path, Type type )
         {
-            return DeserializeObject( type, CleanText(File.ReadAllText( path )) );
+            return DeserializeObject( type, CleanText( File.ReadAllText( path ) ) );
         }
 
         /// <summary>

@@ -216,7 +216,7 @@
         </member>
         <member name="T:Adeptar.AdeptarDynamicExtensions">
             <summary>
-            Provides extension methods for <see cref="T:Adeptar.AdeptarDynamic"/> and <see cref="!:AdeptarMap"/> objects.
+            Provides extension methods for <see cref="T:Adeptar.AdeptarDynamic"/> objects.
             </summary>
         </member>
         <member name="M:Adeptar.AdeptarDynamicExtensions.FromFile(Adeptar.AdeptarDynamic,System.String)">

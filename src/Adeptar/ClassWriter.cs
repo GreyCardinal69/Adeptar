@@ -25,14 +25,14 @@
 
 using System;
 using System.Text;
-
-using static Adeptar.TypeGetters;
-using static Adeptar.AdeptarWriter;
-
-using FastMember;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+
+using FastMember;
+
+using static Adeptar.TypeGetters;
+using static Adeptar.AdeptarWriter;
 
 namespace Adeptar
 {

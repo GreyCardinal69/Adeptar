@@ -28,7 +28,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Linq;
 
 using static Adeptar.ClassWriter;
 using static Adeptar.ArrayWriter;
