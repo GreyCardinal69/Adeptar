@@ -6,7 +6,7 @@ TO DO:
 - More features.
 
 First some benchmarks, both serialization and deserialization.
-
+Benchmakrs are compared to NewtonSoft.Json library
 ``` ini
 
 BenchmarkDotNet=v0.13.1, OS=Windows 10.0.19044.1706 (21H2)
