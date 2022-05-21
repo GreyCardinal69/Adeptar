@@ -311,7 +311,12 @@ namespace Adeptar
         /// <returns>A .Adeptar representation of the object with the provided formatting style.</returns>
         public static string Serialize ( object toSerialize, Formatting formatting = Formatting.Indented )
         {
-            AdeptarWriter.AssignSettings( AdeptarWriter.DefaultSettings );
+            AdeptarSettings settings = new()
+            {
+                CheckClassAttributes = true,
+                UseIndentation = formatting == Formatting.Indented,
+            };
+            AdeptarWriter.AssignSettings( settings );
             return AdeptarWriter.Serialize( toSerialize, FetchType( toSerialize ) );
         }
 
@@ -326,7 +331,12 @@ namespace Adeptar
         /// <param name="formatting">The formatting style.</param>
         public static void SerializeAppend ( string path, object toSerialize, string id, Formatting formatting = Formatting.Indented )
         {
-            AdeptarWriter.AssignSettings( AdeptarWriter.DefaultSettings );
+            AdeptarSettings settings = new()
+            {
+                CheckClassAttributes = true,
+                UseIndentation = formatting == Formatting.Indented,
+            };
+            AdeptarWriter.AssignSettings( settings );
             AdeptarWriter.SerializeWrite( path, toSerialize, FetchType( toSerialize ), SerializationMode.Append, id );
         }
 
@@ -341,7 +351,12 @@ namespace Adeptar
         /// <param name="formatting">The formatting style.</param>
         public static void SerializeRewriteAppended ( string path, object toSerialize, string id, Formatting formatting = Formatting.Indented )
         {
-            AdeptarWriter.AssignSettings( AdeptarWriter.DefaultSettings );
+            AdeptarSettings settings = new()
+            {
+                CheckClassAttributes = true,
+                UseIndentation = formatting == Formatting.Indented,
+            };
+            AdeptarWriter.AssignSettings( settings );
             AdeptarWriter.SerializeWrite( path, toSerialize, FetchType( toSerialize ), SerializationMode.ChangeAppended, id );
         }
     }
