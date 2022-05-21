@@ -37,7 +37,7 @@ using static Adeptar.TypeGetters;
 namespace Adeptar
 {
     /// <summary>
-    /// Core class than coordinates serialization via recursion.
+    /// Core class that coordinates serialization via recursion.
     /// </summary>
     internal class AdeptarWriter
     {

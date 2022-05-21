@@ -4,6 +4,57 @@
         <name>Adeptar</name>
     </assembly>
     <members>
+        <member name="T:Adeptar.AdeptarConfiguration">
+            <summary>
+            A class that provides functionality for field/property serialization manipulations.
+            Such objects are to be put as a field/property only once and are not serialized by the <see cref="T:Adeptar.AdeptarWriter"/>.
+            </summary>
+        </member>
+        <member name="M:Adeptar.AdeptarConfiguration.#ctor">
+            <summary>
+            Creates a new empty instance of an <see cref="T:Adeptar.AdeptarConfiguration"/> class.
+            </summary>
+        </member>
+        <member name="M:Adeptar.AdeptarConfiguration.#ctor(System.String[])">
+            <summary>
+            Creates a new instance of an <see cref="T:Adeptar.AdeptarConfiguration"/> class with an array of fields and or properties to ignore.
+            </summary>
+            <param name="toIgnore"></param>
+        </member>
+        <member name="M:Adeptar.AdeptarConfiguration.#ctor(System.String[],System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Creates a new instance of an <see cref="T:Adeptar.AdeptarConfiguration"/> class with an array of fields and or properties to ignore.
+            As well as a <see cref="T:System.Collections.Generic.Dictionary`2"/> of mappings for fields and properties.
+            </summary>
+            <param name="toIgnore"></param>
+            <param name="reMaps"></param>
+        </member>
+        <member name="P:Adeptar.AdeptarConfiguration.ToIgnore">
+            <summary>
+            An array of field and or property names to ignore.
+            </summary>
+        </member>
+        <member name="P:Adeptar.AdeptarConfiguration.Remaps">
+            <summary>
+            A <see cref="T:System.Collections.Generic.Dictionary`2"/> of field and or property names to remap.
+            </summary>
+        </member>
+        <member name="F:Adeptar.AdeptarConfiguration._name">
+            <summary>
+            The name of the <see cref="T:Adeptar.AdeptarConfiguration"/> field or property inside the class or struct it is in.
+            </summary>
+        </member>
+        <member name="P:Adeptar.AdeptarConfiguration.Name">
+            <summary>
+            The name of the <see cref="T:Adeptar.AdeptarConfiguration"/> field or property inside the class or struct it is in.
+            </summary>
+        </member>
+        <member name="M:Adeptar.AdeptarConfiguration.SetName(System.String)">
+            <summary>
+            Sets the private name of the <see cref="T:Adeptar.AdeptarConfiguration"/> instance.
+            </summary>
+            <param name="name"></param>
+        </member>
         <member name="T:Adeptar.AdeptarConverter">
             <summary>
             Provides methods for converting between .NET and .Adeptar types
@@ -314,11 +365,6 @@
             <param name="id">The id of the object to check for.</param>
             <returns>True if the already exists in the file.</returns>
         </member>
-        <member name="T:Adeptar.AdeptarIgnore">
-            <summary>
-            Instructs the <see cref="T:Adeptar.AdeptarWriter"/> to not serialize the property or field.
-            </summary>
-        </member>
         <member name="T:Adeptar.AdeptarReader">
             <summary>
             A class that contains method(s) for deserializing .Adeptar objects.
@@ -349,7 +395,7 @@
         </member>
         <member name="T:Adeptar.AdeptarWriter">
             <summary>
-            Core class than coordinates serialization via recursion.
+            Core class that coordinates serialization via recursion.
             </summary>
         </member>
         <member name="F:Adeptar.AdeptarWriter._result">
@@ -484,9 +530,9 @@
             Class that handles serialization of class and struct objects.
             </summary>
         </member>
-        <member name="F:Adeptar.ClassWriter._ignoreAttribute">
+        <member name="F:Adeptar.ClassWriter.defaultConfig">
             <summary>
-            Cached type for <see cref="T:Adeptar.AdeptarIgnore"/>.
+            Default empty instance of an <see cref="T:Adeptar.AdeptarConfiguration"/> class.
             </summary>
         </member>
         <member name="M:Adeptar.ClassWriter.WriteClassStruct(System.Object,System.Int32,System.Text.StringBuilder@)">
@@ -795,7 +841,7 @@
         </member>
         <member name="F:Adeptar.SerializableType.DimensionalArray">
             <summary>
-            True for two and three dimensional arrays.
+            True for two or more dimensional arrays.
             </summary>
         </member>
         <member name="T:Adeptar.SerializationMode">

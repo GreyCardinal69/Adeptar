@@ -12,6 +12,7 @@ using Adeptar;
 using Newtonsoft.Json;
 using FastMember;
 using static Adeptar.TypeGetters;
+using System.Text;
 
 namespace AdeptarBenchmarks
 {
@@ -36,7 +37,6 @@ namespace AdeptarBenchmarks
     {
         public class MyClass
         {
-            [AdeptarIgnore][JsonIgnore]
             public SerializableType type = SerializableType.NULL;
             public int Number;
             public int Number3;
@@ -44,8 +44,6 @@ namespace AdeptarBenchmarks
             public Dictionary<int, string> Maps;
             public DateTime date;
         }
-
-        public static MyClass x = new MyClass();
 
         [Benchmark]
         public void ClassAdeptar ()

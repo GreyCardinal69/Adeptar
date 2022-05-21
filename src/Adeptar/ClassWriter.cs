@@ -33,6 +33,7 @@ using FastMember;
 
 using static Adeptar.TypeGetters;
 using static Adeptar.AdeptarWriter;
+using System.Linq;
 
 namespace Adeptar
 {
@@ -41,10 +42,12 @@ namespace Adeptar
     /// </summary>
     internal class ClassWriter
     {
+        internal static Type _adeptarConfiguration = typeof( AdeptarConfiguration );
+
         /// <summary>
-        /// Cached type for <see cref="AdeptarIgnore"/>.
+        /// Default empty instance of an <see cref="AdeptarConfiguration"/> class.
         /// </summary>
-        private static readonly Type _ignoreAttribute = typeof( AdeptarIgnore );
+        internal static AdeptarConfiguration defaultConfig = new();
 
         /// <summary>
         /// Serializes the class or struct object to a .Adeptar string.
@@ -58,19 +61,49 @@ namespace Adeptar
             int count = 0;
             MemberSet vals = accessor.GetMembers();
 
+            AdeptarConfiguration config = defaultConfig;
+
             foreach (var item in vals)
             {
-                object value = accessor[target, item.Name];
-                var type = GetSerializableType( item.Type );
+                if (item.Type == _adeptarConfiguration){
+                    var value = accessor[target, item.Name];
+                    config = value == null ? config : ( AdeptarConfiguration ) value;
+                    config.SetName( item.Name );
+                    break;
+                }
+            }
 
-                if (AdeptarWriter.CurrentSettings.CheckClassAttributes){
-                    if (item.IsDefined( _ignoreAttribute )){
+            foreach (var item in vals)
+            {
+                var itemType = item.Type;
+
+                if (itemType == _adeptarConfiguration){
+                    count++;
+                    continue;
+                }
+
+                string name = item.Name;
+
+                if (config.ToIgnore is not null){
+                    bool exit = false;
+                    for (int i = 0; i < config.ToIgnore.Length; i++)
+                    {
+                        if (name == config.ToIgnore[i]){
+                            count++;
+                            exit = true;
+                            break;
+                        }
+                    }
+                    if (exit){
                         count++;
                         continue;
                     }
                 }
 
-                Write( value, type, ref builder, item.Name, indent, true, count == vals.Count - 1, false );
+                var type = GetSerializableType( itemType );
+
+                object value = accessor[target, name];
+                Write( value, type, ref builder, name, indent, true, count == vals.Count - 1, false );
 
                 if (AdeptarWriter.CurrentSettings.UseIndentation){
                     builder.Append( '\n' );

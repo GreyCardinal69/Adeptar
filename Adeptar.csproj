@@ -29,4 +29,10 @@
     <PackageReference Include="FastMember" Version="1.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="FastMember">
+      <HintPath>FastMember.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

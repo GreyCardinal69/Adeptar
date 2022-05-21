@@ -81,7 +81,7 @@ namespace Adeptar
         /// </summary>
         DateTime,
         /// <summary>
-        /// True for two and three dimensional arrays.
+        /// True for two or more dimensional arrays.
         /// </summary>
         DimensionalArray
     }
