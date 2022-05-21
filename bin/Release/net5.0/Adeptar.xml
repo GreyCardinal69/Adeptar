@@ -362,6 +362,11 @@
             A static instance of an <see cref="T:Adeptar.AdeptarSettings"/> class that dictates serialization rules.
             </summary>
         </member>
+        <member name="F:Adeptar.AdeptarWriter.DefaultSettings">
+            <summary>
+            Default <see cref="T:Adeptar.AdeptarSettings"/> configuration used when the user does not provide a custom <see cref="T:Adeptar.AdeptarSettings"/> object.
+            </summary>
+        </member>
         <member name="M:Adeptar.AdeptarWriter.AssignSettings(Adeptar.AdeptarSettings)">
             <summary>
             Assigns the <see cref="T:Adeptar.AdeptarSettings"/> for the current serialization task.

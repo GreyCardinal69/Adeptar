@@ -52,6 +52,15 @@ namespace Adeptar
         internal static AdeptarSettings CurrentSettings { get; private set; }
 
         /// <summary>
+        /// Default <see cref="AdeptarSettings"/> configuration used when the user does not provide a custom <see cref="AdeptarSettings"/> object.
+        /// </summary>
+        internal static AdeptarSettings DefaultSettings = new()
+        {
+            CheckClassAttributes = true,
+            UseIndentation = true,
+        };
+
+        /// <summary>
         /// Assigns the <see cref="AdeptarSettings"/> for the current serialization task.
         /// </summary>
         /// <param name="settings">The user provided serialization settings.</param>
