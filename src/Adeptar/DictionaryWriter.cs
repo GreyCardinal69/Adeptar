@@ -57,7 +57,7 @@ namespace Adeptar
             }
             count = 0;
 
-            if (DoesntUseIndentation){
+            if (!AdeptarWriter.CurrentSettings.UseIndentation){
                 for (int i = 0; i < x.Count; i++)
                 {
                     if (IsDictionary( x[i].Item2 )){

@@ -46,7 +46,7 @@ namespace Adeptar
         /// <param name="builder">The <see cref="StringBuilder"/> instance to append to.</param>
         internal static void WriteArray ( object target, int indent, ref StringBuilder builder )
         {
-            if (DoesntUseIndentation){
+            if (!AdeptarWriter.CurrentSettings.UseIndentation){
                 int count = 0;
                 bool isIntended = indent > 0;
                 IList tempList = target as IList;
@@ -112,7 +112,7 @@ namespace Adeptar
             stack.Push( array.GetEnumerator() );
             int count = 0;
             int len = array.Length;
-            if (!DoesntUseIndentation){
+            if (AdeptarWriter.CurrentSettings.UseIndentation){
                 builder.Append( '\t' );
             }
             builder.Append( '<' );
@@ -124,7 +124,7 @@ namespace Adeptar
                 }
             }
             builder.Append( '>' );
-            if (!DoesntUseIndentation){
+            if (AdeptarWriter.CurrentSettings.UseIndentation){
                 builder.Append( ' ' );
             }
             do
@@ -133,7 +133,7 @@ namespace Adeptar
                 {
                     Write( iterator.Current, FetchType( iterator.Current ),
                         ref builder, null, 0, false, count == len - 1, false );
-                    if (!DoesntUseIndentation)
+                    if (AdeptarWriter.CurrentSettings.UseIndentation)
                         builder.Append( ' ' );
                     count++;
                 }

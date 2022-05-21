@@ -63,14 +63,16 @@ namespace Adeptar
                 object value = accessor[target, item.Name];
                 var type = GetSerializableType( item.Type );
 
-                if (item.IsDefined(_ignoreAttribute)){
-                    count++;
-                    continue;
+                if (AdeptarWriter.CurrentSettings.CheckClassAttributes){
+                    if (item.IsDefined( _ignoreAttribute )){
+                        count++;
+                        continue;
+                    }
                 }
 
                 Write( value, type, ref builder, item.Name, indent, true, count == vals.Count - 1, false );
 
-                if (!DoesntUseIndentation){
+                if (AdeptarWriter.CurrentSettings.UseIndentation){
                     builder.Append( '\n' );
                 }
                 count++;
@@ -98,19 +100,19 @@ namespace Adeptar
                 {
                     case SerializableType.DateTime:
                         Write( param.GetValue( target ), SerializableType.DateTime, ref builder, param.Name, indent, false, true, count == FieldTypes.Length - 1 );
-                        if (!DoesntUseIndentation){
+                        if (AdeptarWriter.CurrentSettings.UseIndentation){
                             builder.Append( '\n' );
                         }
                         break;
                     case SerializableType.Class:
                         Write( param.GetValue( target ), Type, ref builder, param.Name, indent, false, true, count == FieldTypes.Length - 1 );
-                        if (!DoesntUseIndentation){
+                        if (AdeptarWriter.CurrentSettings.UseIndentation){
                             builder.Append( '\n' );
                         }
                         break;
                     default:
                         Write( param.GetValue( target ), Type, ref builder, param.Name, indent, false, true, count == FieldTypes.Length - 1 );
-                        if (!DoesntUseIndentation){
+                        if (AdeptarWriter.CurrentSettings.UseIndentation){
                             builder.Append( '\n' );
                         }
                         break;
@@ -128,19 +130,19 @@ namespace Adeptar
                 {
                     case SerializableType.DateTime:
                         Write( param.GetValue( target ), SerializableType.DateTime, ref builder, param.Name, indent, false, true, count == PropertyTypes.Length - 1 );
-                        if (!DoesntUseIndentation){
+                        if (AdeptarWriter.CurrentSettings.UseIndentation){
                             builder.Append( '\n' );
                         }
                         break;
                     case SerializableType.Class:
                         Write( param.GetValue( target ), Type, ref builder, param.Name, indent, false, true, count == PropertyTypes.Length - 1 );
-                        if (!DoesntUseIndentation){
+                        if (AdeptarWriter.CurrentSettings.UseIndentation){
                             builder.Append( '\n' );
                         }
                         break;
                     default:
                         Write( param.GetValue( target ), Type, ref builder, param.Name, indent, false, true, count == PropertyTypes.Length - 1 );
-                        if (!DoesntUseIndentation){
+                        if (AdeptarWriter.CurrentSettings.UseIndentation){
                             builder.Append( '\n' );
                         }
                         break;

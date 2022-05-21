@@ -32,6 +32,9 @@ namespace Adeptar
     /// </summary>
     public enum SerializableType
     {
+        /// <summary>
+        /// True for objects considered primitive, such as numbers, enums, booleans and characters.
+        /// </summary>
         Simple,
         /// <summary>
         /// True for objects of type numeric.

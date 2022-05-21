@@ -216,12 +216,72 @@ namespace Adeptar
 
         /// <summary>
         /// Serializes the object to a .Adeptar string and writes it to a file, the file is overwritten.
+        /// Accepts an <see cref="AdeptarSettings"/> object to set serialization rules.
+        /// </summary>
+        /// <param name="path">The path of the file.</param>
+        /// <param name="toSerialize">The object to serialize.</param>
+        /// <param name="settings">The user provided serialization settings.</param>
+        public static void SerializeWrite ( string path, object toSerialize, AdeptarSettings settings )
+        {
+            AdeptarWriter.AssignSettings( settings );
+            AdeptarWriter.SerializeWrite( path, toSerialize, FetchType( toSerialize ), SerializationMode.Default );
+        }
+
+        /// <summary>
+        /// Serializes the object to a .Adeptar string. Accepts an <see cref="AdeptarSettings"/> object to set serialization rules.
+        /// </summary>
+        /// <param name="toSerialize">The object to serialize.</param>
+        /// <param name="settings">The user provided serialization settings.</param>
+        /// <returns>A .Adeptar representation of the object.</returns>
+        public static string Serialize ( object toSerialize, AdeptarSettings settings )
+        {
+            AdeptarWriter.AssignSettings( settings );
+            return AdeptarWriter.Serialize( toSerialize, FetchType( toSerialize ) );
+        }
+
+        /// <summary>
+        /// Serializes the object to a .Adeptar string using specified formatting style, and appends it to a file.
+        /// If an object with the provided id already exists will throw an exception.
+        /// The id is limited to numbers and letters. Accepts an <see cref="AdeptarSettings"/> object to set serialization rules.
+        /// </summary>
+        /// <param name="path">The path to the file to append the object to.</param>
+        /// <param name="toSerialize">The object to serialize.</param>
+        /// <param name="id">The id of the object used to append it.</param>
+        /// <param name="settings">The user provided serialization settings.</param>
+        public static void SerializeAppend ( string path, object toSerialize, string id, AdeptarSettings settings )
+        {
+            AdeptarWriter.AssignSettings( settings );
+            AdeptarWriter.SerializeWrite( path, toSerialize, FetchType( toSerialize ), SerializationMode.Append, id );
+        }
+
+        /// <summary>
+        /// Serializes the object to a .Adeptar string using specified formatting style, and appends it to a file.
+        /// The current object with the provided id is rewritten in the file.
+        /// The id is limited to numbers and letters. Accepts an <see cref="AdeptarSettings"/> object to set serialization rules.
+        /// </summary>
+        /// <param name="path">The path of the file.</param>
+        /// <param name="toSerialize">The object to serialize.</param>
+        /// <param name="id">The id of the object used to append it.</param>
+        /// <param name="settings">The user provided serialization settings.</param>
+        public static void SerializeRewriteAppended ( string path, object toSerialize, string id, AdeptarSettings settings )
+        {
+            AdeptarWriter.AssignSettings( settings );
+            AdeptarWriter.SerializeWrite( path, toSerialize, FetchType( toSerialize ), SerializationMode.ChangeAppended, id );
+        }
+
+        /// <summary>
+        /// Serializes the object to a .Adeptar string and writes it to a file, the file is overwritten.
         /// </summary>
         /// <param name="path">The path of the file.</param>
         /// <param name="toSerialize">The object to serialize.</param>
         public static void SerializeWrite ( string path, object toSerialize )
         {
-            DoesntUseIndentation = false;
+            AdeptarSettings settings = new()
+            {
+                CheckClassAttributes = true,
+                UseIndentation = true
+            };
+            AdeptarWriter.AssignSettings( settings );
             AdeptarWriter.SerializeWrite( path, toSerialize, FetchType(toSerialize), SerializationMode.Default );
         }
 
@@ -233,9 +293,12 @@ namespace Adeptar
         /// <param name="formatting">The formatting style.</param>
         public static void SerializeWrite ( string path, object toSerialize, Formatting formatting = Formatting.Indented )
         {
-            if (formatting == Formatting.NoIndentation){
-                DoesntUseIndentation = true;
-            }
+            AdeptarSettings settings = new()
+            {
+                CheckClassAttributes = true,
+                UseIndentation = formatting != Formatting.NoIndentation
+            };
+            AdeptarWriter.AssignSettings( settings );
             AdeptarWriter.SerializeWrite( path, toSerialize, FetchType( toSerialize ), SerializationMode.Default );
         }
 
@@ -246,7 +309,12 @@ namespace Adeptar
         /// <returns>A .Adeptar representation of the object.</returns>
         public static string Serialize ( object toSerialize )
         {
-            DoesntUseIndentation = false;
+            AdeptarSettings settings = new()
+            {
+                CheckClassAttributes = true,
+                UseIndentation = true
+            };
+            AdeptarWriter.AssignSettings( settings );
             return AdeptarWriter.Serialize( toSerialize, FetchType( toSerialize ) );
         }
 
@@ -258,9 +326,12 @@ namespace Adeptar
         /// <returns>A .Adeptar representation of the object with the provided formatting style.</returns>
         public static string Serialize ( object toSerialize, Formatting formatting = Formatting.Indented )
         {
-            if (formatting == Formatting.NoIndentation){
-                DoesntUseIndentation = true;
-            }
+            AdeptarSettings settings = new()
+            {
+                CheckClassAttributes = true,
+                UseIndentation = formatting != Formatting.NoIndentation
+            };
+            AdeptarWriter.AssignSettings( settings );
             return AdeptarWriter.Serialize( toSerialize, FetchType( toSerialize ) );
         }
 
@@ -275,9 +346,12 @@ namespace Adeptar
         /// <param name="formatting">The formatting style.</param>
         public static void SerializeAppend ( string path, object toSerialize, string id, Formatting formatting = Formatting.Indented )
         {
-            if (formatting == Formatting.NoIndentation){
-                DoesntUseIndentation = true;
-            }
+            AdeptarSettings settings = new()
+            {
+                CheckClassAttributes = true,
+                UseIndentation = formatting != Formatting.NoIndentation
+            };
+            AdeptarWriter.AssignSettings( settings );
             AdeptarWriter.SerializeWrite( path, toSerialize, FetchType( toSerialize ), SerializationMode.Append, id );
         }
 
@@ -292,9 +366,12 @@ namespace Adeptar
         /// <param name="formatting">The formatting style.</param>
         public static void SerializeRewriteAppended ( string path, object toSerialize, string id, Formatting formatting = Formatting.Indented )
         {
-            if (formatting == Formatting.NoIndentation){
-                DoesntUseIndentation = true;
-            }
+            AdeptarSettings settings = new()
+            {
+                CheckClassAttributes = true,
+                UseIndentation = formatting != Formatting.NoIndentation
+            };
+            AdeptarWriter.AssignSettings( settings );
             AdeptarWriter.SerializeWrite( path, toSerialize, FetchType( toSerialize ), SerializationMode.ChangeAppended, id );
         }
     }

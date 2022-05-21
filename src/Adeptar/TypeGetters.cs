@@ -58,8 +58,7 @@ namespace Adeptar
         /// </returns>
         public static bool IsList ( Type type )
         {
-            return type.IsGenericType &&
-                 ( type.GetGenericTypeDefinition() == typeof( List<> ) || type.GetGenericTypeDefinition() == typeof( IList<> ) );
+            return type.IsGenericType && ( type.GetGenericTypeDefinition() == typeof( List<> ) || type.GetGenericTypeDefinition() == typeof( IList<> ) );
         }
 
         /// <summary>
@@ -69,8 +68,9 @@ namespace Adeptar
         /// <returns>True if the object is a <see cref="ValueTuple"/>.</returns>
         public static bool IsTuple ( Type tuple )
         {
-            if (!tuple.IsGenericType)
+            if (!tuple.IsGenericType){
                 return false;
+            }
             var openType = tuple.GetGenericTypeDefinition();
             return openType == typeof( ValueTuple<> )
                 || openType == typeof( ValueTuple<,> )
@@ -89,26 +89,24 @@ namespace Adeptar
         /// <returns>The <see cref="SerializableType"/> of the provided <see cref="Type"/>.</returns>
         public static SerializableType GetSerializableType ( Type fInfo )
         {
-            if (fInfo.IsPrimitive || fInfo.IsEnum)
-                return SerializableType.Simple;
-            if (IsNumericType( fInfo ))
-                return SerializableType.Numeric;
             if (fInfo == typeof( string ))
                 return SerializableType.String;
-            if (fInfo == typeof( char ))
-                return SerializableType.Char;
-            if (IsList( fInfo ))
-                return SerializableType.Array;
-            if (IsDictionary( fInfo ))
-                return SerializableType.Dictionary;
             if (fInfo == typeof( DateTime ))
                 return SerializableType.DateTime;
-            if (IsTuple( fInfo ))
-                return SerializableType.Tuple;
+            if (fInfo.IsPrimitive)
+                return SerializableType.Simple;
+            if (fInfo.IsGenericType){
+                if (IsTupleGenericKnown( fInfo ))
+                    return SerializableType.Tuple;
+                if (IsDictionaryGenericKnown( fInfo ))
+                    return SerializableType.Dictionary;
+            }
             if (fInfo.IsArray)
-                return fInfo.GetArrayRank() > 1 ? SerializableType.DimensionalArray : SerializableType.Array;
+               return fInfo.GetArrayRank() > 1 ? SerializableType.DimensionalArray : SerializableType.Array;
+            if (!fInfo.IsValueType)
+                return SerializableType.Class;
 
-            return SerializableType.Class;
+            return SerializableType.Simple;
         }
 
         /// <summary>
@@ -134,6 +132,49 @@ namespace Adeptar
         public static bool IsDictionary ( Type type )
         {
             return type.IsGenericType && type.GetGenericTypeDefinition() == typeof( Dictionary<,> );
+        }
+
+        /// <summary>
+        /// Checks if the provided object is a <see cref="Dictionary{TKey, TValue}"/>, uses a <see cref="Type"/>. Omits the .IsGeneric check.
+        /// </summary>
+        /// <param name="type">The type to check for.</param>
+        /// <returns>
+        /// True if the type is a <see cref="Dictionary{TKey, TValue}"/>.
+        /// </returns>
+        public static bool IsDictionaryGenericKnown ( Type type )
+        {
+            return type.GetGenericTypeDefinition() == typeof( Dictionary<,> );
+        }
+
+        /// <summary>
+        /// Checks if the provided object is a list, accepts a <see cref="Type"/> instead. Omits the .IsGeneric check.
+        /// </summary>
+        /// <param name="type">The type to check for.</param>
+        /// <returns>
+        /// True if the type is a list.
+        /// </returns>
+        public static bool IsListGenericKnown ( Type type )
+        {
+            var typeDef = type.GetGenericTypeDefinition();
+            return ( typeDef == typeof( List<> ) || typeDef == typeof( IList<> ) );
+        }
+
+        /// <summary>
+        /// Checks if an object is of type <see cref="ValueTuple"/>, such as (<see cref="int"/>, <see cref="int"/>). Omits the .IsGeneric check.
+        /// </summary>
+        /// <param name="tuple">The type to check for.</param>
+        /// <returns>True if the object is a <see cref="ValueTuple"/>.</returns>
+        public static bool IsTupleGenericKnown ( Type tuple )
+        {
+            var openType = tuple.GetGenericTypeDefinition();
+            return openType == typeof( ValueTuple<> )
+                || openType == typeof( ValueTuple<,> )
+                || openType == typeof( ValueTuple<,,> )
+                || openType == typeof( ValueTuple<,,,> )
+                || openType == typeof( ValueTuple<,,,,> )
+                || openType == typeof( ValueTuple<,,,,,> )
+                || openType == typeof( ValueTuple<,,,,,,> )
+                || openType == typeof( ValueTuple<,,,,,,,> ) && IsTuple( tuple.GetGenericArguments()[7] );
         }
 
         /// <summary>

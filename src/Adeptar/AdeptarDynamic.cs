@@ -38,6 +38,7 @@ namespace Adeptar
     /// A class for deserializing .Adeptar objects without knowing their types at first.
     /// Such as when multiple different .Adeptar objects are serialized in the the same directory.
     /// Allows to deserialize them all, then later determine which object belongs to which .NET type.
+    /// Class is restricted for objects of type class or struct.
     /// </summary>
     public class AdeptarDynamic
     {
@@ -224,7 +225,6 @@ namespace Adeptar
             return result;
         }
 
-
         /// <summary>
         /// Handles the process of populating the <see cref="AdeptarDynamic.KeyMaps"/>.
         /// </summary>
@@ -248,84 +248,71 @@ namespace Adeptar
                 switch (item)
                 {
                     case '"':
-                        if (falseEnd && inString)
-                        {
+                        if (falseEnd && inString){
                             falseEnd = false;
                         }
                         else if (!falseEnd)
                             inString = !inString;
                         break;
                     case '[':
-                        if (!inString)
-                        {
+                        if (!inString){
                             level++; nested = true;
                         }
                         else if (!inString)
                             level++;
                         break;
                     case ']':
-                        if (level - 1 == 0 && !inString)
-                        {
+                        if (level - 1 == 0 && !inString){
                             nested = false;
                         }
                         level--;
                         break;
                     case '\\':
-                        if (inString)
-                        {
+                        if (inString){
                             falseEnd = true;
-                        }
-                        else
-                        {
+                        }else{
                             throw new AdeptarException( "Invalid character '\\', such a character can appear only inside a string." );
                         }
                         break;
                     case ',':
-                        if (!nested && !inString)
-                        {
+                        if (!nested && !inString){
                             result._keyMaps.Add( name, str.Slice( j, w - j ).ToString() );
                             j = w + 1;
                             i++;
                         }
                         break;
                     case '{':
-                        if (!inString)
-                        {
+                        if (!inString){
                             level++;
                             nested = true;
                         }
                         break;
                     case '}':
-                        if (level - 1 == 0 && !inString)
-                        {
+                        if (level - 1 == 0 && !inString){
                             nested = false;
                         }
                         level--;
                         break;
                     case '(':
-                        if (!inString)
-                        {
+                        if (!inString){
                             level++;
                             nested = true;
                         }
                         break;
                     case ')':
-                        if (level - 1 == 0 && !inString)
-                        {
+                        if (level - 1 == 0 && !inString){
                             nested = false;
                             level--;
                         }
                         break;
                     case ':':
-                        if (!nested && !inString)
-                        {
+                        if (!nested && !inString){
                             name = str.Slice( j, w - j ).ToString();
                             j = w + 1;
                         }
                         break;
                 }
-                if (level - 1 == -2 && !inString)
-                {
+                if (level - 1 == -2 && !inString){
                     if (w == str.Length - 1)
                         result._keyMaps.Add( name, str.Slice( j, w - j ).ToString() );
                 }

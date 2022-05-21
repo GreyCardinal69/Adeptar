@@ -47,9 +47,18 @@ namespace Adeptar
         private static StringBuilder _result = new(32);
 
         /// <summary>
-        /// A static bool used across Adeptar serialization files to control indentation.
+        /// A static instance of an <see cref="AdeptarSettings"/> class that dictates serialization rules.
         /// </summary>
-        internal static bool DoesntUseIndentation;
+        internal static AdeptarSettings CurrentSettings { get; private set; }
+
+        /// <summary>
+        /// Assigns the <see cref="AdeptarSettings"/> for the current serialization task.
+        /// </summary>
+        /// <param name="settings">The user provided serialization settings.</param>
+        internal static void AssignSettings( AdeptarSettings settings )
+        {
+            CurrentSettings = settings;
+        }
 
         /// <summary>
         /// Serializes the object to a .Adeptar string representation and writes it to a file. Used in the ID feature.
@@ -170,7 +179,7 @@ namespace Adeptar
                     break;
             }
             _result.Clear();
-            DoesntUseIndentation = false;
+            CurrentSettings = null;
         }
 
         /// <summary>
@@ -201,7 +210,7 @@ namespace Adeptar
         internal static void Write ( object toSerialize, SerializableType type, ref StringBuilder mainBuilder,
                                      string name = null, int indent = 0, bool calledByClassWriter = false, bool last = false, bool addAtSign = false )
         {
-            if (!DoesntUseIndentation){
+            if (AdeptarWriter.CurrentSettings.UseIndentation){
                 for (int i = 0; i < indent; i++)
                 {
                     mainBuilder.Append( '\t' );
@@ -245,11 +254,11 @@ namespace Adeptar
                         mainBuilder.Append( ": " );
                     }
                     mainBuilder.Append( '{' );
-                    if (!DoesntUseIndentation){
+                    if (AdeptarWriter.CurrentSettings.UseIndentation){
                         mainBuilder.Append( '\n' );
                     }
                     WriteClassStruct( toSerialize, indent + 1, ref mainBuilder );
-                    if (!DoesntUseIndentation){
+                    if (AdeptarWriter.CurrentSettings.UseIndentation){
                         for (int i = 0; i < indent; i++)
                         {
                             mainBuilder.Append( '\t' );
@@ -263,7 +272,7 @@ namespace Adeptar
                         mainBuilder.Append( ": " );
                     }
                     mainBuilder.Append( '[' );
-                    if (!DoesntUseIndentation){
+                    if (AdeptarWriter.CurrentSettings.UseIndentation){
                         mainBuilder.Append( '\n' );
                     }
                     if (toSerialize is IEnumerable tempList){
@@ -276,12 +285,12 @@ namespace Adeptar
                                 break;
                             }
                             Write( item, FetchType( item ), ref mainBuilder, null, indent + 1, false, ( final == !enumerator.MoveNext() ), false );
-                            if (!DoesntUseIndentation){
+                            if (AdeptarWriter.CurrentSettings.UseIndentation){
                                 mainBuilder.Append( '\n' );
                             }
                         }
                     }
-                    if (!DoesntUseIndentation){
+                    if (AdeptarWriter.CurrentSettings.UseIndentation){
                         for (int i = 0; i < indent; i++)
                         {
                             mainBuilder.Append( '\t' );
@@ -298,12 +307,12 @@ namespace Adeptar
                         mainBuilder.Append('@');
                     }
                     mainBuilder.Append( '[' );
-                    if (!DoesntUseIndentation){
+                    if (AdeptarWriter.CurrentSettings.UseIndentation){
                         mainBuilder.Append( '\n' );
                     }
                     if (toSerialize != null){
                         WriteDictionary( toSerialize, 1 + indent, ref mainBuilder );
-                        if (!DoesntUseIndentation){
+                        if (AdeptarWriter.CurrentSettings.UseIndentation){
                             for (int i = 0; i < indent; i++)
                             {
                                 mainBuilder.Append( '\t' );
@@ -322,13 +331,13 @@ namespace Adeptar
                         mainBuilder.Append( name );
                         mainBuilder.Append( ": " );
                     }
-                    if (!DoesntUseIndentation){
+                    if (AdeptarWriter.CurrentSettings.UseIndentation){
                         mainBuilder.Append( '(' ).Append( '\n' );
                     }else{
                         mainBuilder.Append( '(' );
                     }
                     WriteTuple( toSerialize, 1 + indent, ref mainBuilder );
-                    if (!DoesntUseIndentation){
+                    if (AdeptarWriter.CurrentSettings.UseIndentation){
                         for (int i = 0; i < indent; i++)
                         {
                             mainBuilder.Append( '\t' );
@@ -352,11 +361,11 @@ namespace Adeptar
                         mainBuilder.Append( ": " );
                     }
                     mainBuilder.Append( '[' );
-                    if (!DoesntUseIndentation){
+                    if (AdeptarWriter.CurrentSettings.UseIndentation){
                         mainBuilder.Append( '\n' );
                     }
                     WriteDimensionalArray( toSerialize, 1 + indent, ref mainBuilder );
-                    if (!DoesntUseIndentation){
+                    if (AdeptarWriter.CurrentSettings.UseIndentation){
                         mainBuilder.Append( '\n' );
                     }
                     mainBuilder.Append( ']' );

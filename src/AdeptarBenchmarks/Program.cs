@@ -23,6 +23,16 @@ namespace AdeptarBenchmarks
 #if DEBUG
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
+
+            AdeptarSettings settings = new()
+            {
+                CheckClassAttributes = false,
+                UseIndentation = true
+            };
+
+            Console.WriteLine( AdeptarConverter.Serialize(new MemoryBenchmarkerDemo.MyClass (), settings ) );
+
+
 #else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
             Console.ReadLine();
@@ -36,6 +46,8 @@ namespace AdeptarBenchmarks
     {
         public class MyClass
         {
+            [AdeptarIgnore]
+            public SerializableType type = SerializableType.NULL;
             public int Number;
             public int Number3;
             public int[] Odds;
@@ -43,7 +55,8 @@ namespace AdeptarBenchmarks
             public DateTime date;
         }
 
-        public static MyClass x = new();
+        public static MyClass x = new MyClass();
+
 
         [Benchmark]
         public void ClassAdeptar ()
@@ -56,7 +69,7 @@ namespace AdeptarBenchmarks
         {
             JsonConvert.SerializeObject( x );
         }
-
+        /*
         [Benchmark]
         public void TupleAdeptar ()
         {
@@ -355,6 +368,6 @@ namespace AdeptarBenchmarks
         public void ListJsonDeserialize ()
         {
             JsonConvert.DeserializeObject<List<string>>( @"[""Some"",""Random"",""Words"",""Words""]" );
-        }
+        }*/
     }
 }

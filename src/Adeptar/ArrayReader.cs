@@ -271,8 +271,7 @@ namespace Adeptar
                             nested = false;
                             firstCase--;
                         }
-                        else if (firstCase - 1 == -1 && !inString)
-                        {
+                        else if (firstCase - 1 == -1 && !inString){
                             firstCase--;
                             if (i == text.Length - 1){
                                 main.Add( DeserializeObject( childType, text.Slice( j, i - j ) ) );
