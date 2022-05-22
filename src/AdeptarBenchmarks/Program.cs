@@ -24,9 +24,6 @@ namespace AdeptarBenchmarks
 #if DEBUG
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
-
-
-            Console.WriteLine    (  AdeptarConverter.Serialize( (1,2,3,4,5))  );
 #else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
             Console.ReadLine();
@@ -47,7 +44,6 @@ namespace AdeptarBenchmarks
             public Dictionary<int, string> Maps;
             public DateTime date;
         }
-
         /*
         [Benchmark]
         public void ClassAdeptar ()
@@ -72,7 +68,7 @@ namespace AdeptarBenchmarks
         {
             JsonConvert.SerializeObject( (1, "Hello World", new MyClass(), new int[] { 1, 2, 3, 4 }) );
         }
-        */
+
         [Benchmark]
         public void DictionaryWithArrayKeyAdeptar ()
         {
@@ -84,7 +80,7 @@ namespace AdeptarBenchmarks
         {
             JsonConvert.SerializeObject( new Dictionary<int, int[]> { { 1, new int[] { 1, 2, 3, 4 } }, { 2, new int[] { 3, 4, 5, 6 } } } );
         }
-
+        /*
         [Benchmark]
         public void DictionaryAdeptar ()
         {
@@ -95,8 +91,8 @@ namespace AdeptarBenchmarks
         public void DictionaryJson ()
         {
             JsonConvert.SerializeObject( new Dictionary<int, int> { { 1, 2 }, { 3, 4 } } );
-        }
-        /*
+        }*/
+
         [Benchmark]
         public void FourDimensionalArrayAdeptar ()
         {
@@ -108,7 +104,7 @@ namespace AdeptarBenchmarks
         {
             JsonConvert.SerializeObject( new int[2, 2, 2, 2] { { { { 1, 2 }, { 3, 4 } }, { { 5, 6 }, { 7, 8 } } }, { { { 1, 2 }, { 3, 4 } }, { { 5, 6 }, { 7, 8 } } } } );
         }
-
+        /*
         [Benchmark]
         public void NestedListAdeptar ()
         {

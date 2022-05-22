@@ -125,16 +125,23 @@ namespace Adeptar
             }
             builder.Append( '>' );
             if (AdeptarWriter.CurrentSettings.UseIndentation){
-                builder.Append( ' ' );
+                for (int i = 0; i < indent; i++)
+                {
+                    builder.Append( '\n' );
+                }
             }
             do
             {
                 for (var iterator = stack.Pop(); iterator.MoveNext();)
                 {
                     Write( iterator.Current, FetchType( iterator.Current ),
-                        ref builder, null, 0, false, count == len - 1, false );
-                    if (AdeptarWriter.CurrentSettings.UseIndentation)
-                        builder.Append( ' ' );
+                        ref builder, null, indent, false, count == len - 1, false );
+                    if (AdeptarWriter.CurrentSettings.UseIndentation && count != len - 1){
+                        for (int i = 0; i < indent; i++)
+                        {
+                            builder.Append( '\n' );
+                        }
+                    }
                     count++;
                 }
             }
