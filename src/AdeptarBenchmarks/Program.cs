@@ -68,7 +68,7 @@ namespace AdeptarBenchmarks
         {
             JsonConvert.SerializeObject( (1, "Hello World", new MyClass(), new int[] { 1, 2, 3, 4 }) );
         }
-
+        */
         [Benchmark]
         public void DictionaryWithArrayKeyAdeptar ()
         {
@@ -80,7 +80,7 @@ namespace AdeptarBenchmarks
         {
             JsonConvert.SerializeObject( new Dictionary<int, int[]> { { 1, new int[] { 1, 2, 3, 4 } }, { 2, new int[] { 3, 4, 5, 6 } } } );
         }
-        /*
+
         [Benchmark]
         public void DictionaryAdeptar ()
         {
@@ -91,7 +91,7 @@ namespace AdeptarBenchmarks
         public void DictionaryJson ()
         {
             JsonConvert.SerializeObject( new Dictionary<int, int> { { 1, 2 }, { 3, 4 } } );
-        }*/
+        }
 
         [Benchmark]
         public void FourDimensionalArrayAdeptar ()
