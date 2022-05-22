@@ -118,7 +118,6 @@ namespace Adeptar
         /// </returns>
         public static bool IsDictionary ( object obj )
         {
-            if (obj == null) return false;
             return obj is IDictionary;
         }
 

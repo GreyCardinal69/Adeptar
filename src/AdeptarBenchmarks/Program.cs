@@ -24,6 +24,9 @@ namespace AdeptarBenchmarks
 #if DEBUG
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
+
+
+            Console.WriteLine    (  AdeptarConverter.Serialize( (1,2,3,4,5))  );
 #else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
             Console.ReadLine();
@@ -44,7 +47,7 @@ namespace AdeptarBenchmarks
             public Dictionary<int, string> Maps;
             public DateTime date;
         }
-        
+
         /*
         [Benchmark]
         public void ClassAdeptar ()
@@ -69,7 +72,7 @@ namespace AdeptarBenchmarks
         {
             JsonConvert.SerializeObject( (1, "Hello World", new MyClass(), new int[] { 1, 2, 3, 4 }) );
         }
-
+        */
         [Benchmark]
         public void DictionaryWithArrayKeyAdeptar ()
         {
@@ -93,7 +96,7 @@ namespace AdeptarBenchmarks
         {
             JsonConvert.SerializeObject( new Dictionary<int, int> { { 1, 2 }, { 3, 4 } } );
         }
-
+        /*
         [Benchmark]
         public void FourDimensionalArrayAdeptar ()
         {

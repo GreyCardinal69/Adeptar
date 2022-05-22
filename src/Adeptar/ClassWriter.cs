@@ -127,28 +127,9 @@ namespace Adeptar
 
             foreach (var param in FieldTypes)
             {
-                var Type = GetSerializableType( param.FieldType );
-
-                switch (Type)
-                {
-                    case SerializableType.DateTime:
-                        Write( param.GetValue( target ), SerializableType.DateTime, ref builder, param.Name, indent, false, true, count == FieldTypes.Length - 1 );
-                        if (AdeptarWriter.CurrentSettings.UseIndentation){
-                            builder.Append( '\n' );
-                        }
-                        break;
-                    case SerializableType.Class:
-                        Write( param.GetValue( target ), Type, ref builder, param.Name, indent, false, true, count == FieldTypes.Length - 1 );
-                        if (AdeptarWriter.CurrentSettings.UseIndentation){
-                            builder.Append( '\n' );
-                        }
-                        break;
-                    default:
-                        Write( param.GetValue( target ), Type, ref builder, param.Name, indent, false, true, count == FieldTypes.Length - 1 );
-                        if (AdeptarWriter.CurrentSettings.UseIndentation){
-                            builder.Append( '\n' );
-                        }
-                        break;
+                Write( param.GetValue( target ), GetSerializableType( param.FieldType ), ref builder, param.Name, indent, true, count == FieldTypes.Length - 1, false );
+                if (AdeptarWriter.CurrentSettings.UseIndentation){
+                    builder.Append( '\n' );
                 }
                 count++;
             }
@@ -157,28 +138,9 @@ namespace Adeptar
 
             foreach (var param in PropertyTypes)
             {
-                var Type = GetSerializableType( param.PropertyType );
-
-                switch (Type)
-                {
-                    case SerializableType.DateTime:
-                        Write( param.GetValue( target ), SerializableType.DateTime, ref builder, param.Name, indent, false, true, count == PropertyTypes.Length - 1 );
-                        if (AdeptarWriter.CurrentSettings.UseIndentation){
-                            builder.Append( '\n' );
-                        }
-                        break;
-                    case SerializableType.Class:
-                        Write( param.GetValue( target ), Type, ref builder, param.Name, indent, false, true, count == PropertyTypes.Length - 1 );
-                        if (AdeptarWriter.CurrentSettings.UseIndentation){
-                            builder.Append( '\n' );
-                        }
-                        break;
-                    default:
-                        Write( param.GetValue( target ), Type, ref builder, param.Name, indent, false, true, count == PropertyTypes.Length - 1 );
-                        if (AdeptarWriter.CurrentSettings.UseIndentation){
-                            builder.Append( '\n' );
-                        }
-                        break;
+                Write( param.GetValue( target ), GetSerializableType( param.PropertyType ), ref builder, param.Name, indent, true, count == FieldTypes.Length - 1, false );
+                if (AdeptarWriter.CurrentSettings.UseIndentation){
+                    builder.Append( '\n' );
                 }
                 count++;
             }
