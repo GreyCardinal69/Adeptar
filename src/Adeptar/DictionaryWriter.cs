@@ -80,7 +80,7 @@ namespace Adeptar
                                 Builder.Append( ',' );
                             }
                         }else{
-                            Write( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), ref Builder, null, isIndended ? Indent : 0, false, true ,true );
+                            Write( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), ref Builder, null, isIndended ? Indent : 0, false, true, true );
                             Builder.Append( ':' );
                             Write( keyVals[i].Item2, RootType, ref Builder, null, 0, false, count == dict.Count - 1 );
                         }
@@ -117,7 +117,7 @@ namespace Adeptar
                             Write( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), ref Builder, null, Indent, false, true, false );
                             Builder.Append( ':' );
                             Builder.Append( '\n' );
-                            Write( keyVals[i].Item2, FetchType( RootType ), ref Builder, null, Indent, false, true );
+                            Write( keyVals[i].Item2, RootType, ref Builder, null, Indent, false, true );
                             if (count != keyVals.Length - 1){
                                 Builder.Append( ',' );
                             }
@@ -141,10 +141,6 @@ namespace Adeptar
         /// <param name="Dict">The received <see cref="Dictionary{TKey, TValue}"/></param>
         /// <param name="Indent">The indentation amount.</param>
         /// <param name="MainBuilder">The main instance of a <see cref="StringBuilder"/> to append to.</param>
-        internal static void WriteDictionary ( object Dict, int Indent, ref StringBuilder MainBuilder )
-        {
-            bool IsIntended = Indent > 0;
-            WriteDictionaryInternal( Dict, Indent, ref MainBuilder, IsIntended );
-        }
+        internal static void WriteDictionary ( object Dict, int Indent, ref StringBuilder MainBuilder ) => WriteDictionaryInternal( Dict, Indent, ref MainBuilder, Indent > 0 );
     }
 }
