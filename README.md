@@ -17,60 +17,61 @@ Intel Core i7-10750H CPU 2.60GHz, 1 CPU, 12 logical and 6 physical cores
 
 
 ```
-|                                   Method |        Mean |      Error |     StdDev |         Min |         Max |  Gen 0 |  Gen 1 | Allocated |
-|----------------------------------------- |------------:|-----------:|-----------:|------------:|------------:|-------:|-------:|----------:|
-|                             ClassAdeptar | 1,954.71 ns |  38.414 ns |  55.092 ns | 1,886.44 ns | 2,081.11 ns | 0.0572 |      - |     376 B |
-|                                ClassJson |   946.80 ns |  18.374 ns |  28.060 ns |   912.54 ns | 1,017.75 ns | 0.2441 |      - |   1,536 B |
-|                             TupleAdeptar | 3,107.37 ns |  57.068 ns |  53.382 ns | 3,054.00 ns | 3,204.65 ns | 0.1373 |      - |     872 B |
-|                                TupleJson | 2,091.52 ns |  36.717 ns |  34.345 ns | 2,046.15 ns | 2,139.03 ns | 0.3319 |      - |   2,096 B |
-|            DictionaryWithArrayKeyAdeptar | 1,279.96 ns |  19.842 ns |  18.561 ns | 1,242.89 ns | 1,304.85 ns | 0.1678 |      - |   1,064 B |
-|               DictionaryWithArrayKeyJson | 1,753.01 ns |  32.002 ns |  66.799 ns | 1,611.63 ns | 1,940.54 ns | 0.3452 | 0.0019 |   2,176 B |
-|                        DictionaryAdeptar |   400.15 ns |   7.777 ns |  11.399 ns |   380.11 ns |   422.97 ns | 0.0939 |      - |     592 B |
-|                           DictionaryJson |   575.82 ns |  10.812 ns |   9.585 ns |   556.79 ns |   587.78 ns | 0.2661 | 0.0010 |   1,672 B |
-|              FourDimensionalArrayAdeptar | 2,916.65 ns |  47.249 ns |  73.562 ns | 2,821.06 ns | 3,128.59 ns | 0.1907 |      - |   1,216 B |
-|                 FourDimensionalArrayJson | 2,842.40 ns |  23.052 ns |  21.563 ns | 2,811.41 ns | 2,872.82 ns | 0.4082 |      - |   2,568 B |
-|                        NestedListAdeptar |   687.97 ns |   6.051 ns |   5.364 ns |   678.53 ns |   695.23 ns | 0.1631 |      - |   1,024 B |
-|                           NestedListJson | 1,230.64 ns |  24.502 ns |  35.140 ns | 1,163.22 ns | 1,303.71 ns | 0.3109 |      - |   1,952 B |
-|                             ArrayAdeptar |   860.45 ns |  13.711 ns |  12.154 ns |   846.76 ns |   889.73 ns | 0.0706 |      - |     448 B |
-|                                ArrayJson | 1,121.54 ns |  10.010 ns |   9.363 ns | 1,101.24 ns | 1,132.47 ns | 0.2499 |      - |   1,568 B |
-|                            StringAdeptar |    79.78 ns |   0.895 ns |   0.837 ns |    77.99 ns |    80.66 ns | 0.0076 |      - |      48 B |
-|                               StringJson |   246.41 ns |   2.948 ns |   2.757 ns |   242.18 ns |   249.48 ns | 0.2036 | 0.0005 |   1,280 B |
-|                              LongAdeptar |    64.31 ns |   0.813 ns |   0.720 ns |    62.70 ns |    65.20 ns | 0.0191 |      - |     120 B |
-|                                 LongJson |   244.69 ns |   4.227 ns |  10.127 ns |   235.03 ns |   276.30 ns | 0.2074 |      - |   1,304 B |
-|                              BoolAdeptar |    38.02 ns |   0.655 ns |   0.701 ns |    37.22 ns |    39.86 ns | 0.0089 |      - |      56 B |
-|                                 BoolJson |   213.52 ns |   4.014 ns |   4.122 ns |   203.83 ns |   220.91 ns | 0.1898 |      - |   1,192 B |
-|                            DoubleAdeptar |   208.71 ns |   4.161 ns |   3.689 ns |   201.42 ns |   214.94 ns | 0.0191 |      - |     120 B |
-|                               DoubleJson |   406.65 ns |   7.946 ns |  10.049 ns |   385.62 ns |   425.16 ns | 0.1998 | 0.0005 |   1,256 B |
-|                              EnumAdeptar |    66.32 ns |   1.198 ns |   1.062 ns |    63.21 ns |    67.81 ns | 0.0101 |      - |      64 B |
-|                                 EnumJson |   207.26 ns |   2.035 ns |   1.589 ns |   204.84 ns |   209.35 ns | 0.1886 | 0.0005 |   1,184 B |
-|                              ListAdeptar |   447.99 ns |   4.240 ns |   3.966 ns |   443.25 ns |   456.20 ns | 0.0443 |      - |     280 B |
-|                                 ListJson |   641.05 ns |   5.875 ns |   5.495 ns |   631.92 ns |   651.57 ns | 0.2394 | 0.0010 |   1,504 B |
-|                  ClassAdeptarDeserialize | 3,506.27 ns |  33.660 ns |  31.485 ns | 3,437.87 ns | 3,555.52 ns | 0.3662 |      - |   2,313 B |
-|                     ClassJsonDeserialize | 2,943.75 ns |  24.245 ns |  22.679 ns | 2,911.25 ns | 2,974.85 ns | 0.5684 | 0.0038 |   3,568 B |
-|                  TupleAdeptarDeserialize | 5,966.79 ns |  36.635 ns |  34.269 ns | 5,916.12 ns | 6,023.82 ns | 0.4883 |      - |   3,097 B |
-|                     TupleJsonDeserialize | 5,279.97 ns |  44.607 ns |  41.725 ns | 5,208.97 ns | 5,350.81 ns | 0.6180 |      - |   3,896 B |
-| DictionaryWithArrayKeyAdeptarDeserialize | 2,469.37 ns |  22.194 ns |  20.760 ns | 2,431.17 ns | 2,496.10 ns | 0.2136 |      - |   1,353 B |
-|    DictionaryWithArrayKeyJsonDeserialize | 2,060.23 ns |  13.766 ns |  12.877 ns | 2,024.89 ns | 2,075.88 ns | 0.5493 |      - |   3,464 B |
-|             DictionaryAdeptarDeserialize |   810.67 ns |   4.915 ns |   4.598 ns |   801.40 ns |   816.51 ns | 0.0896 |      - |     568 B |
-|                DictionaryJsonDeserialize |   861.82 ns |  13.383 ns |  11.863 ns |   846.18 ns |   887.06 ns | 0.4644 | 0.0029 |   2,920 B |
-|   FourDimensionalArrayAdeptarDeserialize | 4,380.24 ns |  59.278 ns |  55.449 ns | 4,292.44 ns | 4,442.43 ns | 0.3891 |      - |   2,464 B |
-|      FourDimensionalArrayJsonDeserialize | 5,527.61 ns | 101.192 ns | 163.406 ns | 5,351.76 ns | 5,942.05 ns | 0.8469 | 0.0076 |   5,336 B |
-|             NestedListAdeptarDeserialize | 1,779.40 ns |  18.710 ns |  17.501 ns | 1,755.09 ns | 1,808.35 ns | 0.1564 |      - |     984 B |
-|                NestedListJsonDeserialize | 1,572.79 ns |  15.357 ns |  14.365 ns | 1,547.08 ns | 1,591.44 ns | 0.5035 | 0.0019 |   3,160 B |
-|                  ArrayAdeptarDeserialize | 1,569.10 ns |  15.886 ns |  14.860 ns | 1,550.81 ns | 1,592.23 ns | 0.1411 |      - |     896 B |
-|                     ArrayJsonDeserialize | 1,311.23 ns |  14.976 ns |  14.008 ns | 1,290.31 ns | 1,338.95 ns | 0.4902 | 0.0019 |   3,080 B |
-|                 StringAdeptarDeserialize |   145.87 ns |   1.706 ns |   1.596 ns |   143.30 ns |   147.90 ns | 0.0393 |      - |     248 B |
-|                    StringJsonDeserialize |   333.32 ns |   3.546 ns |   2.961 ns |   329.83 ns |   340.17 ns | 0.4191 | 0.0038 |   2,632 B |
-|                   LongAdeptarDeserialize |   201.75 ns |   1.512 ns |   1.414 ns |   199.30 ns |   203.47 ns | 0.0432 |      - |     272 B |
-|                      LongJsonDeserialize |   389.86 ns |   3.145 ns |   2.942 ns |   385.66 ns |   395.36 ns | 0.4230 | 0.0005 |   2,656 B |
-|                   BoolAdeptarDeserialize |   117.01 ns |   1.426 ns |   1.334 ns |   114.92 ns |   119.46 ns | 0.0305 |      - |     192 B |
-|                      BoolJsonDeserialize |   285.03 ns |   3.551 ns |   3.322 ns |   279.54 ns |   288.97 ns | 0.4153 | 0.0005 |   2,608 B |
-|                 DoubleAdeptarDeserialize |   421.69 ns |   5.305 ns |   4.430 ns |   410.95 ns |   427.30 ns | 0.0429 |      - |     272 B |
-|                    DoubleJsonDeserialize |   670.32 ns |  15.838 ns |  45.696 ns |   607.90 ns |   800.67 ns | 0.4301 |      - |   2,704 B |
-|                   EnumAdeptarDeserialize |   222.31 ns |   3.041 ns |   2.539 ns |   218.54 ns |   227.35 ns | 0.0331 |      - |     208 B |
-|                      EnumJsonDeserialize |   503.60 ns |   9.970 ns |  11.082 ns |   492.80 ns |   533.53 ns | 0.4225 |      - |   2,656 B |
-|                   ListAdeptarDeserialize |   841.73 ns |  13.865 ns |  12.970 ns |   799.48 ns |   855.24 ns | 0.1345 |      - |     848 B |
-|                      ListJsonDeserialize |   809.97 ns |  15.701 ns |  23.015 ns |   773.00 ns |   857.08 ns | 0.4473 | 0.0038 |   2,808 B |
+|                                   Method |        Mean |      Error |     StdDev |      Median |         Min |         Max |  Gen 0 |  Gen 1 | Allocated |
+|----------------------------------------- |------------:|-----------:|-----------:|------------:|------------:|------------:|-------:|-------:|----------:|
+|                             ClassAdeptar | 1,226.30 ns |  23.899 ns |  21.186 ns | 1,224.48 ns | 1,180.99 ns | 1,261.42 ns | 0.0839 |      - |     528 B |
+|                                ClassJson | 1,081.38 ns |  21.060 ns |  21.627 ns | 1,086.94 ns | 1,041.53 ns | 1,106.52 ns | 0.2613 |      - |   1,640 B |
+|                             TupleAdeptar | 2,318.99 ns |  45.056 ns |  55.332 ns | 2,312.21 ns | 2,241.22 ns | 2,433.45 ns | 0.1564 |      - |     984 B |
+|                                TupleJson | 2,233.23 ns |  29.668 ns |  24.774 ns | 2,233.60 ns | 2,190.03 ns | 2,272.23 ns | 0.3395 |      - |   2,152 B |
+|            DictionaryWithArrayKeyAdeptar | 1,287.75 ns |  25.495 ns |  34.898 ns | 1,292.21 ns | 1,214.72 ns | 1,358.85 ns | 0.1678 |      - |   1,064 B |
+|               DictionaryWithArrayKeyJson | 1,650.58 ns |  32.104 ns |  45.006 ns | 1,642.40 ns | 1,581.08 ns | 1,747.54 ns | 0.3452 | 0.0019 |   2,176 B |
+|                        DictionaryAdeptar |   380.36 ns |   7.637 ns |   7.501 ns |   381.33 ns |   366.98 ns |   391.62 ns | 0.0939 |      - |     592 B |
+|                           DictionaryJson |   557.72 ns |  11.107 ns |  21.400 ns |   554.19 ns |   524.61 ns |   606.84 ns | 0.2661 | 0.0010 |   1,672 B |
+|              FourDimensionalArrayAdeptar | 2,925.98 ns |  44.410 ns |  41.541 ns | 2,927.90 ns | 2,832.67 ns | 2,989.32 ns | 0.1907 |      - |   1,216 B |
+|                 FourDimensionalArrayJson | 2,839.79 ns |  40.889 ns |  36.247 ns | 2,842.42 ns | 2,778.94 ns | 2,895.87 ns | 0.4082 |      - |   2,568 B |
+|                        NestedListAdeptar |   706.81 ns |  13.375 ns |  14.311 ns |   709.61 ns |   681.31 ns |   730.93 ns | 0.1631 |      - |   1,024 B |
+|                           NestedListJson | 1,183.94 ns |  18.654 ns |  17.449 ns | 1,183.63 ns | 1,149.23 ns | 1,214.34 ns | 0.3109 |      - |   1,952 B |
+|                             ArrayAdeptar |   873.70 ns |  17.247 ns |  19.170 ns |   870.16 ns |   848.00 ns |   928.38 ns | 0.0706 |      - |     448 B |
+|                                ArrayJson | 1,126.07 ns |  21.829 ns |  30.601 ns | 1,128.26 ns | 1,064.15 ns | 1,191.73 ns | 0.2499 |      - |   1,568 B |
+|                            StringAdeptar |    81.46 ns |   1.611 ns |   2.205 ns |    81.04 ns |    78.08 ns |    85.45 ns | 0.0076 |      - |      48 B |
+|                               StringJson |   233.51 ns |   3.223 ns |   2.691 ns |   233.88 ns |   229.19 ns |   238.07 ns | 0.2036 | 0.0005 |   1,280 B |
+|                              LongAdeptar |    65.50 ns |   1.331 ns |   1.533 ns |    65.36 ns |    63.18 ns |    69.01 ns | 0.0191 |      - |     120 B |
+|                                 LongJson |   239.98 ns |   4.683 ns |   7.428 ns |   239.20 ns |   227.58 ns |   259.59 ns | 0.2077 |      - |   1,304 B |
+|                              BoolAdeptar |    41.36 ns |   0.689 ns |   0.644 ns |    41.47 ns |    39.90 ns |    42.08 ns | 0.0089 |      - |      56 B |
+|                                 BoolJson |   235.97 ns |   7.853 ns |  22.783 ns |   238.22 ns |   196.57 ns |   297.51 ns | 0.1898 |      - |   1,192 B |
+|                            DoubleAdeptar |   217.46 ns |   4.168 ns |   8.513 ns |   213.72 ns |   206.61 ns |   239.91 ns | 0.0191 |      - |     120 B |
+|                               DoubleJson |   401.41 ns |   7.997 ns |  15.407 ns |   400.00 ns |   377.09 ns |   432.72 ns | 0.1998 | 0.0005 |   1,256 B |
+|                              EnumAdeptar |    77.20 ns |   3.151 ns |   9.039 ns |    74.24 ns |    64.69 ns |   102.10 ns | 0.0101 |      - |      64 B |
+|                                 EnumJson |   208.37 ns |   3.078 ns |   2.879 ns |   207.89 ns |   203.83 ns |   213.87 ns | 0.1886 | 0.0005 |   1,184 B |
+|                              ListAdeptar |   475.18 ns |   3.446 ns |   3.223 ns |   476.19 ns |   469.42 ns |   478.90 ns | 0.0439 |      - |     280 B |
+|                                 ListJson |   647.73 ns |  10.907 ns |  10.202 ns |   649.10 ns |   632.93 ns |   662.92 ns | 0.2394 | 0.0010 |   1,504 B |
+|                  ClassAdeptarDeserialize | 3,619.72 ns |  58.365 ns |  54.594 ns | 3,613.66 ns | 3,547.66 ns | 3,752.00 ns | 0.3662 |      - |   2,321 B |
+|                     ClassJsonDeserialize | 2,929.06 ns |  29.183 ns |  25.870 ns | 2,922.59 ns | 2,900.78 ns | 2,986.42 ns | 0.5684 | 0.0038 |   3,576 B |
+|                  TupleAdeptarDeserialize | 6,144.17 ns |  95.189 ns |  89.040 ns | 6,164.57 ns | 6,028.93 ns | 6,324.40 ns | 0.4883 |      - |   3,105 B |
+|                     TupleJsonDeserialize | 5,664.92 ns | 112.606 ns | 284.571 ns | 5,601.35 ns | 5,218.77 ns | 6,336.41 ns | 0.6180 |      - |   3,904 B |
+| DictionaryWithArrayKeyAdeptarDeserialize | 2,674.21 ns |  53.246 ns | 106.339 ns | 2,675.04 ns | 2,512.22 ns | 2,914.56 ns | 0.2136 |      - |   1,353 B |
+|    DictionaryWithArrayKeyJsonDeserialize | 2,365.32 ns |  44.331 ns |  64.980 ns | 2,343.73 ns | 2,277.35 ns | 2,526.83 ns | 0.5493 |      - |   3,464 B |
+|             DictionaryAdeptarDeserialize |   867.94 ns |  15.559 ns |  32.819 ns |   861.63 ns |   822.11 ns |   962.19 ns | 0.0896 |      - |     568 B |
+|                DictionaryJsonDeserialize |   897.92 ns |  18.156 ns |  52.963 ns |   872.79 ns |   842.82 ns | 1,022.61 ns | 0.4644 |      - |   2,920 B |
+|   FourDimensionalArrayAdeptarDeserialize | 4,530.47 ns |  63.577 ns |  56.359 ns | 4,545.21 ns | 4,417.23 ns | 4,619.21 ns | 0.3891 |      - |   2,464 B |
+|      FourDimensionalArrayJsonDeserialize | 5,536.87 ns |  91.369 ns | 118.806 ns | 5,514.77 ns | 5,377.96 ns | 5,888.27 ns | 0.8469 | 0.0076 |   5,336 B |
+|             NestedListAdeptarDeserialize | 1,915.28 ns |  36.917 ns |  36.257 ns | 1,910.60 ns | 1,863.41 ns | 1,981.21 ns | 0.1564 |      - |     984 B |
+|                NestedListJsonDeserialize | 1,640.83 ns |  23.111 ns |  19.299 ns | 1,636.65 ns | 1,617.70 ns | 1,679.33 ns | 0.5035 | 0.0019 |   3,160 B |
+|                  ArrayAdeptarDeserialize | 1,697.28 ns |  32.871 ns |  52.137 ns | 1,702.28 ns | 1,621.09 ns | 1,822.29 ns | 0.1411 |      - |     896 B |
+|                     ArrayJsonDeserialize | 1,364.21 ns |  24.741 ns |  21.932 ns | 1,357.04 ns | 1,340.49 ns | 1,410.19 ns | 0.4902 | 0.0019 |   3,080 B |
+|                 StringAdeptarDeserialize |   154.25 ns |   1.892 ns |   1.580 ns |   154.58 ns |   150.37 ns |   155.74 ns | 0.0393 |      - |     248 B |
+|                    StringJsonDeserialize |   397.44 ns |   9.967 ns |  28.598 ns |   388.34 ns |   357.64 ns |   477.30 ns | 0.4191 | 0.0038 |   2,632 B |
+|                   LongAdeptarDeserialize |   221.47 ns |   3.290 ns |   3.077 ns |   220.34 ns |   217.00 ns |   228.10 ns | 0.0432 |      - |     272 B |
+|                      LongJsonDeserialize |   456.17 ns |  18.132 ns |  53.462 ns |   439.03 ns |   387.81 ns |   598.19 ns | 0.4230 | 0.0005 |   2,656 B |
+|                   BoolAdeptarDeserialize |   128.79 ns |   2.614 ns |   7.416 ns |   127.90 ns |   114.32 ns |   148.65 ns | 0.0305 |      - |     192 B |
+|                      BoolJsonDeserialize |   359.24 ns |  16.618 ns |  47.948 ns |   341.01 ns |   305.82 ns |   478.13 ns | 0.4153 | 0.0005 |   2,608 B |
+|                 DoubleAdeptarDeserialize |   525.99 ns |  12.296 ns |  34.277 ns |   522.97 ns |   445.12 ns |   628.96 ns | 0.0429 |      - |     272 B |
+|                    DoubleJsonDeserialize |   851.51 ns |  14.170 ns |  13.255 ns |   852.63 ns |   834.32 ns |   881.26 ns | 0.4301 |      - |   2,704 B |
+|                   EnumAdeptarDeserialize |   255.04 ns |   3.062 ns |   2.557 ns |   254.54 ns |   250.83 ns |   258.55 ns | 0.0329 |      - |     208 B |
+|                      EnumJsonDeserialize |   661.02 ns |  11.594 ns |  13.802 ns |   659.54 ns |   637.26 ns |   690.11 ns | 0.4225 |      - |   2,656 B |
+|                   ListAdeptarDeserialize |   999.70 ns |  15.346 ns |  12.815 ns | 1,004.27 ns |   970.33 ns | 1,015.62 ns | 0.1335 |      - |     848 B |
+|                      ListJsonDeserialize | 1,039.65 ns |  20.204 ns |  23.267 ns | 1,031.16 ns |   996.71 ns | 1,086.88 ns | 0.4463 | 0.0038 |   2,808 B |
+
 
 
 An example:
