@@ -49,13 +49,8 @@ namespace Adeptar
             int count = 0;
 
             foreach (var item in dict.Keys){
-                x.Add( (item, null) );
+                x.Add( (item, dict[item]) );
             }
-            foreach (var item in dict.Values){
-                x[count] = (x[count].Item1, item);
-                count++;
-            }
-            count = 0;
 
             if (!AdeptarWriter.CurrentSettings.UseIndentation){
                 for (int i = 0; i < x.Count; i++)

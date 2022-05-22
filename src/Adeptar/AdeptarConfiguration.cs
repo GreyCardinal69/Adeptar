@@ -49,27 +49,9 @@ namespace Adeptar
         }
 
         /// <summary>
-        /// Creates a new instance of an <see cref="AdeptarConfiguration"/> class with an array of fields and or properties to ignore.
-        /// As well as a <see cref="Dictionary{TKey, TValue}"/> of mappings for fields and properties.
-        /// </summary>
-        /// <param name="toIgnore"></param>
-        /// <param name="reMaps"></param>
-        public AdeptarConfiguration ( string[] toIgnore, Dictionary<string, string> reMaps  )
-        {
-            ToIgnore = toIgnore;
-            Remaps = reMaps;
-        }
-
-        /// <summary>
         /// An array of field and or property names to ignore.
         /// </summary>
         public string[] ToIgnore { get; init; }
-
-        /// <summary>
-        /// A <see cref="Dictionary{TKey, TValue}"/> of field and or property names to remap.
-        /// </summary>
-        public Dictionary<string, string> Remaps { get; init; }
-
         /// <summary>
         /// The name of the <see cref="AdeptarConfiguration"/> field or property inside the class or struct it is in.
         /// </summary>
@@ -84,9 +66,6 @@ namespace Adeptar
         /// Sets the private name of the <see cref="AdeptarConfiguration"/> instance.
         /// </summary>
         /// <param name="name"></param>
-        internal void SetName(string name )
-        {
-            _name = name;
-        }
+        internal void SetName ( string name ) => _name = name;
     }
 }

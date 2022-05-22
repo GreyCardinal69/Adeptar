@@ -21,22 +21,9 @@
             </summary>
             <param name="toIgnore"></param>
         </member>
-        <member name="M:Adeptar.AdeptarConfiguration.#ctor(System.String[],System.Collections.Generic.Dictionary{System.String,System.String})">
-            <summary>
-            Creates a new instance of an <see cref="T:Adeptar.AdeptarConfiguration"/> class with an array of fields and or properties to ignore.
-            As well as a <see cref="T:System.Collections.Generic.Dictionary`2"/> of mappings for fields and properties.
-            </summary>
-            <param name="toIgnore"></param>
-            <param name="reMaps"></param>
-        </member>
         <member name="P:Adeptar.AdeptarConfiguration.ToIgnore">
             <summary>
             An array of field and or property names to ignore.
-            </summary>
-        </member>
-        <member name="P:Adeptar.AdeptarConfiguration.Remaps">
-            <summary>
-            A <see cref="T:System.Collections.Generic.Dictionary`2"/> of field and or property names to remap.
             </summary>
         </member>
         <member name="F:Adeptar.AdeptarConfiguration._name">

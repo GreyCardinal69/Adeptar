@@ -64,10 +64,7 @@ namespace Adeptar
         /// Assigns the <see cref="AdeptarSettings"/> for the current serialization task.
         /// </summary>
         /// <param name="settings">The user provided serialization settings.</param>
-        internal static void AssignSettings( AdeptarSettings settings )
-        {
-            CurrentSettings = settings;
-        }
+        internal static void AssignSettings( AdeptarSettings settings ) => CurrentSettings = settings;
 
         /// <summary>
         /// Serializes the object to a .Adeptar string representation and writes it to a file. Used in the ID feature.
