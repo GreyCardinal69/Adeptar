@@ -285,19 +285,22 @@ namespace Adeptar
         /// </returns>
         public static SerializableType FetchType ( object received )
         {
-            var type = received.GetType();
-            if (type.IsPrimitive || received is Enum)
+            if (received is string)
+                return SerializableType.String;
+            if (received is Enum || received is bool || received is IConvertible)
                 return SerializableType.Simple;
             if (received is char)
                 return SerializableType.Char;
-            if (received is string)
-                return SerializableType.String;
             if (received is DateTime || received is DateTimeOffset)
                 return SerializableType.DateTime;
-            if (received is Array){
-                if (IsMultiDimensionalArray( received )) {
+            if (received is Array)
+            {
+                if (IsMultiDimensionalArray( received ))
+                {
                     return SerializableType.DimensionalArray;
-                }else{
+                }
+                else
+                {
                     return SerializableType.Array;
                 }
             }

@@ -33,7 +33,6 @@ using FastMember;
 
 using static Adeptar.TypeGetters;
 using static Adeptar.AdeptarWriter;
-using System.Linq;
 
 namespace Adeptar
 {
@@ -42,12 +41,15 @@ namespace Adeptar
     /// </summary>
     internal class ClassWriter
     {
-        internal static Type _adeptarConfiguration = typeof( AdeptarConfiguration );
+        /// <summary>
+        /// Cached <see cref="Type"/> for <see cref="AdeptarConfiguration"/> class.
+        /// </summary>
+        private static Type _adeptarConfiguration = typeof( AdeptarConfiguration );
 
         /// <summary>
         /// Default empty instance of an <see cref="AdeptarConfiguration"/> class.
         /// </summary>
-        internal static AdeptarConfiguration defaultConfig = new();
+        private static AdeptarConfiguration _defaultConfig = new();
 
         /// <summary>
         /// Serializes the class or struct object to a .Adeptar string.
@@ -61,7 +63,7 @@ namespace Adeptar
             int count = 0;
             MemberSet vals = accessor.GetMembers();
 
-            AdeptarConfiguration config = defaultConfig;
+            AdeptarConfiguration config = _defaultConfig;
 
             foreach (var item in vals)
             {
@@ -100,10 +102,7 @@ namespace Adeptar
                     }
                 }
 
-                var type = GetSerializableType( itemType );
-
-                object value = accessor[target, name];
-                Write( value, type, ref builder, name, indent, true, count == vals.Count - 1, false );
+                Write( accessor[target, name], GetSerializableType( itemType ), ref builder, name, indent, true, count == vals.Count - 1, false );
 
                 if (AdeptarWriter.CurrentSettings.UseIndentation){
                     builder.Append( '\n' );
@@ -127,18 +126,7 @@ namespace Adeptar
 
             foreach (var param in FieldTypes)
             {
-                Write( param.GetValue( target ), GetSerializableType( param.FieldType ), ref builder, param.Name, indent, true, count == FieldTypes.Length - 1, false );
-                if (AdeptarWriter.CurrentSettings.UseIndentation){
-                    builder.Append( '\n' );
-                }
-                count++;
-            }
-
-            PropertyInfo[] PropertyTypes = type.GetProperties( BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly );
-
-            foreach (var param in PropertyTypes)
-            {
-                Write( param.GetValue( target ), GetSerializableType( param.PropertyType ), ref builder, param.Name, indent, true, count == FieldTypes.Length - 1, false );
+                Write( param.GetValue(target), GetSerializableType( param.FieldType ), ref builder, param.Name, indent, true, count == FieldTypes.Length - 1, false );
                 if (AdeptarWriter.CurrentSettings.UseIndentation){
                     builder.Append( '\n' );
                 }

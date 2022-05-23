@@ -24,6 +24,8 @@ namespace AdeptarBenchmarks
 #if DEBUG
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
+
+            Console.WriteLine( AdeptarConverter.Serialize(new MemoryBenchmarkerDemo.MyClass()) );
 #else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
             Console.ReadLine();
@@ -31,12 +33,15 @@ namespace AdeptarBenchmarks
         }
     }
 
-    [MinColumn, MaxColumn]
     [MemoryDiagnoser]
     public class MemoryBenchmarkerDemo
     {
         public class MyClass
         {
+         //   public AdeptarConfiguration config = new()
+        //    {
+        //        ToIgnore = new string[] {"Maps", "Odds"}
+         //   };
             public SerializableType type = SerializableType.NULL;
             public int Number;
             public int Number3;
@@ -44,19 +49,25 @@ namespace AdeptarBenchmarks
             public Dictionary<int, string> Maps;
             public DateTime date;
         }
-        /*
+
+        public static TypeAccessor acc = TypeAccessor.Create( typeof( MyClass ) );
+        public static MemberSet set = TypeAccessor.Create( typeof( MyClass ) ).GetMembers();
+        public static MyClass classe = new();
+
+
         [Benchmark]
         public void ClassAdeptar ()
         {
             AdeptarConverter.Serialize( new MyClass() );
         }
-
+         
         [Benchmark]
         public void ClassJson ()
         {
             JsonConvert.SerializeObject( new MyClass() );
         }
 
+        
         [Benchmark]
         public void TupleAdeptar ()
         {
@@ -68,7 +79,7 @@ namespace AdeptarBenchmarks
         {
             JsonConvert.SerializeObject( (1, "Hello World", new MyClass(), new int[] { 1, 2, 3, 4 }) );
         }
-        */
+
         [Benchmark]
         public void DictionaryWithArrayKeyAdeptar ()
         {
@@ -104,7 +115,7 @@ namespace AdeptarBenchmarks
         {
             JsonConvert.SerializeObject( new int[2, 2, 2, 2] { { { { 1, 2 }, { 3, 4 } }, { { 5, 6 }, { 7, 8 } } }, { { { 1, 2 }, { 3, 4 } }, { { 5, 6 }, { 7, 8 } } } } );
         }
-        /*
+
         [Benchmark]
         public void NestedListAdeptar ()
         {
@@ -355,6 +366,6 @@ namespace AdeptarBenchmarks
         public void ListJsonDeserialize ()
         {
             JsonConvert.DeserializeObject<List<string>>( @"[""Some"",""Random"",""Words"",""Words""]" );
-        }*/
+        }
     }
 }

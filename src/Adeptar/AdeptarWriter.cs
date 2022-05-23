@@ -286,10 +286,6 @@ namespace Adeptar
                         var final = enumerator.MoveNext();
                         foreach (var item in tempList)
                         {
-                            if (item is IList){
-                                WriteArray( toSerialize, 1 + indent, ref mainBuilder );
-                                break;
-                            }
                             Write( item, FetchType( item ), ref mainBuilder, null, indent + 1, false, ( final == !enumerator.MoveNext() ), false );
                             if (AdeptarWriter.CurrentSettings.UseIndentation){
                                 mainBuilder.Append( '\n' );
@@ -337,10 +333,9 @@ namespace Adeptar
                         mainBuilder.Append( name );
                         mainBuilder.Append( ": " );
                     }
+                    mainBuilder.Append( '(' );
                     if (AdeptarWriter.CurrentSettings.UseIndentation){
-                        mainBuilder.Append( '(' ).Append( '\n' );
-                    }else{
-                        mainBuilder.Append( '(' );
+                        mainBuilder.Append( '\n' );
                     }
                     WriteTuple( toSerialize, 1 + indent, ref mainBuilder );
                     if (AdeptarWriter.CurrentSettings.UseIndentation){

@@ -517,7 +517,12 @@
             Class that handles serialization of class and struct objects.
             </summary>
         </member>
-        <member name="F:Adeptar.ClassWriter.defaultConfig">
+        <member name="F:Adeptar.ClassWriter._adeptarConfiguration">
+            <summary>
+            Cached <see cref="T:System.Type"/> for <see cref="T:Adeptar.AdeptarConfiguration"/> class.
+            </summary>
+        </member>
+        <member name="F:Adeptar.ClassWriter._defaultConfig">
             <summary>
             Default empty instance of an <see cref="T:Adeptar.AdeptarConfiguration"/> class.
             </summary>
