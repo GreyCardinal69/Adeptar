@@ -47,7 +47,7 @@ namespace Adeptar
         /// <summary>
         /// Default empty instance of an <see cref="AdeptarConfiguration"/> class.
         /// </summary>
-        private static AdeptarConfiguration _defaultConfig = new();
+        private static AdeptarConfiguration _defaultConfig = new() { ToIgnore = new string[] { } };
 
         /// <summary>
         /// Serializes the class or struct object to a .Adeptar string.
@@ -71,6 +71,8 @@ namespace Adeptar
                     break;
                 }
             }
+
+            int last = config.ToIgnore.Length > 0 ? vals.Count - 1 + config.ToIgnore.Length : vals.Count - 1;
 
             foreach (var item in vals)
             {
@@ -102,9 +104,9 @@ namespace Adeptar
                 var value = accessor[target, name];
 
                 if (value is null){
-                    WriteRaw( value, GetSerializableType( itemType ), builder, name, indent, count == vals.Count - 1 );
+                    WriteRaw( value, GetSerializableType( itemType ), builder, name, indent, count == last );
                 }else{
-                    Write( value, GetSerializableType( itemType ), builder, name, indent, true, count == vals.Count - 1, false );
+                    Write( value, GetSerializableType( itemType ), builder, name, indent, true, count == last, false );
                 }
 
                 if (AdeptarWriter.CurrentSettings.UseIndentation){

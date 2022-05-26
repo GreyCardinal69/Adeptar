@@ -396,6 +396,7 @@ namespace Adeptar
         /// <returns>Returns an object casted to the provided enum type.</returns>
         public static object ParseToEnumNonGeneric ( ReadOnlySpan<char> obj, Type enumType )
         {
+            Console.WriteLine(obj.ToString()+"_");
             return Enum.Parse( enumType, obj.ToString() );
         }
     }

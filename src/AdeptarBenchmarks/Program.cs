@@ -30,7 +30,6 @@ namespace AdeptarBenchmarks
 #if DEBUG
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
-            Console.WriteLine( AdeptarConverter.Serialize( new MemoryBenchmarkerDemo.MyClass()) );
 #else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
             Console.ReadLine();
@@ -43,6 +42,20 @@ namespace AdeptarBenchmarks
     {
         public class MyClass
         {
+            public SerializableType type = SerializableType.NULL;
+            public int Number;
+            public int Number3;
+            public int[] Odds;
+            public Dictionary<int, string> Maps;
+            public DateTime date;
+        }
+
+        public class MyClassWithConfig
+        {
+            public AdeptarConfiguration config = new()
+            {
+                ToIgnore = new string[] { "Odds", "Maps" }
+            };
             public SerializableType type = SerializableType.NULL;
             public int Number;
             public int Number3;

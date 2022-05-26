@@ -8,18 +8,82 @@ namespace AdeptarTests
     [TestClass]
     public class UnitTest1
     {
-        private class MyClass
+        private class SimpleClass
         {
             public int Number = 5;
             public int Number2 = 5;
             public int Number3 = 5;
         }
 
+        private class MyClass
+        {
+            public SerializableType type = SerializableType.NULL;
+            public int Number;
+            public int Number3;
+            public int[] Odds;
+            public Dictionary<int, string> Maps;
+            public DateTime date;
+        }
+
+        private class MyClassWithConfig
+        {
+            public AdeptarConfiguration config = new()
+            {
+                ToIgnore = new string[] { "Odds", "Maps" }
+            };
+            public SerializableType type = SerializableType.NULL;
+            public int Number;
+            public int Number3;
+            public int[] Odds;
+            public Dictionary<int, string> Maps;
+            public DateTime date;
+        }
+
+        [TestMethod]
+        public void EmptyClassTest ()
+        {
+            Assert.AreEqual(
+                AdeptarConverter.Serialize( new MyClass(), Formatting.NoIndentation ),
+                "{date: \"1/1/0001 12:00:00 AM\",Maps: [],Number: 0,Number3: 0,Odds: [],type: NULL}" );
+        }
+
+        [TestMethod]
+        public void ClassWithAdeptarConfiguration ()
+        {
+            Assert.AreEqual(
+                AdeptarConverter.Serialize( new MyClassWithConfig(), Formatting.NoIndentation ),
+               @"{date: ""1/1/0001 12:00:00 AM"",Number: 0,Number3: 0,type: NULL}" );
+        }
+
+        [TestMethod]
+        public void HeavyClassTest ()
+        {
+            Assert.AreEqual(
+                AdeptarConverter.Serialize( new MyClass()
+                {
+                    date = DateTime.Now,
+                    Maps = new Dictionary<int, string>() { { 1, "Hello" }, { 2, "World" } },
+                    Number = 4,
+                    Number3 = -444,
+                    Odds = new int[] { 1, 3, 5, 7, 9 },
+                    type = SerializableType.Tuple
+                }, Formatting.NoIndentation ),
+                @"{date: """ + $"{DateTime.Now}" + @""",Maps: [1:""Hello"",2:""World""],Number: 4,Number3: -444,Odds: [1,3,5,7,9],type: Tuple}" );
+        }
+
+        [TestMethod]
+        public void HeavyTupleTest ()
+        {
+            Assert.AreEqual(
+                AdeptarConverter.Serialize( (1, 4, new MyClass(), "hello world", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, 3, '3', true, 0.00001), Formatting.NoIndentation ),
+                @"(Item1: 1,Item2: 4,Item3: {date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: NULL},Item4: ""hello world"",Item5: [1,2,3,4,5,6,7,8,9],Item6: 3,Item7: '3',Rest: (Item1: True,Item2: 1E-05))" );
+        }
+
         [TestMethod]
         public void SimpleClassTest ()
         {
             Assert.AreEqual(
-                AdeptarConverter.Serialize(new MyClass(), Formatting.NoIndentation ),
+                AdeptarConverter.Serialize(new SimpleClass(), Formatting.NoIndentation ),
                 @"{Number: 5,Number2: 5,Number3: 5}" );
         }
 
@@ -114,11 +178,11 @@ namespace AdeptarTests
         [TestMethod]
         public void SimpleClassTestDeserialize ()
         {
-            string text = AdeptarConverter.Serialize( new MyClass(), Formatting.NoIndentation );
+            string text = AdeptarConverter.Serialize( new SimpleClass(), Formatting.NoIndentation );
             Assert.AreEqual(
                 text,
                 AdeptarConverter.Serialize(
-                AdeptarConverter.DeserializeString<MyClass>( text ), Formatting.NoIndentation ) );
+                AdeptarConverter.DeserializeString<SimpleClass>( text ), Formatting.NoIndentation ) );
         }
 
         [TestMethod]
@@ -229,6 +293,54 @@ namespace AdeptarTests
                 text,
                 AdeptarConverter.Serialize(
                 AdeptarConverter.DeserializeString<Formatting>( text ), Formatting.NoIndentation ) );
+        }
+
+        [TestMethod]
+        public void EmptyClassTestDeserialize ()
+        {
+            string text = AdeptarConverter.Serialize( new MyClass(), Formatting.NoIndentation );
+            Assert.AreEqual(
+                text,
+                AdeptarConverter.Serialize(
+                AdeptarConverter.DeserializeString<MyClass>( text ), Formatting.NoIndentation ) );
+        }
+
+        [TestMethod]
+        public void ClassWithAdeptarConfigurationDeserialize ()
+        {
+            string text = AdeptarConverter.Serialize( new MyClassWithConfig(), Formatting.NoIndentation );
+            Assert.AreEqual(
+                text,
+                AdeptarConverter.Serialize(
+                AdeptarConverter.DeserializeString<MyClassWithConfig>( text ), Formatting.NoIndentation ) );
+        }
+
+        [TestMethod]
+        public void HeavyClassTestDeserialize ()
+        {
+            string text = AdeptarConverter.Serialize( new MyClass()
+            {
+                date = DateTime.Now,
+                Maps = new Dictionary<int, string>() { { 1, "Hello" }, { 2, "World" } },
+                Number = 4,
+                Number3 = -444,
+                Odds = new int[] { 1, 3, 5, 7, 9 },
+                type = SerializableType.Tuple
+            }, Formatting.NoIndentation );
+            Assert.AreEqual(
+                text,
+                AdeptarConverter.Serialize(
+                AdeptarConverter.DeserializeString<MyClass>( text ), Formatting.NoIndentation ) );
+        }
+
+        [TestMethod]
+        public void HeavyTupleTestDeserialize ()
+        {
+            string text = AdeptarConverter.Serialize( (1, 4, new MyClass(), "hello world", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, 3, '3', true, 0.00001), Formatting.NoIndentation );
+            Assert.AreEqual(
+                text,
+                AdeptarConverter.Serialize(
+                AdeptarConverter.DeserializeString<(int, int, MyClass, string, int[], int, char, bool, double)>( text ), Formatting.NoIndentation ) );
         }
     }
 }
