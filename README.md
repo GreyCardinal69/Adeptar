@@ -16,7 +16,6 @@ Intel Core i7-10750H CPU 2.60GHz, 1 CPU, 12 logical and 6 physical cores
   DefaultJob : .NET 5.0.17 (5.0.1722.21314), X64 RyuJIT
 ```
 
-```
 |                                   Method |        Mean |      Error |     StdDev |  Gen 0 |  Gen 1 | Allocated |
 |----------------------------------------- |------------:|-----------:|-----------:|-------:|-------:|----------:|
 |                        ClassAdeptarEmpty | 1,075.31 ns |   6.764 ns |   6.327 ns | 0.0820 |      - |     520 B |
@@ -73,8 +72,6 @@ Intel Core i7-10750H CPU 2.60GHz, 1 CPU, 12 logical and 6 physical cores
 |                      EnumJsonDeserialize |   459.57 ns |   9.126 ns |  16.455 ns | 0.4230 | 0.0005 |   2,656 B |
 |                   ListAdeptarDeserialize |   792.82 ns |  15.628 ns |  22.908 ns | 0.1345 |      - |     848 B |
 |                      ListJsonDeserialize |   743.67 ns |  14.099 ns |  13.189 ns | 0.4473 | 0.0038 |   2,808 B |
-```
-
 
 An example:
 
