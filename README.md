@@ -4,6 +4,7 @@ A small .NET file extension aimed to be fast and easy to use, aimed for modding 
 TO DO:
 - Code optimization.
 - More features.
+- Proper documentation
 
 First some benchmarks, both serialization and deserialization.
 Benchmakrs are compared to NewtonSoft.Json library
