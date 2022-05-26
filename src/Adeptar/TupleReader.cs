@@ -23,10 +23,11 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
 
-using FastMember;
 using System;
 using System.Collections.Generic;
 using System.Text;
+
+using FastMember;
 
 using static Adeptar.AdeptarReader;
 

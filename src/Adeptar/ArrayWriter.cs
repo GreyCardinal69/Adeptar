@@ -44,8 +44,12 @@ namespace Adeptar
         /// <param name="target">The array of list to serialize.</param>
         /// <param name="indent">The amount of indentation.</param>
         /// <param name="builder">The <see cref="StringBuilder"/> instance to append to.</param>
-        internal static void WriteArray ( object target, int indent, ref StringBuilder builder )
+        internal static void WriteArray ( object target, int indent, StringBuilder builder )
         {
+            if (target is null){
+                return;
+            }
+
             if (!AdeptarWriter.CurrentSettings.UseIndentation){
                 int count = 0;
                 bool isIntended = indent > 0;
@@ -56,13 +60,13 @@ namespace Adeptar
                         if (indent >= 1){
                             builder.Append( '[' );
                         }
-                        WriteArray( tempList[i], indent + 1, ref builder );
+                        WriteArray( tempList[i], indent + 1, builder );
                         builder.Append( ']' );
                         if (count != tempList.Count - 1){
                             builder.Append( ',' );
                         }
                     }else{
-                        Write( tempList[i], FetchType( tempList[i] ), ref builder, null, isIntended ? indent - 1 : indent, false, count == tempList.Count - 1 , false );
+                        Write( tempList[i], FetchType( tempList[i] ), builder, null, isIntended ? indent - 1 : indent, false, count == tempList.Count - 1 , false );
                     }
                     count++;
                 }
@@ -80,7 +84,7 @@ namespace Adeptar
                         if (indent >= 1){
                             builder.Append( '[' ).Append( '\n' );
                         }
-                        WriteArray( tempList[i], indent + 2, ref builder );
+                        WriteArray( tempList[i], indent + 2, builder );
                         for (int w = 1; w <= indent; w++)
                         {
                             builder.Append( '\t' );
@@ -91,7 +95,7 @@ namespace Adeptar
                         }
                         builder.Append( '\n' );
                     }else{
-                        Write( tempList[i], FetchType( tempList[i] ), ref builder, null, isIntended ? indent - 1 : indent, false, count == tempList.Count - 1, false );
+                        Write( tempList[i], FetchType( tempList[i] ), builder, null, isIntended ? indent - 1 : indent, false, count == tempList.Count - 1, false );
                         builder.Append( '\n' );
                     }
                     count++;
@@ -105,8 +109,12 @@ namespace Adeptar
         /// <param name="target">The object to serialize.</param>
         /// <param name="indent">The amount of indentation.</param>
         /// <param name="builder">The <see cref="StringBuilder"/> to append to.</param>
-        internal static void WriteDimensionalArray ( object target, int indent, ref StringBuilder builder )
+        internal static void WriteDimensionalArray ( object target, int indent, StringBuilder builder )
         {
+            if (target is null){
+                return;
+            }
+
             Array array = target as Array;
             Stack<IEnumerator> stack = new();
             stack.Push( array.GetEnumerator() );
@@ -135,7 +143,7 @@ namespace Adeptar
                 for (var iterator = stack.Pop(); iterator.MoveNext();)
                 {
                     Write( iterator.Current, FetchType( iterator.Current ),
-                        ref builder, null, indent, false, count == len - 1, false );
+                        builder, null, indent, false, count == len - 1, false );
                     if (AdeptarWriter.CurrentSettings.UseIndentation && count != len - 1){
                         for (int i = 0; i < indent; i++)
                         {

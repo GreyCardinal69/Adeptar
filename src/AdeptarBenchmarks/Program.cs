@@ -19,13 +19,18 @@ namespace AdeptarBenchmarks
     [MemoryDiagnoser]
     public class Program
     {
+        public class test<T> { public T h;
+
+            public test () { }
+
+        }
+
         static void Main ( string[] args )
         {
 #if DEBUG
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
-
-            Console.WriteLine( AdeptarConverter.Serialize(new MemoryBenchmarkerDemo.MyClass()) );
+            Console.WriteLine( AdeptarConverter.Serialize( new MemoryBenchmarkerDemo.MyClass()) );
 #else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
             Console.ReadLine();
@@ -38,10 +43,6 @@ namespace AdeptarBenchmarks
     {
         public class MyClass
         {
-         //   public AdeptarConfiguration config = new()
-        //    {
-        //        ToIgnore = new string[] {"Maps", "Odds"}
-         //   };
             public SerializableType type = SerializableType.NULL;
             public int Number;
             public int Number3;
@@ -50,24 +51,46 @@ namespace AdeptarBenchmarks
             public DateTime date;
         }
 
-        public static TypeAccessor acc = TypeAccessor.Create( typeof( MyClass ) );
-        public static MemberSet set = TypeAccessor.Create( typeof( MyClass ) ).GetMembers();
-        public static MyClass classe = new();
-
-
         [Benchmark]
-        public void ClassAdeptar ()
+        public void ClassAdeptarEmpty ()
         {
             AdeptarConverter.Serialize( new MyClass() );
         }
-         
+
         [Benchmark]
-        public void ClassJson ()
+        public void ClassJsonEmpty ()
         {
             JsonConvert.SerializeObject( new MyClass() );
         }
 
-        
+        [Benchmark]
+        public void ClassAdeptar()
+        {
+            AdeptarConverter.Serialize( new MyClass()
+            {
+                date = DateTime.Now,
+                Maps = new Dictionary<int, string>() { { 1, "hello" }, { 2, "world" } },
+                Number = 1,
+                Number3 = 4,
+                Odds = new int[] { 1, 3, 5, 7, 9 },
+                type = SerializableType.Dictionary
+            } );
+        }
+
+        [Benchmark]
+        public void ClassJson ()
+        {
+            JsonConvert.SerializeObject( new MyClass()
+            {
+                date = DateTime.Now,
+                Maps = new Dictionary<int, string>() { { 1, "hello" }, { 2, "world" } },
+                Number = 1,
+                Number3 = 4,
+                Odds = new int[] { 1, 3, 5, 7, 9 },
+                type = SerializableType.Dictionary
+            } );
+        }
+
         [Benchmark]
         public void TupleAdeptar ()
         {

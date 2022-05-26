@@ -26,21 +26,10 @@
             An array of field and or property names to ignore.
             </summary>
         </member>
-        <member name="F:Adeptar.AdeptarConfiguration._name">
+        <member name="F:Adeptar.AdeptarConfiguration.MustBeUsed">
             <summary>
-            The name of the <see cref="T:Adeptar.AdeptarConfiguration"/> field or property inside the class or struct it is in.
+            Indicates that a <see cref="T:Adeptar.AdeptarConfiguration"/> exists in the class or the struct to serialize.
             </summary>
-        </member>
-        <member name="P:Adeptar.AdeptarConfiguration.Name">
-            <summary>
-            The name of the <see cref="T:Adeptar.AdeptarConfiguration"/> field or property inside the class or struct it is in.
-            </summary>
-        </member>
-        <member name="M:Adeptar.AdeptarConfiguration.SetName(System.String)">
-            <summary>
-            Sets the private name of the <see cref="T:Adeptar.AdeptarConfiguration"/> instance.
-            </summary>
-            <param name="name"></param>
         </member>
         <member name="T:Adeptar.AdeptarConverter">
             <summary>
@@ -424,7 +413,7 @@
             <param name="type">The <see cref="T:Adeptar.SerializableType"/> of the object.</param>
             <returns></returns>
         </member>
-        <member name="M:Adeptar.AdeptarWriter.Write(System.Object,Adeptar.SerializableType,System.Text.StringBuilder@,System.String,System.Int32,System.Boolean,System.Boolean,System.Boolean)">
+        <member name="M:Adeptar.AdeptarWriter.Write(System.Object,Adeptar.SerializableType,System.Text.StringBuilder,System.String,System.Int32,System.Boolean,System.Boolean,System.Boolean)">
             <summary>
             The core function that handles serialization of object via recursion.
             </summary>
@@ -436,6 +425,17 @@
             <param name="calledByClassWriter">Tells the writer that the function was class from <see cref="T:Adeptar.ClassWriter"/>.</param>
             <param name="last">If true tells the writer to not append a comma.</param>
             <param name="addAtSign">True if the object is a complex key of a dictionary.</param>
+        </member>
+        <member name="M:Adeptar.AdeptarWriter.WriteRaw(System.Object,Adeptar.SerializableType,System.Text.StringBuilder,System.String,System.Int32,System.Boolean)">
+            <summary>
+            Called by <see cref="T:Adeptar.ClassWriter"/> to write null objects.
+            </summary>
+            <param name="toSerialize">The object to serialize.</param>
+            <param name="type">The <see cref="T:Adeptar.SerializableType"/> of the object.</param>
+            <param name="mainBuilder">The <see cref="T:System.Text.StringBuilder"/> instance text is appended to.</param>
+            <param name="name">The name of the field or property of a class.</param>
+            <param name="indent">The amount of indentation.</param>
+            <param name="last">If true tells the writer to not append a comma.</param>
         </member>
         <member name="T:Adeptar.ArrayReader">
             <summary>
@@ -472,7 +472,7 @@
             Contains methods for serializing arrays, lists and 2 or more dimensional arrays into .Adeptar strings.
             </summary>
         </member>
-        <member name="M:Adeptar.ArrayWriter.WriteArray(System.Object,System.Int32,System.Text.StringBuilder@)">
+        <member name="M:Adeptar.ArrayWriter.WriteArray(System.Object,System.Int32,System.Text.StringBuilder)">
             <summary>
             Writes arrays and lists into a .Adeptar string, appends to the builder instance.
             </summary>
@@ -480,7 +480,7 @@
             <param name="indent">The amount of indentation.</param>
             <param name="builder">The <see cref="T:System.Text.StringBuilder"/> instance to append to.</param>
         </member>
-        <member name="M:Adeptar.ArrayWriter.WriteDimensionalArray(System.Object,System.Int32,System.Text.StringBuilder@)">
+        <member name="M:Adeptar.ArrayWriter.WriteDimensionalArray(System.Object,System.Int32,System.Text.StringBuilder)">
             <summary>
             Serializes 2 or more dimensional arrays by flattening them into a one dimensional array.
             </summary>
@@ -527,7 +527,7 @@
             Default empty instance of an <see cref="T:Adeptar.AdeptarConfiguration"/> class.
             </summary>
         </member>
-        <member name="M:Adeptar.ClassWriter.WriteClassStruct(System.Object,System.Int32,System.Text.StringBuilder@)">
+        <member name="M:Adeptar.ClassWriter.WriteClassStruct(System.Object,System.Int32,System.Text.StringBuilder)">
             <summary>
             Serializes the class or struct object to a .Adeptar string.
             </summary>
@@ -535,7 +535,7 @@
             <param name="indent">Indentation amount.</param>
             <param name="builder"><see cref="T:System.Text.StringBuilder"/> instance to append text to.</param>
         </member>
-        <member name="M:Adeptar.ClassWriter.WriteTuple(System.Object,System.Int32,System.Text.StringBuilder@)">
+        <member name="M:Adeptar.ClassWriter.WriteTuple(System.Object,System.Int32,System.Text.StringBuilder)">
             <summary>
             Serializes the value tuple to a .Adeptar string.
             </summary>
@@ -664,22 +664,13 @@
             <param name="type">The type of the <see cref="T:System.Collections.Generic.Dictionary`2"/>.</param>
             <returns>The .NET version of the <see cref="T:System.Collections.Generic.Dictionary`2"/>.</returns>
         </member>
-        <member name="M:Adeptar.DictionaryWriter.WriteDictionaryInternal(System.Object,System.Int32,System.Text.StringBuilder@,System.Boolean)">
+        <member name="M:Adeptar.DictionaryWriter.WriteDictionary(System.Object,System.Int32,System.Text.StringBuilder)">
             <summary>
             Serializes <see cref="T:System.Collections.Generic.Dictionary`2"/>s to.Adeptar strings.
             </summary>
-            <param name="data">The <see cref="T:System.Collections.Generic.Dictionary`2"/>.</param>
+            <param name="data">The <see cref="T:System.Collections.Generic.Dictionary`2"/> to serialize.</param>
             <param name="Indent">The indentation amount.</param>
             <param name="Builder">Main instance of <see cref="T:System.Text.StringBuilder"/> to append to.</param>
-            <param name="isIndended">Is the dictionary nested?</param>
-        </member>
-        <member name="M:Adeptar.DictionaryWriter.WriteDictionary(System.Object,System.Int32,System.Text.StringBuilder@)">
-            <summary>
-            Wrapper for <see cref="M:Adeptar.DictionaryWriter.WriteDictionaryInternal(System.Object,System.Int32,System.Text.StringBuilder@,System.Boolean)"/>.
-            </summary>
-            <param name="Dict">The received <see cref="T:System.Collections.Generic.Dictionary`2"/></param>
-            <param name="Indent">The indentation amount.</param>
-            <param name="MainBuilder">The main instance of a <see cref="T:System.Text.StringBuilder"/> to append to.</param>
         </member>
         <member name="T:Adeptar.DeserializableType">
             <summary>
@@ -925,6 +916,11 @@
             <returns>
             True if the type is a <see cref="T:System.Collections.Generic.Dictionary`2"/>.
             </returns>
+        </member>
+        <member name="F:Adeptar.TypeGetters._cachedTypes">
+            <summary>
+            Cached types for <see cref="T:Adeptar.TypeGetters"/> methods.
+            </summary>
         </member>
         <member name="M:Adeptar.TypeGetters.IsDictionaryGenericKnown(System.Type)">
             <summary>

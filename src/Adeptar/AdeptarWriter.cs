@@ -44,7 +44,7 @@ namespace Adeptar
         /// <summary>
         /// The main instance of a <see cref="StringBuilder"/> the text is appended to.
         /// </summary>
-        private static StringBuilder _result = new(32);
+        private static StringBuilder _result = new(100);
 
         /// <summary>
         /// A static instance of an <see cref="AdeptarSettings"/> class that dictates serialization rules.
@@ -91,7 +91,7 @@ namespace Adeptar
                 }
             }
 
-            Write( target, type, ref _result, null, 0, false, true, false );
+            Write( target, type, _result, null, 0, false, true, false );
 
             switch (mode)
             {
@@ -196,7 +196,7 @@ namespace Adeptar
         /// <returns></returns>
         internal static string Serialize ( object target, SerializableType type )
         {
-            Write( target, type, ref _result, null, 0, false, true, false );
+            Write( target, type, _result, null, 0, false, true, false );
             string final = _result.ToString();
             _result.Clear();
             return final;
@@ -213,7 +213,7 @@ namespace Adeptar
         /// <param name="calledByClassWriter">Tells the writer that the function was class from <see cref="ClassWriter"/>.</param>
         /// <param name="last">If true tells the writer to not append a comma.</param>
         /// <param name="addAtSign">True if the object is a complex key of a dictionary.</param>
-        internal static void Write ( object toSerialize, SerializableType type, ref StringBuilder mainBuilder,
+        internal static void Write ( object toSerialize, SerializableType type, StringBuilder mainBuilder,
                                      string name = null, int indent = 0, bool calledByClassWriter = false, bool last = false, bool addAtSign = false )
         {
             if (AdeptarWriter.CurrentSettings.UseIndentation){
@@ -228,14 +228,14 @@ namespace Adeptar
                 case SerializableType.Simple:
                     mainBuilder.Append( name );
                     if (calledByClassWriter){
-                        mainBuilder.Append( ": " );
+                        mainBuilder.Append( ':' ).Append( ' ' );
                     }
                     mainBuilder.Append( toSerialize );
                     break;
                 case SerializableType.String:
                     if (calledByClassWriter){
                         mainBuilder.Append( name );
-                        mainBuilder.Append( ": \"" );
+                        mainBuilder.Append( ':' ).Append( ' ' ).Append( '"' );
                     }else{
                         mainBuilder.Append( '"' );
                     }
@@ -250,24 +250,26 @@ namespace Adeptar
                 case SerializableType.Char:
                     if (calledByClassWriter){
                         mainBuilder.Append( name );
-                        mainBuilder.Append( ": " );
+                        mainBuilder.Append( ':' ).Append( ' ' );
                     }
                     mainBuilder.Append( '\'' ).Append( toSerialize ).Append( '\'' );
                     break;
                 case SerializableType.Class:
                     if (calledByClassWriter){
                         mainBuilder.Append( name );
-                        mainBuilder.Append( ": " );
+                        mainBuilder.Append( ':' ).Append(' ');
                     }
                     mainBuilder.Append( '{' );
-                    if (AdeptarWriter.CurrentSettings.UseIndentation){
-                        mainBuilder.Append( '\n' );
-                    }
-                    WriteClassStruct( toSerialize, indent + 1, ref mainBuilder );
-                    if (AdeptarWriter.CurrentSettings.UseIndentation){
-                        for (int i = 0; i < indent; i++)
-                        {
-                            mainBuilder.Append( '\t' );
+                    if (toSerialize is not null){
+                        if (AdeptarWriter.CurrentSettings.UseIndentation){
+                            mainBuilder.Append( '\n' );
+                        }
+                        WriteClassStruct( toSerialize, indent + 1, mainBuilder );
+                        if (AdeptarWriter.CurrentSettings.UseIndentation){
+                            for (int i = 0; i < indent; i++)
+                            {
+                                mainBuilder.Append( '\t' );
+                            }
                         }
                     }
                     mainBuilder.Append( '}' );
@@ -275,27 +277,29 @@ namespace Adeptar
                 case SerializableType.Array:
                     if (calledByClassWriter){
                         mainBuilder.Append( name );
-                        mainBuilder.Append( ": " );
+                        mainBuilder.Append( ':' ).Append(' ');
                     }
                     mainBuilder.Append( '[' );
-                    if (AdeptarWriter.CurrentSettings.UseIndentation){
-                        mainBuilder.Append( '\n' );
-                    }
-                    if (toSerialize is IEnumerable tempList){
-                        var enumerator = tempList.GetEnumerator();
-                        var final = enumerator.MoveNext();
-                        foreach (var item in tempList)
-                        {
-                            Write( item, FetchType( item ), ref mainBuilder, null, indent + 1, false, ( final == !enumerator.MoveNext() ), false );
-                            if (AdeptarWriter.CurrentSettings.UseIndentation){
-                                mainBuilder.Append( '\n' );
+                    if (toSerialize is not null){
+                        if (AdeptarWriter.CurrentSettings.UseIndentation){
+                            mainBuilder.Append( '\n' );
+                        }
+                        if (toSerialize is IEnumerable tempList){
+                            var enumerator = tempList.GetEnumerator();
+                            var final = enumerator.MoveNext();
+                            foreach (var item in tempList)
+                            {
+                                Write( item, FetchType( item ), mainBuilder, null, indent + 1, false, ( final == !enumerator.MoveNext() ), false );
+                                if (AdeptarWriter.CurrentSettings.UseIndentation){
+                                    mainBuilder.Append( '\n' );
+                                }
                             }
                         }
-                    }
-                    if (AdeptarWriter.CurrentSettings.UseIndentation){
-                        for (int i = 0; i < indent; i++)
-                        {
-                            mainBuilder.Append( '\t' );
+                        if (AdeptarWriter.CurrentSettings.UseIndentation){
+                            for (int i = 0; i < indent; i++)
+                            {
+                                mainBuilder.Append( '\t' );
+                            }
                         }
                     }
                     mainBuilder.Append( ']' );
@@ -303,27 +307,22 @@ namespace Adeptar
                 case SerializableType.Dictionary:
                     if (calledByClassWriter){
                         mainBuilder.Append( name );
-                        mainBuilder.Append( ": " );
+                        mainBuilder.Append( ':' ).Append( ' ' );
                     }
                     if (addAtSign){
                         mainBuilder.Append('@');
                     }
                     mainBuilder.Append( '[' );
-                    if (AdeptarWriter.CurrentSettings.UseIndentation){
-                        mainBuilder.Append( '\n' );
-                    }
-                    if (toSerialize != null){
-                        WriteDictionary( toSerialize, 1 + indent, ref mainBuilder );
+                    if (toSerialize is not null){
+                        if (AdeptarWriter.CurrentSettings.UseIndentation){
+                            mainBuilder.Append( '\n' );
+                        }
+                        WriteDictionary( toSerialize, 1 + indent, mainBuilder );
                         if (AdeptarWriter.CurrentSettings.UseIndentation){
                             for (int i = 0; i < indent; i++)
                             {
                                 mainBuilder.Append( '\t' );
                             }
-                        }
-                    }else{
-                        for (int i = 0; i < indent; i++)
-                        {
-                            mainBuilder.Append( '\t' );
                         }
                     }
                     mainBuilder.Append( ']' );
@@ -331,17 +330,19 @@ namespace Adeptar
                 case SerializableType.Tuple:
                     if (calledByClassWriter){
                         mainBuilder.Append( name );
-                        mainBuilder.Append( ": " );
+                        mainBuilder.Append( ':' ).Append( ' ' );
                     }
                     mainBuilder.Append( '(' );
-                    if (AdeptarWriter.CurrentSettings.UseIndentation){
-                        mainBuilder.Append( '\n' );
-                    }
-                    WriteTuple( toSerialize, 1 + indent, ref mainBuilder );
-                    if (AdeptarWriter.CurrentSettings.UseIndentation){
-                        for (int i = 0; i < indent; i++)
-                        {
-                            mainBuilder.Append( '\t' );
+                    if (toSerialize is not null){
+                        if (AdeptarWriter.CurrentSettings.UseIndentation){
+                            mainBuilder.Append( '\n' );
+                        }
+                        WriteTuple( toSerialize, 1 + indent, mainBuilder );
+                        if (AdeptarWriter.CurrentSettings.UseIndentation){
+                            for (int i = 0; i < indent; i++)
+                            {
+                                mainBuilder.Append( '\t' );
+                            }
                         }
                     }
                     mainBuilder.Append( ')' );
@@ -349,26 +350,85 @@ namespace Adeptar
                 case SerializableType.DateTime:
                     mainBuilder.Append( name );
                     if (calledByClassWriter){
-                        mainBuilder.Append( ": \"" );
+                        mainBuilder.Append( ':' ).Append( ' ' ).Append( '"' );
                     }else{
                         mainBuilder.Append( '"' );
                     }
-                    mainBuilder.Append( toSerialize.ToString() );
+                    mainBuilder.Append( toSerialize );
                     mainBuilder.Append( '"' );
                     break;
                 case SerializableType.DimensionalArray:
                     if (calledByClassWriter){
                         mainBuilder.Append( name );
-                        mainBuilder.Append( ": " );
+                        mainBuilder.Append( ':' ).Append( ' ' );
                     }
                     mainBuilder.Append( '[' );
-                    if (AdeptarWriter.CurrentSettings.UseIndentation){
-                        mainBuilder.Append( '\n' );
+                    if (toSerialize is not null){
+                        if (AdeptarWriter.CurrentSettings.UseIndentation){
+                            mainBuilder.Append( '\n' );
+                        }
+                        WriteDimensionalArray( toSerialize, 1 + indent, mainBuilder );
+                        if (AdeptarWriter.CurrentSettings.UseIndentation){
+                            mainBuilder.Append( '\n' );
+                        }
                     }
-                    WriteDimensionalArray( toSerialize, 1 + indent, ref mainBuilder );
-                    if (AdeptarWriter.CurrentSettings.UseIndentation){
-                        mainBuilder.Append( '\n' );
-                    }
+                    mainBuilder.Append( ']' );
+                    break;
+            }
+
+            if (!last){
+                mainBuilder.Append( ',' );
+            }
+        }
+
+        /// <summary>
+        /// Called by <see cref="ClassWriter"/> to write null objects.
+        /// </summary>
+        /// <param name="toSerialize">The object to serialize.</param>
+        /// <param name="type">The <see cref="SerializableType"/> of the object.</param>
+        /// <param name="mainBuilder">The <see cref="StringBuilder"/> instance text is appended to.</param>
+        /// <param name="name">The name of the field or property of a class.</param>
+        /// <param name="indent">The amount of indentation.</param>
+        /// <param name="last">If true tells the writer to not append a comma.</param>
+        internal static void WriteRaw ( object toSerialize, SerializableType type, StringBuilder mainBuilder, string name, int indent , bool last )
+        {
+            if (AdeptarWriter.CurrentSettings.UseIndentation){
+                for (int i = 0; i < indent; i++)
+                {
+                    mainBuilder.Append( '\t' );
+                }
+            }
+
+            mainBuilder.Append( name );
+            mainBuilder.Append( ':' );
+            mainBuilder.Append( ' ' );
+
+            switch (type)
+            {
+                case SerializableType.Simple:
+                    mainBuilder.Append( toSerialize );
+                    break;
+                case SerializableType.String:
+                    mainBuilder.Append( '"' );
+                    mainBuilder.Append( '"' );
+                    break;
+                case SerializableType.Char:
+                    mainBuilder.Append( '\'' ).Append( '\'' );
+                    break;
+                case SerializableType.Class:
+                    mainBuilder.Append( '{' );
+                    mainBuilder.Append( '}' );
+                    break;
+                case SerializableType.Tuple:
+                    mainBuilder.Append( '(' );
+                    mainBuilder.Append( ')' );
+                    break;
+                case SerializableType.DateTime:
+                    mainBuilder.Append( '"' );
+                    mainBuilder.Append( '"' );
+                    break;
+                default:
+                    mainBuilder.Append( '[' );
                     mainBuilder.Append( ']' );
                     break;
             }

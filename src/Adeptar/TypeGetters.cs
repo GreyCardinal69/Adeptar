@@ -89,17 +89,22 @@ namespace Adeptar
         /// <returns>The <see cref="SerializableType"/> of the provided <see cref="Type"/>.</returns>
         public static SerializableType GetSerializableType ( Type fInfo )
         {
-            if (fInfo == typeof( string ))
+            if (fInfo == _cachedTypes[12])
                 return SerializableType.String;
-            if (fInfo == typeof( DateTime ))
+            if (fInfo == _cachedTypes[11])
+                return SerializableType.Char;
+            if (fInfo == _cachedTypes[13])
                 return SerializableType.DateTime;
             if (fInfo.IsPrimitive)
                 return SerializableType.Simple;
             if (fInfo.IsGenericType){
-                if (IsTupleGenericKnown( fInfo ))
+                var genericTypeDef = fInfo.GetGenericTypeDefinition();
+                if (IsTupleGenericKnown( genericTypeDef ))
                     return SerializableType.Tuple;
-                if (IsDictionaryGenericKnown( fInfo ))
+                if (IsDictionaryGenericKnown( genericTypeDef ))
                     return SerializableType.Dictionary;
+                if (IsListGenericKnown( genericTypeDef ))
+                    return SerializableType.Array;
             }
             if (fInfo.IsArray)
                return fInfo.GetArrayRank() > 1 ? SerializableType.DimensionalArray : SerializableType.Array;
@@ -134,6 +139,27 @@ namespace Adeptar
         }
 
         /// <summary>
+        /// Cached types for <see cref="TypeGetters"/> methods.
+        /// </summary>
+        private static Type[] _cachedTypes = new Type[]
+        {
+            typeof( Dictionary<,> ),
+            typeof( List<> ),
+            typeof( IList<> ),
+            typeof( ValueTuple<> ),
+            typeof( ValueTuple<,> ),
+            typeof( ValueTuple<,,> ),
+            typeof( ValueTuple<,,,> ),
+            typeof( ValueTuple<,,,,> ),
+            typeof( ValueTuple<,,,,,> ),
+            typeof( ValueTuple<,,,,,,> ),
+            typeof( ValueTuple<,,,,,,,> ),
+            typeof( char ),
+            typeof( string ),
+            typeof( DateTime ),
+        };
+
+        /// <summary>
         /// Checks if the provided object is a <see cref="Dictionary{TKey, TValue}"/>, uses a <see cref="Type"/>. Omits the .IsGeneric check.
         /// </summary>
         /// <param name="type">The type to check for.</param>
@@ -142,7 +168,7 @@ namespace Adeptar
         /// </returns>
         public static bool IsDictionaryGenericKnown ( Type type )
         {
-            return type.GetGenericTypeDefinition() == typeof( Dictionary<,> );
+            return type == _cachedTypes[0];
         }
 
         /// <summary>
@@ -154,8 +180,7 @@ namespace Adeptar
         /// </returns>
         public static bool IsListGenericKnown ( Type type )
         {
-            var typeDef = type.GetGenericTypeDefinition();
-            return ( typeDef == typeof( List<> ) || typeDef == typeof( IList<> ) );
+            return ( type == _cachedTypes[1] || type == _cachedTypes[2] );
         }
 
         /// <summary>
@@ -165,15 +190,14 @@ namespace Adeptar
         /// <returns>True if the object is a <see cref="ValueTuple"/>.</returns>
         public static bool IsTupleGenericKnown ( Type tuple )
         {
-            var openType = tuple.GetGenericTypeDefinition();
-            return openType == typeof( ValueTuple<> )
-                || openType == typeof( ValueTuple<,> )
-                || openType == typeof( ValueTuple<,,> )
-                || openType == typeof( ValueTuple<,,,> )
-                || openType == typeof( ValueTuple<,,,,> )
-                || openType == typeof( ValueTuple<,,,,,> )
-                || openType == typeof( ValueTuple<,,,,,,> )
-                || openType == typeof( ValueTuple<,,,,,,,> ) && IsTuple( tuple.GetGenericArguments()[7] );
+            return tuple == _cachedTypes[3]
+                || tuple == _cachedTypes[4]
+                || tuple == _cachedTypes[5]
+                || tuple == _cachedTypes[6]
+                || tuple == _cachedTypes[7]
+                || tuple == _cachedTypes[8]
+                || tuple == _cachedTypes[9]
+                || tuple == _cachedTypes[10];
         }
 
         /// <summary>
@@ -294,16 +318,7 @@ namespace Adeptar
             if (received is DateTime || received is DateTimeOffset)
                 return SerializableType.DateTime;
             if (received is Array)
-            {
-                if (IsMultiDimensionalArray( received ))
-                {
-                    return SerializableType.DimensionalArray;
-                }
-                else
-                {
-                    return SerializableType.Array;
-                }
-            }
+                return IsMultiDimensionalArray( received ) ? SerializableType.DimensionalArray : SerializableType.Array;
             if (received is ITuple)
                 return SerializableType.Tuple;
             if (received is IDictionary)

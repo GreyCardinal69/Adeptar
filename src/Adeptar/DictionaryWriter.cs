@@ -37,12 +37,16 @@ namespace Adeptar
         /// <summary>
         /// Serializes <see cref="Dictionary{TKey, TValue}"/>s to.Adeptar strings.
         /// </summary>
-        /// <param name="data">The <see cref="Dictionary{TKey, TValue}"/>.</param>
+        /// <param name="data">The <see cref="Dictionary{TKey, TValue}"/> to serialize.</param>
         /// <param name="Indent">The indentation amount.</param>
         /// <param name="Builder">Main instance of <see cref="StringBuilder"/> to append to.</param>
-        /// <param name="isIndended">Is the dictionary nested?</param>
-        private static void WriteDictionaryInternal( object data, int Indent, ref StringBuilder Builder, bool isIndended = false )
+        internal static void WriteDictionary( object data, int Indent, StringBuilder Builder )
         {
+            if (data is null){
+                return;
+            }
+
+            bool isIndended = Indent > 1;
             var dict = data as IDictionary;
 
             (object, object)[] keyVals = new (object, object)[dict.Count];
@@ -59,13 +63,13 @@ namespace Adeptar
                 for (int i = 0; i < dict.Count; i++)
                 {
                     if (IsDictionary( dict[i] )){
-                        Write( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), ref Builder, null, Indent, false, true, true );
+                        Write( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), Builder, null, Indent, false, true, true );
                         Builder.Append( ':' );
                         if (Indent >= 1){
                             Builder.Append( '[' );
                         }
                         isIndended = true;
-                        WriteDictionary( keyVals[i].Item2, Indent + 1, ref Builder );
+                        WriteDictionary( keyVals[i].Item2, Indent + 1, Builder );
                         Builder.Append( ']' );
                         if (count != keyVals.Length - 1){
                             Builder.Append( ',' );
@@ -73,16 +77,16 @@ namespace Adeptar
                     }else{
                         SerializableType RootType = FetchType( keyVals[i].Item2 );
                         if (RootType == SerializableType.Array){
-                            Write( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), ref Builder, null, Indent, false, true, true );
+                            Write( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), Builder, null, Indent, false, true, true );
                             Builder.Append( ':' );
-                            Write( keyVals[i].Item2, RootType, ref Builder, null, Indent, false, true );
+                            Write( keyVals[i].Item2, RootType, Builder, null, Indent, false, true );
                             if (count != keyVals.Length - 1){
                                 Builder.Append( ',' );
                             }
                         }else{
-                            Write( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), ref Builder, null, isIndended ? Indent : 0, false, true, true );
+                            Write( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), Builder, null, isIndended ? Indent : 0, false, true, true );
                             Builder.Append( ':' );
-                            Write( keyVals[i].Item2, RootType, ref Builder, null, 0, false, count == dict.Count - 1 );
+                            Write( keyVals[i].Item2, RootType, Builder, null, 0, false, count == dict.Count - 1 );
                         }
                     }
                     count++;
@@ -91,7 +95,7 @@ namespace Adeptar
                 for (int i = 0; i < keyVals.Length; i++)
                 {
                     if (IsDictionary( keyVals[i].Item2 )){
-                        Write( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), ref Builder, null, Indent, false, true, true );
+                        Write( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), Builder, null, Indent, false, true, true );
                         Builder.Append( ':' ).Append( '\n' );
                         if (Indent >= 1){
                             for (int w = 0; w < Indent; w++)
@@ -101,7 +105,7 @@ namespace Adeptar
                             Builder.Append( '[' ).Append( '\n' );
                         }
                         isIndended = true;
-                        WriteDictionary( keyVals[i].Item2, Indent + 1, ref Builder );
+                        WriteDictionary( keyVals[i].Item2, Indent + 1, Builder );
                         for (int w = 0; w < Indent; w++)
                         {
                             Builder.Append( '\t' );
@@ -114,17 +118,17 @@ namespace Adeptar
                     }else{
                         SerializableType RootType = FetchType( keyVals[i].Item2 );
                         if (RootType == SerializableType.Array){
-                            Write( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), ref Builder, null, Indent, false, true, false );
+                            Write( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), Builder, null, Indent, false, true, false );
                             Builder.Append( ':' );
                             Builder.Append( '\n' );
-                            Write( keyVals[i].Item2, RootType, ref Builder, null, Indent, false, true );
+                            Write( keyVals[i].Item2, RootType, Builder, null, Indent, false, true );
                             if (count != keyVals.Length - 1){
                                 Builder.Append( ',' );
                             }
                         }else{
-                            Write( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), ref Builder, null, isIndended ? Indent : 0, false, true, false );
+                            Write( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), Builder, null, isIndended ? Indent : 0, false, true, false );
                             Builder.Append( ':' );
-                            Write( keyVals[i].Item2, RootType, ref Builder, null, 0, false, count == dict.Count - 1 );
+                            Write( keyVals[i].Item2, RootType, Builder, null, 0, false, count == dict.Count - 1 );
                         }
                         if (isIndended){
                             Builder.Append( '\n' );
@@ -134,13 +138,5 @@ namespace Adeptar
                 }
             }
         }
-
-        /// <summary>
-        /// Wrapper for <see cref="WriteDictionaryInternal(object, int, ref StringBuilder, bool)"/>.
-        /// </summary>
-        /// <param name="Dict">The received <see cref="Dictionary{TKey, TValue}"/></param>
-        /// <param name="Indent">The indentation amount.</param>
-        /// <param name="MainBuilder">The main instance of a <see cref="StringBuilder"/> to append to.</param>
-        internal static void WriteDictionary ( object Dict, int Indent, ref StringBuilder MainBuilder ) => WriteDictionaryInternal( Dict, Indent, ref MainBuilder, Indent > 0 );
     }
 }

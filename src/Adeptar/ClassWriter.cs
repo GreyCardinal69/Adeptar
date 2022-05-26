@@ -25,8 +25,6 @@
 
 using System;
 using System.Text;
-using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
 
 using FastMember;
@@ -57,12 +55,11 @@ namespace Adeptar
         /// <param name="target">The object to serialize.</param>
         /// <param name="indent">Indentation amount.</param>
         /// <param name="builder"><see cref="StringBuilder"/> instance to append text to.</param>
-        internal static void WriteClassStruct ( object target, int indent, ref StringBuilder builder )
+        internal static void WriteClassStruct ( object target, int indent, StringBuilder builder )
         {
             var accessor = TypeAccessor.Create( target.GetType() );
             int count = 0;
             MemberSet vals = accessor.GetMembers();
-
             AdeptarConfiguration config = _defaultConfig;
 
             foreach (var item in vals)
@@ -70,7 +67,7 @@ namespace Adeptar
                 if (item.Type == _adeptarConfiguration){
                     var value = accessor[target, item.Name];
                     config = value == null ? config : ( AdeptarConfiguration ) value;
-                    config.SetName( item.Name );
+                    config.MustBeUsed = true;
                     break;
                 }
             }
@@ -78,31 +75,37 @@ namespace Adeptar
             foreach (var item in vals)
             {
                 var itemType = item.Type;
-
-                if (itemType == _adeptarConfiguration){
-                    count++;
-                    continue;
-                }
-
                 string name = item.Name;
 
-                if (config.ToIgnore is not null){
-                    bool exit = false;
-                    for (int i = 0; i < config.ToIgnore.Length; i++)
-                    {
-                        if (name == config.ToIgnore[i]){
-                            count++;
-                            exit = true;
-                            break;
-                        }
-                    }
-                    if (exit){
+                if (config.MustBeUsed){
+                    if (itemType == _adeptarConfiguration){
                         count++;
                         continue;
                     }
+                    if (config.ToIgnore is not null){
+                        bool exit = false;
+                        for (int i = 0; i < config.ToIgnore.Length; i++)
+                        {
+                            if (name == config.ToIgnore[i]){
+                                count++;
+                                exit = true;
+                                break;
+                            }
+                        }
+                        if (exit){
+                            count++;
+                            continue;
+                        }
+                    }
                 }
 
-                Write( accessor[target, name], GetSerializableType( itemType ), ref builder, name, indent, true, count == vals.Count - 1, false );
+                var value = accessor[target, name];
+
+                if (value is null){
+                    WriteRaw( value, GetSerializableType( itemType ), builder, name, indent, count == vals.Count - 1 );
+                }else{
+                    Write( value, GetSerializableType( itemType ), builder, name, indent, true, count == vals.Count - 1, false );
+                }
 
                 if (AdeptarWriter.CurrentSettings.UseIndentation){
                     builder.Append( '\n' );
@@ -117,8 +120,12 @@ namespace Adeptar
         /// <param name="target">The object to serialize.</param>
         /// <param name="indent">Indentation amount.</param>
         /// <param name="builder"><see cref="StringBuilder"/> instance to append text to.</param>
-        internal static void WriteTuple ( object target, int indent, ref StringBuilder builder )
+        internal static void WriteTuple ( object target, int indent, StringBuilder builder )
         {
+            if (target is null){
+                return;
+            }
+
             var type = target.GetType();
             int count = 0;
 
@@ -126,7 +133,7 @@ namespace Adeptar
 
             foreach (var param in FieldTypes)
             {
-                Write( param.GetValue(target), GetSerializableType( param.FieldType ), ref builder, param.Name, indent, true, count == FieldTypes.Length - 1, false );
+                Write( param.GetValue(target), GetSerializableType( param.FieldType ), builder, param.Name, indent, true, count == FieldTypes.Length - 1, false );
                 if (AdeptarWriter.CurrentSettings.UseIndentation){
                     builder.Append( '\n' );
                 }

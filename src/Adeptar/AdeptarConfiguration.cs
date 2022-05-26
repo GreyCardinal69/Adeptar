@@ -24,7 +24,6 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 
 namespace Adeptar
 {
@@ -52,20 +51,10 @@ namespace Adeptar
         /// An array of field and or property names to ignore.
         /// </summary>
         public string[] ToIgnore { get; init; }
-        /// <summary>
-        /// The name of the <see cref="AdeptarConfiguration"/> field or property inside the class or struct it is in.
-        /// </summary>
-        private string _name;
 
         /// <summary>
-        /// The name of the <see cref="AdeptarConfiguration"/> field or property inside the class or struct it is in.
+        /// Indicates that a <see cref="AdeptarConfiguration"/> exists in the class or the struct to serialize.
         /// </summary>
-        internal string Name => _name;
-
-        /// <summary>
-        /// Sets the private name of the <see cref="AdeptarConfiguration"/> instance.
-        /// </summary>
-        /// <param name="name"></param>
-        internal void SetName ( string name ) => _name = name;
+        internal bool MustBeUsed;
     }
 }

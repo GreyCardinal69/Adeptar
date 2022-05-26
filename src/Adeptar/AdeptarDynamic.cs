@@ -145,7 +145,7 @@ namespace Adeptar
         /// <returns>
         /// The deserialized .Net object.
         /// </returns>
-        public T Deserialize<T> ( dynamic ignore = null ) where T : struct
+        public T Deserialize<T> ( object ignore = null ) where T : struct
         {
             StringBuilder str = new( _textLength );
             int i = 0;

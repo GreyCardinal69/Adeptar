@@ -2,6 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <OutputType>Library</OutputType>
+    <ApplicationIcon />
+    <StartupObject />
     <Authors>Michael Kananov</Authors>
     <Company>CardinalSoft</Company>
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
@@ -26,7 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="fasterflect" Version="3.0.0" />
     <PackageReference Include="FastMember" Version="1.5.0" />
   </ItemGroup>
 
