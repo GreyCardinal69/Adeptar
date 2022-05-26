@@ -14,7 +14,7 @@ Intel Core i7-10750H CPU 2.60GHz, 1 CPU, 12 logical and 6 physical cores
 .NET SDK=6.0.100
   [Host]     : .NET 5.0.17 (5.0.1722.21314), X64 RyuJIT  [AttachedDebugger]
   DefaultJob : .NET 5.0.17 (5.0.1722.21314), X64 RyuJIT
-
+```
 
 ```
 |                                   Method |        Mean |      Error |     StdDev |  Gen 0 |  Gen 1 | Allocated |
