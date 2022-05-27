@@ -166,8 +166,7 @@ namespace Adeptar
                         }
                         break;
                     case ']':
-                        if (firstCase - 1 == 0 && !inString){
-                            nested = false;
+                        if (firstCase - 1 == 0 && !inString && !nested){
                             firstCase--;
                         }
                         else if (firstCase - 1 == -1 && !inString){
@@ -180,7 +179,7 @@ namespace Adeptar
                     case ',':
                         if (!inString && !nested){
                             main[index] = DeserializeObject( childType, text.Slice( j, i - j ) );
-                            j = i+1;
+                            j = i + 1;
                             index++;
                         }
                         break;
@@ -261,14 +260,13 @@ namespace Adeptar
                         }
                         break;
                     case '[':
-                        if (!inString){
+                        if (!inString && !nested){
                             firstCase++;
                             nested = true;
                         }
                         break;
                     case ']':
-                        if (firstCase - 1 == 0 && !inString){
-                            nested = false;
+                        if (firstCase - 1 == 0 && !inString && !nested){
                             firstCase--;
                         }
                         else if (firstCase - 1 == -1 && !inString){

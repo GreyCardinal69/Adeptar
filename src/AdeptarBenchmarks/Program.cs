@@ -18,11 +18,28 @@ namespace AdeptarBenchmarks
     [MemoryDiagnoser]
     public class Program
     {
+        public class MyClass
+        {
+            public SerializableType type = SerializableType.NULL;
+            public int Number;
+            public int Number3;
+            public int[] Odds;
+            public Dictionary<int, string> Maps;
+            public DateTime date;
+        }
         static void Main ( string[] args )
         {
 #if DEBUG
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
+
+            var x = new List<MyClass>() {new(), new(), new(), new(), new(), new(), new(), new(), new(), new(), new(), new(), new(), new(), new()};
+            AdeptarConverter.SerializeWrite( serializePath, x );
+
+            var y = AdeptarConverter.Deserialize<List<MyClass>>( serializePath );
+
+            AdeptarConverter.SerializeWrite( deserializePath, y );
+
 #else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
             Console.ReadLine();
