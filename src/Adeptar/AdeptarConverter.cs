@@ -288,7 +288,12 @@ namespace Adeptar
         /// <param name="formatting">The formatting style.</param>
         public static void SerializeWrite ( string path, object toSerialize, Formatting formatting = Formatting.Indented )
         {
-            AdeptarWriter.AssignSettings( AdeptarWriter.DefaultSettings );
+            AdeptarSettings settings = new()
+            {
+                CheckClassAttributes = true,
+                UseIndentation = formatting == Formatting.Indented,
+            };
+            AdeptarWriter.AssignSettings( settings );
             AdeptarWriter.SerializeWrite( path, toSerialize, FetchType( toSerialize ), SerializationMode.Default );
         }
 
