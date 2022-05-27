@@ -899,6 +899,16 @@
             <param name="fInfo">The <see cref="T:System.Type"/> to check.</param>
             <returns>The <see cref="T:Adeptar.SerializableType"/> of the provided <see cref="T:System.Type"/>.</returns>
         </member>
+        <member name="M:Adeptar.TypeGetters.GetDeserializableType(System.Type)">
+            <summary>
+            Gets the Type's <see cref="T:Adeptar.DeserializableType"/>.
+            </summary>
+            <param name="fInfo">The Type's field type.</param>
+            <returns>
+            The object's <see cref="T:Adeptar.DeserializableType"/>. Returns <see cref="F:Adeptar.DeserializableType.Class"/> if the type
+            cant be determined.
+            </returns>
+        </member>
         <member name="M:Adeptar.TypeGetters.IsDictionary(System.Object)">
             <summary>
             Checks if the provided object is a <see cref="T:System.Collections.Generic.Dictionary`2"/>.
@@ -953,41 +963,12 @@
             </summary>
             <param name="type">The type to check</param>
         </member>
-        <member name="M:Adeptar.TypeGetters.GetDeserializableType(System.Type)">
-            <summary>
-            Gets the Type's <see cref="T:Adeptar.DeserializableType"/>.
-            </summary>
-            <param name="fInfo">The Type's field type.</param>
-            <returns>
-            The object's <see cref="T:Adeptar.DeserializableType"/>. Returns <see cref="F:Adeptar.DeserializableType.Class"/> if the type
-            cant be determined.
-            </returns>
-        </member>
         <member name="M:Adeptar.TypeGetters.IsMultiDimensionalArray(System.Object)">
             <summary>
             Checks if the object is an array with two or more dimensions.
             </summary>
             <param name="received">The object to check.</param>
             <returns>True if the object has two or three dimensions.</returns>
-        </member>
-        <member name="M:Adeptar.TypeGetters.IsSimpleSerializableType(Adeptar.SerializableType)">
-            <summary>
-            Checks if the <see cref="T:Adeptar.SerializableType"/> is considered simple.
-            </summary>
-            <param name="type">The <see cref="T:Adeptar.SerializableType"/> to check.</param>
-            <returns>
-            True if the type is <see cref="T:System.Boolean"/>, <see cref="T:System.String"/>, <see cref="T:System.Char"/>, <see cref="T:System.Enum"/>, <see cref="T:System.DateTime"/> or a number type.
-            </returns>
-        </member>
-        <member name="M:Adeptar.TypeGetters.IsSimpleDeserializableType(Adeptar.DeserializableType)">
-            <summary>
-            Checks if the <see cref="T:Adeptar.DeserializableType"/> is considered simple, such are
-            <see cref="T:System.String"/>, <see cref="T:System.Boolean"/>, <see cref="T:System.Char"/>, <see cref="T:System.Enum"/> and numbers.
-            </summary>
-            <param name="type"></param>
-            <returns>
-            True if the type is <see cref="T:System.String"/>, <see cref="T:System.Boolean"/>, <see cref="T:System.Char"/>, <see cref="T:System.Enum"/> or a number type.
-            </returns>
         </member>
         <member name="M:Adeptar.TypeGetters.FetchType(System.Object)">
             <summary>

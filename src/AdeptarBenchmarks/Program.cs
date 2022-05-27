@@ -6,25 +6,18 @@ using System.IO;
 using System.Reflection;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 using BenchmarkDotNet.Attributes;
 using Adeptar;
 using Newtonsoft.Json;
 using FastMember;
-using static Adeptar.TypeGetters;
-using System.Text;
 
 namespace AdeptarBenchmarks
 {
     [MemoryDiagnoser]
     public class Program
     {
-        public class test<T> { public T h;
-
-            public test () { }
-
-        }
-
         static void Main ( string[] args )
         {
 #if DEBUG
@@ -103,7 +96,7 @@ namespace AdeptarBenchmarks
                 type = SerializableType.Dictionary
             } );
         }
-
+        /*
         [Benchmark]
         public void TupleAdeptar ()
         {
@@ -247,7 +240,7 @@ namespace AdeptarBenchmarks
         {
             JsonConvert.SerializeObject( new List<string>() { "Some", "Random", "Words", "Words" } );
         }
-
+        */
         [Benchmark]
         public void ClassAdeptarDeserialize ()
         {

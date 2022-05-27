@@ -115,6 +115,43 @@ namespace Adeptar
         }
 
         /// <summary>
+        /// Gets the Type's <see cref="DeserializableType"/>.
+        /// </summary>
+        /// <param name="fInfo">The Type's field type.</param>
+        /// <returns>
+        /// The object's <see cref="DeserializableType"/>. Returns <see cref="DeserializableType.Class"/> if the type
+        /// cant be determined.
+        /// </returns>
+        internal static DeserializableType GetDeserializableType ( Type fInfo )
+        {
+            if (fInfo == _cachedTypes[12])
+                return DeserializableType.String;
+            if (fInfo == _cachedTypes[11])
+                return DeserializableType.Char;
+            if (fInfo == _cachedTypes[13])
+                return DeserializableType.DateTime;
+            if (fInfo == _cachedTypes[14])
+                return DeserializableType.Boolean;
+            if (fInfo.IsPrimitive || fInfo == _cachedTypes[15])
+                return DeserializableType.Numeric;
+            if (fInfo.IsGenericType){
+                var genericTypeDef = fInfo.GetGenericTypeDefinition();
+                if (IsTupleGenericKnown( genericTypeDef ))
+                    return DeserializableType.Tuple;
+                if (IsDictionaryGenericKnown( genericTypeDef ))
+                    return DeserializableType.Dictionary;
+                if (IsListGenericKnown( genericTypeDef ))
+                    return DeserializableType.List;
+            }
+            if (fInfo.IsArray)
+                return fInfo.GetArrayRank() > 1 ? DeserializableType.DimensionalArray : DeserializableType.Array;
+            if (!fInfo.IsValueType)
+                return DeserializableType.Class;
+
+            return DeserializableType.Enum;
+        }
+
+        /// <summary>
         /// Checks if the provided object is a <see cref="Dictionary{TKey, TValue}"/>.
         /// </summary>
         /// <param name="obj">The object to check.</param>
@@ -157,6 +194,8 @@ namespace Adeptar
             typeof( char ),
             typeof( string ),
             typeof( DateTime ),
+            typeof( bool ),
+            typeof( decimal )
         };
 
         /// <summary>
@@ -210,49 +249,6 @@ namespace Adeptar
         }
 
         /// <summary>
-        /// Gets the Type's <see cref="DeserializableType"/>.
-        /// </summary>
-        /// <param name="fInfo">The Type's field type.</param>
-        /// <returns>
-        /// The object's <see cref="DeserializableType"/>. Returns <see cref="DeserializableType.Class"/> if the type
-        /// cant be determined.
-        /// </returns>
-        internal static DeserializableType GetDeserializableType ( Type fInfo )
-        {
-            if (fInfo.IsEnum)
-                return DeserializableType.Enum;
-            if (IsNumericType( fInfo ))
-                return DeserializableType.Numeric;
-            if (fInfo == typeof( string ))
-                return DeserializableType.String;
-            if (fInfo == typeof( char ))
-                return DeserializableType.Char;
-            if (fInfo == typeof( bool ))
-                return DeserializableType.Boolean;
-            if (IsList( fInfo ))
-                return DeserializableType.List;
-            if (IsDictionary( fInfo ))
-                return DeserializableType.Dictionary;
-            if (fInfo == typeof( IDictionary ))
-                return DeserializableType.Dictionary;
-            if (fInfo == typeof( DateTime ))
-                return DeserializableType.DateTime;
-            if (IsTuple( fInfo ))
-                return DeserializableType.Tuple;
-            if (fInfo.GetInterface( typeof( ICollection<> ).FullName ) != null)
-                return DeserializableType.Array;
-
-            if (fInfo.IsArray)
-            {
-                int rank = fInfo.GetArrayRank();
-                if (rank > 1)
-                    return DeserializableType.DimensionalArray;
-            }
-
-            return DeserializableType.Class;
-        }
-
-        /// <summary>
         /// Checks if the object is an array with two or more dimensions.
         /// </summary>
         /// <param name="received">The object to check.</param>
@@ -262,41 +258,6 @@ namespace Adeptar
             if (received is Array array)
                 return array.Rank > 1;
             return false;
-        }
-
-        /// <summary>
-        /// Checks if the <see cref="SerializableType"/> is considered simple.
-        /// </summary>
-        /// <param name="type">The <see cref="SerializableType"/> to check.</param>
-        /// <returns>
-        /// True if the type is <see cref="bool"/>, <see cref="string"/>, <see cref="char"/>, <see cref="Enum"/>, <see cref="DateTime"/> or a number type.
-        /// </returns>
-        internal static bool IsSimpleSerializableType ( SerializableType type )
-        {
-            return type == SerializableType.Boolean
-                || type == SerializableType.String
-                || type == SerializableType.Char
-                || type == SerializableType.Enum
-                || type == SerializableType.DateTime
-                || type == SerializableType.Numeric;
-        }
-
-        /// <summary>
-        /// Checks if the <see cref="DeserializableType"/> is considered simple, such are
-        /// <see cref="string"/>, <see cref="bool"/>, <see cref="char"/>, <see cref="Enum"/> and numbers.
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns>
-        /// True if the type is <see cref="string"/>, <see cref="bool"/>, <see cref="char"/>, <see cref="Enum"/> or a number type.
-        /// </returns>
-        internal static bool IsSimpleDeserializableType ( DeserializableType type )
-        {
-            return    type == DeserializableType.Boolean
-                   || type == DeserializableType.String
-                   || type == DeserializableType.Char
-                   || type == DeserializableType.Enum
-                   || type == DeserializableType.Numeric
-                   || type == DeserializableType.DateTime;
         }
 
         /// <summary>
@@ -396,7 +357,6 @@ namespace Adeptar
         /// <returns>Returns an object casted to the provided enum type.</returns>
         public static object ParseToEnumNonGeneric ( ReadOnlySpan<char> obj, Type enumType )
         {
-            Console.WriteLine(obj.ToString()+"_");
             return Enum.Parse( enumType, obj.ToString() );
         }
     }
