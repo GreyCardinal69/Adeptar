@@ -129,12 +129,11 @@ namespace Adeptar
                         }
                         break;
                 }
-                Console.WriteLine(Char + " _ " + nested + " _ " + length);
             }
 
             Type childType = type.GetElementType();
             var main = ( IList ) Array.CreateInstance( childType, ( int ) length );
-            Console.WriteLine((int)length);
+
             inString = false;
             nested = false;
             firstCase = 0;
@@ -228,7 +227,7 @@ namespace Adeptar
 
             bool inString = false;
 
-            double firstCase = 0;
+            double level = 0;
             bool nested = false;
             bool falseEnd = false;
 
@@ -245,36 +244,37 @@ namespace Adeptar
                 switch (Char)
                 {
                     case '\\':
-                        if (inString){
+                        if (inString)
                             falseEnd = true;
-                        }else{
-                            throw new AdeptarException("Invalid character '\\', such a character can appear only inside a string.");
-                        }
+                        else
+                            throw new AdeptarException( "Invalid character '\\', such a character can appear only inside a string." );
                         break;
                     case '"':
                         if (falseEnd && !nested){
                             falseEnd = false;
-                            break;
+                            continue;
                         }
-                        if (!nested){
+                        if (!nested)
                             inString = !inString;
-                        }
                         break;
                     case '[':
-                        if (!inString && !nested){
-                            firstCase++;
+                        if (!inString){
+                            level++;
                             nested = true;
                         }
                         break;
                     case ']':
-                        if (firstCase - 1 == 0 && !inString && !nested){
-                            firstCase--;
+                        if (level - 1 == 0 && !inString){
+                            level--;
+                            nested = false;
                         }
-                        else if (firstCase - 1 == -1 && !inString){
-                            firstCase--;
+                        else if (level - 1 == - 1 && !inString){
+                            level--;
                             if (i == text.Length - 1){
                                 main.Add( DeserializeObject( childType, text.Slice( j, i - j ) ) );
                             }
+                        }else{
+                            level--;
                         }
                         break;
                     case ',':
@@ -285,26 +285,27 @@ namespace Adeptar
                         break;
                     case '{':
                         if (!inString){
-                            firstCase++;
+                            level++;
                             nested = true;
                         }
                         break;
                     case '}':
-                        if (firstCase - 1 == 0 && !inString){
+                        if (level - 1 == 0 && !inString){
+                            level--;
                             nested = false;
-                            firstCase--;
+                        }else{
+                            level--;
                         }
                         break;
                     case '(':
                         if (!inString){
-                            firstCase++;
-                            nested = true;
+                            level++; nested = true;
                         }
                         break;
                     case ')':
-                        if (firstCase - 1 == 0 && !inString){
+                        if (level - 1 == 0 && !inString){
                             nested = false;
-                            firstCase--;
+                            level--;
                         }
                         break;
                 }

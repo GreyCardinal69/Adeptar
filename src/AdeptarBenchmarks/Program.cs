@@ -34,8 +34,9 @@ namespace AdeptarBenchmarks
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
             var x = new MyClass[2, 2, 2, 2] { { { { new(), new() }, { new(), new() } }, { { new(), new() },
                         { new(), new() } } }, { { { new(), new() }, { new(), new() } }, { { new(), new() }, { new(), new()} } } };
-            AdeptarConverter.SerializeWrite( serializePath, x);
-
+            AdeptarConverter.SerializeWrite( serializePath, x, Adeptar.Formatting.Indented);
+            Console.WriteLine(AdeptarConverter.Serialize(x, Adeptar.Formatting
+                .NoIndentation));
             var y = AdeptarConverter.Deserialize<MyClass[,,,]>(serializePath);
             AdeptarConverter.SerializeWrite( deserializePath, y );
 #else

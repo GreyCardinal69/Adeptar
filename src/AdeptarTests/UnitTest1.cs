@@ -112,11 +112,27 @@ namespace AdeptarTests
         }
 
         [TestMethod]
+        public void FourDimensionalArrayWithClassTest ()
+        {
+            Assert.AreEqual(
+                AdeptarConverter.Serialize( new MyClass[2, 2, 2, 2] { { { { new(), new() }, { new(), new() } }, { { new(), new() }, { new(), new() } } }, { { { new(), new() }, { new(), new() } }, { { new(), new() }, { new(), new()} } } }, Formatting.NoIndentation ),
+                @"[<2,2,2,2>{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: NULL},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: NULL},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: NULL},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: NULL},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: NULL},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: NULL},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: NULL},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: NULL},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: NULL},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: NULL},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: NULL},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: NULL},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: NULL},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: NULL},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: NULL},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: NULL}]" );
+        }
+
+        [TestMethod]
         public void NestedListTest ()
         {
             Assert.AreEqual(
                 AdeptarConverter.Serialize( new List<List<int>>() { new List<int>() { 1, 2, 3, 4 }, new List<int>() { 5, 6, 7, 8 } }, Formatting.NoIndentation ),
                 @"[[1,2,3,4],[5,6,7,8]]" );
+        }
+
+        [TestMethod]
+        public void NestedListWithClassTest ()
+        {
+            Assert.AreEqual(
+                AdeptarConverter.Serialize( new List<List<MyClass>>() { new List<MyClass>() { new(), new(), new(), new() }, new List<MyClass>() { new(), new(), new(), new() } }, Formatting.NoIndentation ),
+                @"[[{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: NULL},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: NULL},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: NULL},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: NULL}],[{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: NULL},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: NULL},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: NULL},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: NULL}]]" );
         }
 
         [TestMethod]
@@ -341,6 +357,26 @@ namespace AdeptarTests
                 text,
                 AdeptarConverter.Serialize(
                 AdeptarConverter.DeserializeString<(int, int, MyClass, string, int[], int, char, bool, double)>( text ), Formatting.NoIndentation ) );
+        }
+
+        [TestMethod]
+        public void NestedListWithClassDeserialize ()
+        {
+            string text = AdeptarConverter.Serialize( new List<List<MyClass>>() { new List<MyClass>() { new(), new(), new(), new() }, new List<MyClass>() { new(), new(), new(), new() } }, Formatting.NoIndentation );
+            Assert.AreEqual(
+                text,
+                AdeptarConverter.Serialize(
+                AdeptarConverter.DeserializeString<List<List<MyClass>>>( text ), Formatting.NoIndentation ) );
+        }
+
+        [TestMethod]
+        public void FourDimensionalArrayWithClassDeserialize ()
+        {
+            string text = AdeptarConverter.Serialize( new MyClass[2, 2, 2, 2] { { { { new(), new() }, { new(), new() } }, { { new(), new() }, { new(), new() } } }, { { { new(), new() }, { new(), new() } }, { { new(), new() }, { new(), new() } } } }, Formatting.NoIndentation );
+            Assert.AreEqual(
+                text,
+                AdeptarConverter.Serialize(
+                AdeptarConverter.DeserializeString<MyClass[,,,]>( text ), Formatting.NoIndentation ) );
         }
     }
 }
