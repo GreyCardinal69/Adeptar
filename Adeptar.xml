@@ -632,7 +632,7 @@
             <param name="type">The type to check.</param>
             <returns>The <see cref="T:Adeptar.DeserializationHelpers.NumericType"/> of the provided <see cref="T:System.Type"/>.</returns>
         </member>
-        <member name="M:Adeptar.DeserializationHelpers.StringResolver(System.String)">
+        <member name="M:Adeptar.DeserializationHelpers.StringResolver(System.ReadOnlySpan{System.Char})">
             <summary>
             Removes first and last quatation marks of the string as well as
             removes extra backslashes.

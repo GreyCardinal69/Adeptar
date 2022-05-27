@@ -106,7 +106,7 @@ namespace Adeptar
                     case ',':
                         if (!nested && !inString){
                             if (ids.Contains( name )){
-                                accessor[target, name] = DeserializeObject( members[ids.IndexOf(name)].Type, text.Slice( j, w - j ) );
+                                accessor[target, name] = DeserializeObject( members[ids.IndexOf( name )].Type, text.Slice( j, w - j ) );
                             }
                             i++;
                             j = w + 1;

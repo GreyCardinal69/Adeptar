@@ -96,7 +96,7 @@ namespace AdeptarBenchmarks
                 type = SerializableType.Dictionary
             } );
         }
-        /*
+
         [Benchmark]
         public void TupleAdeptar ()
         {
@@ -240,7 +240,7 @@ namespace AdeptarBenchmarks
         {
             JsonConvert.SerializeObject( new List<string>() { "Some", "Random", "Words", "Words" } );
         }
-        */
+
         [Benchmark]
         public void ClassAdeptarDeserialize ()
         {

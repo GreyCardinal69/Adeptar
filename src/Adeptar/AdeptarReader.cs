@@ -52,12 +52,12 @@ namespace Adeptar
             return deserializableType switch
             {
                 DeserializableType.Numeric => NumericResolver( type, text.ToString() ),
-                DeserializableType.String => StringResolver( text.ToString() ),
+                DeserializableType.String => StringResolver( text ),
                 DeserializableType.Boolean => Convert.ToBoolean( text.ToString() ),
-                DeserializableType.Char => Convert.ToChar( text.Slice(1,1).ToString() ),
+                DeserializableType.Char => Convert.ToChar( text.Slice( 1, 1 ).ToString() ),
                 DeserializableType.Enum => ParseToEnumNonGeneric( text, type ),
                 DeserializableType.NULL => null,
-                DeserializableType.DateTime => DateTime.Parse( StringResolver(text.ToString()) ),
+                DeserializableType.DateTime => DateTime.Parse( StringResolver( text ) ),
                 DeserializableType.Class => DeserializeClassStruct( text, type ),
                 DeserializableType.Array => DeserializeArray( text, type ),
                 DeserializableType.List => DeserializeList( text, type ),

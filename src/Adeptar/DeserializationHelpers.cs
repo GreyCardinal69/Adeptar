@@ -115,7 +115,7 @@ namespace Adeptar
         /// <returns>The .Adeptar string with all the indentation removed.</returns>
         public static ReadOnlySpan<char> CleanText ( ReadOnlySpan<char> str )
         {
-            StringBuilder sb = new();
+            StringBuilder sb = new(str.Length);
 
             bool inStr = false;
             bool falseMark = false;
@@ -240,7 +240,7 @@ namespace Adeptar
         /// </summary>
         /// <param name="text">The string to resolve.</param>
         /// <returns>The string with first and last quotation marks as well as extra backslashes removed.</returns>
-        internal static string StringResolver ( string text ) => text.Substring( 1, text.Length - 2 ).Replace( "\\\"", "\"" );
+        internal static string StringResolver ( ReadOnlySpan<char> text ) => text.Slice( 1, text.Length - 2 ).ToString().Replace( "\\\"", "\"" );
 
         /// <summary>
         /// Increments an array with a binary style.

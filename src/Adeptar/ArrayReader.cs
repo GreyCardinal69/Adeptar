@@ -179,7 +179,7 @@ namespace Adeptar
                         break;
                     case ',':
                         if (!inString && !nested){
-                            main[index] = DeserializeObject( childType, text.Slice(j, i - j ) );
+                            main[index] = DeserializeObject( childType, text.Slice( j, i - j ) );
                             j = i+1;
                             index++;
                         }

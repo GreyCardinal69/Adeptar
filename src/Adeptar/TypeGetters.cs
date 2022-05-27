@@ -344,10 +344,7 @@ namespace Adeptar
         /// <typeparam name="T">The type to parse to.</typeparam>
         /// <param name="obj">The object to parse.</param>
         /// <returns>The converted enum.</returns>
-        public static T ParseToEnum<T> ( object obj )
-        {
-            return ( T ) Enum.Parse( typeof( T ), obj.ToString() );
-        }
+        public static T ParseToEnum<T> ( object obj ) => ( T ) Enum.Parse ( typeof( T ), obj.ToString() );
 
         /// <summary>
         /// Parses an object into an enum without a generic T type.
@@ -355,9 +352,6 @@ namespace Adeptar
         /// <param name="obj">The object that is the enum.</param>
         /// <param name="enumType">The type of the enum to parse to.</param>
         /// <returns>Returns an object casted to the provided enum type.</returns>
-        public static object ParseToEnumNonGeneric ( ReadOnlySpan<char> obj, Type enumType )
-        {
-            return Enum.Parse( enumType, obj.ToString() );
-        }
+        public static object ParseToEnumNonGeneric ( ReadOnlySpan<char> obj, Type enumType ) => Enum.Parse( enumType, obj.ToString() );
     }
 }
