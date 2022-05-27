@@ -71,6 +71,8 @@ Intel Core i7-10750H CPU 2.60GHz, 1 CPU, 12 logical and 6 physical cores
 |                      EnumJsonDeserialize |   590.94 ns |  27.603 ns |  80.518 ns |   578.07 ns | 0.4225 |      - |   2,656 B |
 |                   ListAdeptarDeserialize |   675.58 ns |  14.804 ns |  43.416 ns |   671.24 ns | 0.0772 |      - |     488 B |
 |                      ListJsonDeserialize |   860.67 ns |   8.395 ns |   7.852 ns |   860.22 ns | 0.4473 | 0.0038 |   2,808 B |
+
+
 An example:
 
 ```cs
