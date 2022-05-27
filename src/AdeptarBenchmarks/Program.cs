@@ -32,14 +32,12 @@ namespace AdeptarBenchmarks
 #if DEBUG
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
+            var x = new MyClass[2, 2, 2, 2] { { { { new(), new() }, { new(), new() } }, { { new(), new() },
+                        { new(), new() } } }, { { { new(), new() }, { new(), new() } }, { { new(), new() }, { new(), new()} } } };
+            AdeptarConverter.SerializeWrite( serializePath, x);
 
-            var x = new List<MyClass>() {new(), new(), new(), new(), new(), new(), new(), new(), new(), new(), new(), new(), new(), new(), new()};
-            AdeptarConverter.SerializeWrite( serializePath, x );
-
-            var y = AdeptarConverter.Deserialize<List<MyClass>>( serializePath );
-
+            var y = AdeptarConverter.Deserialize<MyClass[,,,]>(serializePath);
             AdeptarConverter.SerializeWrite( deserializePath, y );
-
 #else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
             Console.ReadLine();

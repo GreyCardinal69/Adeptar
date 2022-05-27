@@ -52,7 +52,7 @@ namespace Adeptar
                 return ( IList ) Array.CreateInstance( type.GetElementType(), 0 );
 
             bool inString = false;
-            double length = 0;
+            int length = 0;
             int index = 0;
 
             double firstCase = 0;
@@ -98,11 +98,11 @@ namespace Adeptar
                         }
                         break;
                     case ']':
-                        if (firstCase - 1 == 1){
+                        if (firstCase - 1 == 1 && !nested){
                             nested = false;
                             firstCase--;
                         }
-                        else if (firstCase - 1 == 0){
+                        else if (firstCase - 1 == 0 && !nested){
                             length++;
                         }
                         break;
@@ -129,11 +129,12 @@ namespace Adeptar
                         }
                         break;
                 }
+                Console.WriteLine(Char + " _ " + nested + " _ " + length);
             }
 
             Type childType = type.GetElementType();
             var main = ( IList ) Array.CreateInstance( childType, ( int ) length );
-
+            Console.WriteLine((int)length);
             inString = false;
             nested = false;
             firstCase = 0;
@@ -161,7 +162,7 @@ namespace Adeptar
                         }
                         break;
                     case '[':
-                        if (!inString){
+                        if (!inString && !nested){
                             firstCase++; nested = true;
                         }
                         break;
