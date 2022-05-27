@@ -2,7 +2,7 @@
 A small .NET file extension aimed to be fast and easy to use, aimed for modding purposes, with manual work in mind.
 
 TO DO:
-- Code optimization.
+- Code optimization for certain cases.
 - More features.
 - Proper documentation
 
