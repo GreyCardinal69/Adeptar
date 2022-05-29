@@ -56,7 +56,7 @@ namespace Adeptar
         /// </summary>
         internal static AdeptarSettings DefaultSettings = new()
         {
-            CheckClassAttributes = true,
+            CheckClassAttributes = false,
             UseIndentation = true,
         };
 
@@ -185,7 +185,7 @@ namespace Adeptar
                     break;
             }
             _result.Clear();
-            CurrentSettings = null;
+            CurrentSettings = DefaultSettings;
         }
 
         /// <summary>
@@ -199,6 +199,7 @@ namespace Adeptar
             Write( target, type, _result, null, 0, false, true, false );
             string final = _result.ToString();
             _result.Clear();
+            CurrentSettings = DefaultSettings;
             return final;
         }
 

@@ -50,6 +50,11 @@ namespace Adeptar
         private static AdeptarConfiguration _defaultConfig = new() { ToIgnore = new string[] { } };
 
         /// <summary>
+        /// Cached type for <see cref="AdeptarIgnore"/>.
+        /// </summary>
+        private static Type _ignoreAttribute = typeof( AdeptarIgnore );
+
+        /// <summary>
         /// Serializes the class or struct object to a .Adeptar string.
         /// </summary>
         /// <param name="target">The object to serialize.</param>
@@ -60,59 +65,83 @@ namespace Adeptar
             var accessor = TypeAccessor.Create( target.GetType() );
             int count = 0;
             MemberSet vals = accessor.GetMembers();
-            AdeptarConfiguration config = _defaultConfig;
 
-            foreach (var item in vals)
-            {
-                if (item.Type == _adeptarConfiguration){
-                    var value = accessor[target, item.Name];
-                    config = value == null ? config : ( AdeptarConfiguration ) value;
-                    config.MustBeUsed = true;
-                    break;
-                }
-            }
-
-            int last = config.ToIgnore.Length > 0 ? vals.Count - 1 + config.ToIgnore.Length : vals.Count - 1;
-
-            foreach (var item in vals)
-            {
-                var itemType = item.Type;
-                string name = item.Name;
-
-                if (config.MustBeUsed){
-                    if (itemType == _adeptarConfiguration){
+            if (AdeptarWriter.CurrentSettings.CheckClassAttributes){
+                foreach (var item in vals)
+                {
+                    if (item.IsDefined( _ignoreAttribute )){
                         count++;
                         continue;
                     }
-                    if (config.ToIgnore is not null){
-                        bool exit = false;
-                        for (int i = 0; i < config.ToIgnore.Length; i++)
-                        {
-                            if (name == config.ToIgnore[i]){
-                                count++;
-                                exit = true;
-                                break;
-                            }
-                        }
-                        if (exit){
-                            count++;
-                            continue;
-                        }
+
+                    var value = accessor[target, item.Name];
+
+                    if (value is null){
+                        WriteRaw( value, GetSerializableType( item.Type ), builder, item.Name, indent, count == vals.Count - 1 );
+                    }else{
+                        Write( value, GetSerializableType( item.Type ), builder, item.Name, indent, true, count == vals.Count - 1, false );
+                    }
+
+                    if (AdeptarWriter.CurrentSettings.UseIndentation){
+                        builder.Append( '\n' );
+                    }
+                    count++;
+                }
+            }else{
+                AdeptarConfiguration config = _defaultConfig;
+
+                foreach (var item in vals)
+                {
+                    if (item.Type == _adeptarConfiguration){
+                        var value = accessor[target, item.Name];
+                        config = value == null ? config : ( AdeptarConfiguration ) value;
+                        config.MustBeUsed = true;
+                        break;
                     }
                 }
 
-                var value = accessor[target, name];
+                int last = config.ToIgnore.Length > 0 ? vals.Count - 1 + config.ToIgnore.Length : vals.Count - 1;
 
-                if (value is null){
-                    WriteRaw( value, GetSerializableType( itemType ), builder, name, indent, count == last );
-                }else{
-                    Write( value, GetSerializableType( itemType ), builder, name, indent, true, count == last, false );
-                }
+                foreach (var item in vals)
+                {
+                    var itemType = item.Type;
+                    string name = item.Name;
 
-                if (AdeptarWriter.CurrentSettings.UseIndentation){
-                    builder.Append( '\n' );
+                    if (config.MustBeUsed){
+                        if (itemType == _adeptarConfiguration){
+                            count++;
+                            continue;
+                        }
+                        if (config.ToIgnore is not null){
+                            bool exit = false;
+                            for (int i = 0; i < config.ToIgnore.Length; i++)
+                            {
+                                if (name == config.ToIgnore[i]){
+                                    count++;
+                                    exit = true;
+                                    break;
+                                }
+                            }
+                            if (exit){
+                                count++;
+                                continue;
+                            }
+                        }
+                    }
+
+                    var value = accessor[target, name];
+
+                    if (value is null){
+                        WriteRaw( value, GetSerializableType( itemType ), builder, name, indent, count == last );
+                    }else{
+                        Write( value, GetSerializableType( itemType ), builder, name, indent, true, count == last, false );
+                    }
+
+                    if (AdeptarWriter.CurrentSettings.UseIndentation){
+                        builder.Append( '\n' );
+                    }
+                    count++;
                 }
-                count++;
             }
         }
 

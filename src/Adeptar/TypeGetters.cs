@@ -50,18 +50,6 @@ namespace Adeptar
         }
 
         /// <summary>
-        /// Checks if the provided object is a list, accepts a <see cref="Type"/> instead.
-        /// </summary>
-        /// <param name="type">The type to check for.</param>
-        /// <returns>
-        /// True if the type is a list.
-        /// </returns>
-        public static bool IsList ( Type type )
-        {
-            return type.IsGenericType && ( type.GetGenericTypeDefinition() == typeof( List<> ) || type.GetGenericTypeDefinition() == typeof( IList<> ) );
-        }
-
-        /// <summary>
         /// Checks if an object is of type <see cref="ValueTuple"/>, such as (<see cref="int"/>, <see cref="int"/>).
         /// </summary>
         /// <param name="tuple">The type to check for.</param>

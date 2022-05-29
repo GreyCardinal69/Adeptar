@@ -18,27 +18,17 @@ namespace AdeptarBenchmarks
     [MemoryDiagnoser]
     public class Program
     {
-        public class MyClass
+        private class SimpleClass
         {
-            public SerializableType type = SerializableType.NULL;
-            public int Number;
-            public int Number3;
-            public int[] Odds;
-            public Dictionary<int, string> Maps;
-            public DateTime date;
+            public int Number = 5;
+            public int Number2 = 5;
+            public int Number3 = 5;
         }
         static void Main ( string[] args )
         {
 #if DEBUG
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
-            var x = new MyClass[2, 2, 2, 2] { { { { new(), new() }, { new(), new() } }, { { new(), new() },
-                        { new(), new() } } }, { { { new(), new() }, { new(), new() } }, { { new(), new() }, { new(), new()} } } };
-            AdeptarConverter.SerializeWrite( serializePath, x, Adeptar.Formatting.Indented);
-            Console.WriteLine(AdeptarConverter.Serialize(x, Adeptar.Formatting
-                .NoIndentation));
-            var y = AdeptarConverter.Deserialize<MyClass[,,,]>(serializePath);
-            AdeptarConverter.SerializeWrite( deserializePath, y );
 #else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
             Console.ReadLine();
@@ -61,6 +51,7 @@ namespace AdeptarBenchmarks
 
         public class MyClassWithConfig
         {
+            [AdeptarIgnore]
             public AdeptarConfiguration config = new()
             {
                 ToIgnore = new string[] { "Odds", "Maps" }
@@ -72,7 +63,7 @@ namespace AdeptarBenchmarks
             public Dictionary<int, string> Maps;
             public DateTime date;
         }
-
+        /*
         [Benchmark]
         public void ClassAdeptarEmpty ()
         {
@@ -84,7 +75,7 @@ namespace AdeptarBenchmarks
         {
             JsonConvert.SerializeObject( new MyClass() );
         }
-
+        */
         [Benchmark]
         public void ClassAdeptar()
         {
@@ -112,7 +103,7 @@ namespace AdeptarBenchmarks
                 type = SerializableType.Dictionary
             } );
         }
-
+        /*
         [Benchmark]
         public void TupleAdeptar ()
         {
@@ -411,6 +402,6 @@ namespace AdeptarBenchmarks
         public void ListJsonDeserialize ()
         {
             JsonConvert.DeserializeObject<List<string>>( @"[""Some"",""Random"",""Words"",""Words""]" );
-        }
+        }*/
     }
 }

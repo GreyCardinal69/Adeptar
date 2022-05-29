@@ -341,6 +341,11 @@
             <param name="id">The id of the object to check for.</param>
             <returns>True if the already exists in the file.</returns>
         </member>
+        <member name="T:Adeptar.AdeptarIgnore">
+            <summary>
+            Instructs the <see cref="T:Adeptar.AdeptarWriter"/> to not serialize the property or the field.
+            </summary>
+        </member>
         <member name="T:Adeptar.AdeptarReader">
             <summary>
             A class that contains method(s) for deserializing .Adeptar objects.
@@ -525,6 +530,11 @@
         <member name="F:Adeptar.ClassWriter._defaultConfig">
             <summary>
             Default empty instance of an <see cref="T:Adeptar.AdeptarConfiguration"/> class.
+            </summary>
+        </member>
+        <member name="F:Adeptar.ClassWriter._ignoreAttribute">
+            <summary>
+            Cached type for <see cref="T:Adeptar.AdeptarIgnore"/>.
             </summary>
         </member>
         <member name="M:Adeptar.ClassWriter.WriteClassStruct(System.Object,System.Int32,System.Text.StringBuilder)">
@@ -874,15 +884,6 @@
             <param name="obj">The object to check.</param>
             <returns>
             True if the object is a <see cref="T:System.Collections.Generic.List`1"/>.
-            </returns>
-        </member>
-        <member name="M:Adeptar.TypeGetters.IsList(System.Type)">
-            <summary>
-            Checks if the provided object is a list, accepts a <see cref="T:System.Type"/> instead.
-            </summary>
-            <param name="type">The type to check for.</param>
-            <returns>
-            True if the type is a list.
             </returns>
         </member>
         <member name="M:Adeptar.TypeGetters.IsTuple(System.Type)">

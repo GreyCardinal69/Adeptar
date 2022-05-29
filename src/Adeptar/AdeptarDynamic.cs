@@ -102,7 +102,7 @@ namespace Adeptar
         public T GetValue<T>( string key )
         {
             if (!_keyMaps.ContainsKey(key)){
-                throw new AdeptarException($"Invalid variable name {key}.");
+                throw new AdeptarException($"Invalid variable name {key}, no property or field with such a name exists.");
             }
 
             return ( T ) DeserializeObject( typeof( T ), _keyMaps[key] );

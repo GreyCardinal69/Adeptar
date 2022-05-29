@@ -290,7 +290,7 @@ namespace Adeptar
         {
             AdeptarSettings settings = new()
             {
-                CheckClassAttributes = true,
+                CheckClassAttributes = false,
                 UseIndentation = formatting == Formatting.Indented,
             };
             AdeptarWriter.AssignSettings( settings );
@@ -318,7 +318,7 @@ namespace Adeptar
         {
             AdeptarSettings settings = new()
             {
-                CheckClassAttributes = true,
+                CheckClassAttributes = false,
                 UseIndentation = formatting == Formatting.Indented,
             };
             AdeptarWriter.AssignSettings( settings );
@@ -338,7 +338,7 @@ namespace Adeptar
         {
             AdeptarSettings settings = new()
             {
-                CheckClassAttributes = true,
+                CheckClassAttributes = false,
                 UseIndentation = formatting == Formatting.Indented,
             };
             AdeptarWriter.AssignSettings( settings );
@@ -358,7 +358,7 @@ namespace Adeptar
         {
             AdeptarSettings settings = new()
             {
-                CheckClassAttributes = true,
+                CheckClassAttributes = false,
                 UseIndentation = formatting == Formatting.Indented,
             };
             AdeptarWriter.AssignSettings( settings );
