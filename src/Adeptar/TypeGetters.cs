@@ -133,10 +133,10 @@ namespace Adeptar
             }
             if (fInfo.IsArray)
                 return fInfo.GetArrayRank() > 1 ? DeserializableType.DimensionalArray : DeserializableType.Array;
-            if (!fInfo.IsValueType)
-                return DeserializableType.Class;
+            if (fInfo.IsEnum)
+                return DeserializableType.Enum;
 
-            return DeserializableType.Enum;
+            return DeserializableType.Class;
         }
 
         /// <summary>
@@ -340,6 +340,6 @@ namespace Adeptar
         /// <param name="obj">The object that is the enum.</param>
         /// <param name="enumType">The type of the enum to parse to.</param>
         /// <returns>Returns an object casted to the provided enum type.</returns>
-        public static object ParseToEnumNonGeneric ( ReadOnlySpan<char> obj, Type enumType ) => Enum.Parse( enumType, obj.ToString() );
+        public static object ParseToEnumNonGeneric ( ReadOnlySpan<char> obj, Type enumType ) => Enum.Parse(enumType, obj.ToString() );
     }
 }

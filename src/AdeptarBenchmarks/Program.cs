@@ -18,12 +18,6 @@ namespace AdeptarBenchmarks
     [MemoryDiagnoser]
     public class Program
     {
-        private class SimpleClass
-        {
-            public int Number = 5;
-            public int Number2 = 5;
-            public int Number3 = 5;
-        }
         static void Main ( string[] args )
         {
 #if DEBUG
@@ -75,7 +69,7 @@ namespace AdeptarBenchmarks
         {
             JsonConvert.SerializeObject( new MyClass() );
         }
-        */
+
         [Benchmark]
         public void ClassAdeptar()
         {
@@ -103,7 +97,7 @@ namespace AdeptarBenchmarks
                 type = SerializableType.Dictionary
             } );
         }
-        /*
+
         [Benchmark]
         public void TupleAdeptar ()
         {
@@ -247,7 +241,7 @@ namespace AdeptarBenchmarks
         {
             JsonConvert.SerializeObject( new List<string>() { "Some", "Random", "Words", "Words" } );
         }
-
+        */
         [Benchmark]
         public void ClassAdeptarDeserialize ()
         {
@@ -402,6 +396,6 @@ namespace AdeptarBenchmarks
         public void ListJsonDeserialize ()
         {
             JsonConvert.DeserializeObject<List<string>>( @"[""Some"",""Random"",""Words"",""Words""]" );
-        }*/
+        }
     }
 }
