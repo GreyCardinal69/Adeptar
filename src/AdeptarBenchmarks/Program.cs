@@ -18,64 +18,11 @@ namespace AdeptarBenchmarks
     [MemoryDiagnoser]
     public class Program
     {
-        public enum Alliance
-        {
-            Ally = 0,
-            Enemy = 2,
-            Neutral = 4,
-            Chaos = 8,
-            CombatChaos
-        }
-        public enum Quality
-        {
-            Adequite,
-            Advanced,
-            MasterPiece
-        }
-        public enum BattleMapSize
-        {
-            Small,
-            Medium,
-            Large,
-        }
-        [System.Serializable]
-        public struct SerializableVector2
-        {
-            public float x;
-            public float y;
-        }
-        [System.Serializable]
-        public class MapSetup
-        {
-            [System.Serializable]
-            public class Group
-            {
-                public Alliance GroupAlliance;
-                public int GroupId;
-                public string[] UnitIds;
-                public Quality[] Qualities;
-                public int[] UnitPositionInGroup;
-                public int Formation;
-            }
-
-            public String Name;
-            public String Description;
-            public String ImageId;
-            public Group[] UnitGroups;
-            public BattleMapSize MapSize;
-            public SerializableVector2[] GroupStartPositions;
-        }
         static void Main ( string[] args )
         {
 #if DEBUG
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
-
-
-            var x = AdeptarConverter.Deserialize<MapSetup>( @"C:\UnityProjects\Edestus\Assets\Resources\Database\BattleScenarios\Hust Trap.json" );
-
-            AdeptarConverter.SerializeWrite( serializePath, x );
-
 #else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
             Console.ReadLine();
