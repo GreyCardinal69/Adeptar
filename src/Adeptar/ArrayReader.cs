@@ -154,6 +154,10 @@ namespace Adeptar
             {
                 switch (Char)
                 {
+                    case ':':
+                        break;
+                    case '\'':
+                        break;
                     case '\\':
                         if (inString){
                             falseEnd = true;
@@ -221,15 +225,6 @@ namespace Adeptar
                             firstCase--;
                         }
                         break;
-                    default:
-                        if (!inString              &&
-                            Char != '_'            &&
-                            Char != '-'            &&
-                            !char.IsLetter( Char ) &&
-                            !char.IsDigit ( Char ) ){
-                            throw new AdeptarException( $"Invalid character \"{Char}\" outside of string at position {i} ( indentation removed )." );
-                        }
-                        break;
                 }
                 i++;
             }
@@ -266,6 +261,10 @@ namespace Adeptar
             {
                 switch (Char)
                 {
+                    case ':':
+                        break;
+                    case '\'':
+                        break;
                     case '\\':
                         if (inString)
                             falseEnd = true;
@@ -329,15 +328,6 @@ namespace Adeptar
                         if (level - 1 == 0 && !inString){
                             nested = false;
                             level--;
-                        }
-                        break;
-                    default:
-                        if (!inString              &&
-                            Char != '_'            &&
-                            Char != '-'            &&
-                            !char.IsLetter( Char ) &&
-                            !char.IsDigit ( Char ) ){
-                            throw new AdeptarException( $"Invalid character \"{Char}\" outside of string at position {i} ( indentation removed )." );
                         }
                         break;
                 }

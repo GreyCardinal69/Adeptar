@@ -105,6 +105,8 @@ namespace Adeptar
                         }
                         level--;
                         break;
+                    case '\'':
+                        break;
                     case '\\':
                         if (inString){
                             falseEnd = true;

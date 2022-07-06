@@ -76,6 +76,8 @@ namespace Adeptar
             {
                 switch (item)
                 {
+                    case '\'':
+                        break;
                     case '"':
                         if (falseEnd && inString){
                             falseEnd = false;
@@ -199,6 +201,8 @@ namespace Adeptar
             {
                 switch (item)
                 {
+                    case '\'':
+                        break;
                     case '"':
                         if (falseEnd && inString){
                             falseEnd = false;
