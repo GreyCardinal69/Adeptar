@@ -146,10 +146,7 @@ namespace Adeptar
         /// <returns>
         /// True/False if the object is of type <see cref="Dictionary{TKey, TValue}"/>.
         /// </returns>
-        public static bool IsDictionary ( object obj )
-        {
-            return obj is IDictionary;
-        }
+        public static bool IsDictionary ( object obj ) => obj is IDictionary;
 
         /// <summary>
         /// Checks if the provided object is a <see cref="Dictionary{TKey, TValue}"/>, uses a <see cref="Type"/>.
@@ -158,10 +155,7 @@ namespace Adeptar
         /// <returns>
         /// True if the type is a <see cref="Dictionary{TKey, TValue}"/>.
         /// </returns>
-        public static bool IsDictionary ( Type type )
-        {
-            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof( Dictionary<,> );
-        }
+        public static bool IsDictionary ( Type type ) => type.IsGenericType && type.GetGenericTypeDefinition() == typeof( Dictionary<,> );
 
         /// <summary>
         /// Cached types for <see cref="TypeGetters"/> methods.
@@ -193,10 +187,7 @@ namespace Adeptar
         /// <returns>
         /// True if the type is a <see cref="Dictionary{TKey, TValue}"/>.
         /// </returns>
-        public static bool IsDictionaryGenericKnown ( Type type )
-        {
-            return type == _cachedTypes[0];
-        }
+        public static bool IsDictionaryGenericKnown ( Type type ) => type == _cachedTypes[0];
 
         /// <summary>
         /// Checks if the provided object is a list, accepts a <see cref="Type"/> instead. Omits the .IsGeneric check.
@@ -205,10 +196,7 @@ namespace Adeptar
         /// <returns>
         /// True if the type is a list.
         /// </returns>
-        public static bool IsListGenericKnown ( Type type )
-        {
-            return ( type == _cachedTypes[1] || type == _cachedTypes[2] );
-        }
+        public static bool IsListGenericKnown ( Type type ) => ( type == _cachedTypes[1] || type == _cachedTypes[2] );
 
         /// <summary>
         /// Checks if an object is of type <see cref="ValueTuple"/>, such as (<see cref="int"/>, <see cref="int"/>). Omits the .IsGeneric check.
@@ -231,10 +219,7 @@ namespace Adeptar
         /// Checks if the provided object has an empty constructor defined.
         /// </summary>
         /// <param name="type">The type to check</param>
-        public static bool HasDefaultConstructor ( Type type )
-        {
-            return type.IsValueType || type.GetConstructor( Type.EmptyTypes ) != null;
-        }
+        public static bool HasDefaultConstructor ( Type type ) => type.IsValueType || type.GetConstructor( Type.EmptyTypes ) != null;
 
         /// <summary>
         /// Checks if the object is an array with two or more dimensions.
@@ -307,24 +292,21 @@ namespace Adeptar
         /// </summary>
         /// <param name="type">The Type to check.</param>
         /// <returns>True if an object is a number.</returns>
-        public static bool IsNumericType ( Type type )
+        public static bool IsNumericType ( Type type ) => Type.GetTypeCode( type ) switch
         {
-            return Type.GetTypeCode( type ) switch
-            {
-                TypeCode.Byte => true,
-                TypeCode.SByte => true,
-                TypeCode.UInt16 => true,
-                TypeCode.UInt32 => true,
-                TypeCode.UInt64 => true,
-                TypeCode.Int16 => true,
-                TypeCode.Int32 => true,
-                TypeCode.Int64 => true,
-                TypeCode.Decimal => true,
-                TypeCode.Double => true,
-                TypeCode.Single => true,
-                _ => false
-            };
-        }
+            TypeCode.Byte => true,
+            TypeCode.SByte => true,
+            TypeCode.UInt16 => true,
+            TypeCode.UInt32 => true,
+            TypeCode.UInt64 => true,
+            TypeCode.Int16 => true,
+            TypeCode.Int32 => true,
+            TypeCode.Int64 => true,
+            TypeCode.Decimal => true,
+            TypeCode.Double => true,
+            TypeCode.Single => true,
+            _ => false
+        };
 
         /// <summary>
         /// Parses an object into an enum using a generic T type.

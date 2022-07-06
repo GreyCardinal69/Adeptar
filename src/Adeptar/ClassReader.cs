@@ -146,8 +146,12 @@ namespace Adeptar
                         }
                         break;
                     default:
-                        if (!inString && item != '_' && !char.IsLetter(item)){
-                            throw new AdeptarException($"Invalid character \"{item}\" outside of string at position {w} ( indentation removed ).");
+                        if (!inString              &&
+                            item != '_'            &&
+                            item != '-'            &&
+                            !char.IsLetter( item ) &&
+                            !char.IsDigit ( item ) ){
+                            throw new AdeptarException( $"Invalid character \"{item}\" outside of string at position {i} ( indentation removed )." );
                         }
                         break;
                 }
@@ -265,8 +269,12 @@ namespace Adeptar
                         }
                         break;
                     default:
-                        if (!inString && item != '_' && !char.IsLetter( item )){
-                            throw new AdeptarException( $"Invalid character \"{item}\" outside of string at position {w} ( indentation removed )." );
+                        if (!inString              &&
+                            item != '_'            &&
+                            item != '-'            &&
+                            !char.IsLetter( item ) &&
+                            !char.IsDigit ( item ) ){
+                            throw new AdeptarException( $"Invalid character \"{item}\" outside of string at position {i} ( indentation removed )." );
                         }
                         break;
                 }
