@@ -145,6 +145,11 @@ namespace Adeptar
                             j = w + 1;
                         }
                         break;
+                    default:
+                        if (!inString && item != '_' && !char.IsLetter(item)){
+                            throw new AdeptarException($"Invalid character \"{item}\" outside of string at position {w} ( indentation removed ).");
+                        }
+                        break;
                 }
                 w++;
             }
@@ -257,6 +262,11 @@ namespace Adeptar
                         if (!nested && !inString){
                             name = text.Slice( j, w - j ).ToString();
                             j = w + 1;
+                        }
+                        break;
+                    default:
+                        if (!inString && item != '_' && !char.IsLetter( item )){
+                            throw new AdeptarException( $"Invalid character \"{item}\" outside of string at position {w} ( indentation removed )." );
                         }
                         break;
                 }

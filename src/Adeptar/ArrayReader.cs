@@ -221,6 +221,11 @@ namespace Adeptar
                             firstCase--;
                         }
                         break;
+                    default:
+                        if (!inString && Char != '_' && !char.IsLetter( Char )){
+                            throw new AdeptarException( $"Invalid character \"{Char}\" outside of string at position {i} ( indentation removed )." );
+                        }
+                        break;
                 }
                 i++;
             }
@@ -320,6 +325,11 @@ namespace Adeptar
                         if (level - 1 == 0 && !inString){
                             nested = false;
                             level--;
+                        }
+                        break;
+                    default:
+                        if (!inString && Char != '_' && !char.IsLetter( Char )){
+                            throw new AdeptarException( $"Invalid character \"{Char}\" outside of string at position {i} ( indentation removed )." );
                         }
                         break;
                 }

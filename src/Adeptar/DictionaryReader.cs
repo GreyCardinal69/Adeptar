@@ -149,6 +149,11 @@ namespace Adeptar
                             j = i + 1;
                         }
                         break;
+                    default:
+                        if (!inString && item != '_' && !char.IsLetter( item )){
+                            throw new AdeptarException( $"Invalid character \"{item}\" outside of string at position {i} ( indentation removed )." );
+                        }
+                        break;
                 }
                 i++;
             }
