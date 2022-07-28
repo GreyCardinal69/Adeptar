@@ -410,27 +410,22 @@ namespace Adeptar
                     mainBuilder.Append( toSerialize );
                     break;
                 case SerializableType.String:
-                    mainBuilder.Append( '"' );
-                    mainBuilder.Append( '"' );
+                    mainBuilder.Append( '"' ).Append('"');
                     break;
                 case SerializableType.Char:
                     mainBuilder.Append( '\'' ).Append( '\'' );
                     break;
                 case SerializableType.Class:
-                    mainBuilder.Append( '{' );
-                    mainBuilder.Append( '}' );
+                    mainBuilder.Append( '{' ).Append( '}' );
                     break;
                 case SerializableType.Tuple:
-                    mainBuilder.Append( '(' );
-                    mainBuilder.Append( ')' );
+                    mainBuilder.Append( '(' ).Append( ')' );
                     break;
                 case SerializableType.DateTime:
-                    mainBuilder.Append( '"' );
-                    mainBuilder.Append( '"' );
+                    mainBuilder.Append( '"' ).Append( '"' );
                     break;
                 default:
-                    mainBuilder.Append( '[' );
-                    mainBuilder.Append( ']' );
+                    mainBuilder.Append( '[' ).Append( ']' );
                     break;
             }
 

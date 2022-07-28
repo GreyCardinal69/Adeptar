@@ -43,29 +43,20 @@ namespace Adeptar
         /// Deserializes the Adeptar string from the file at the specified path to the .NET <see cref="Type"/>.
         /// </summary>
         /// <param name="path">The path to the object.</param>
-        public static T Deserialize<T> ( string path )
-        {
-            return ( T ) DeserializeObject( typeof( T ), CleanText( File.ReadAllText( path ) ) );
-        }
+        public static T Deserialize<T> ( string path ) => ( T ) DeserializeObject( typeof( T ), CleanText( File.ReadAllText( path ) ) );
 
         /// <summary>
         /// Deserializes the Adeptar string from the file at the specified path to the .NET <see cref="Type"/>.
         /// </summary>
         /// <param name="path">The path to the object.</param>
         /// <param name="type">The <see cref="Type"/> of the .NET object.</param>
-        public static object Deserialize ( string path, Type type )
-        {
-            return DeserializeObject( type, CleanText( File.ReadAllText( path ) ) );
-        }
+        public static object Deserialize ( string path, Type type ) => DeserializeObject( type, CleanText( File.ReadAllText( path ) ) );
 
         /// <summary>
         /// Deserializes the Adeptar string to the specified .NET type.
         /// </summary>
         /// <param name="content">The Adeptar string.</param>
-        public static T DeserializeString<T> ( string content )
-        {
-            return ( T ) DeserializeObject( typeof( T ), CleanText( content ) );
-        }
+        public static T DeserializeString<T> ( string content ) => ( T ) DeserializeObject( typeof( T ), CleanText( content ) );
 
         /// <summary>
         /// Deserializes the Adeptar string to the specified .NET <see cref="Type"/>.
@@ -73,10 +64,7 @@ namespace Adeptar
         /// <param name="content">The Adeptar string.</param>
         /// <param name="type">The <see cref="Type"/> of the .NET object.</param>
         /// <returns></returns>
-        public static object DeserializeString ( string content, Type type )
-        {
-            return DeserializeObject( type, CleanText( content ) );
-        }
+        public static object DeserializeString ( string content, Type type ) => DeserializeObject( type, CleanText( content ) );
 
         /// <summary>
         /// Deserializes an object serialized with the ID feature. Accepts a generic <see cref="{T}"/> type.
@@ -89,6 +77,7 @@ namespace Adeptar
         {
             ReadOnlySpan<char> text = File.ReadAllText( path );
             StringBuilder name = new();
+
             bool inString = false;
             bool falseEnd = false;
             bool inId = false;
