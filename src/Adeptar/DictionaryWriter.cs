@@ -63,13 +63,12 @@ namespace Adeptar
                 for (int i = 0; i < dict.Count; i++)
                 {
                     if (IsDictionary( dict[i] )){
-                        Write( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), Builder, null, Indent, false, true, true );
+                        WriteNoIndentation( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), Builder, null, false, true, true );
                         Builder.Append( ':' );
                         if (Indent >= 1){
                             Builder.Append( '[' );
                         }
-                        isIndended = true;
-                        WriteDictionary( keyVals[i].Item2, Indent + 1, Builder );
+                        WriteDictionary( keyVals[i].Item2, 0, Builder );
                         Builder.Append( ']' );
                         if (count != keyVals.Length - 1){
                             Builder.Append( ',' );
@@ -77,16 +76,16 @@ namespace Adeptar
                     }else{
                         SerializableType RootType = FetchType( keyVals[i].Item2 );
                         if (RootType == SerializableType.Array){
-                            Write( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), Builder, null, Indent, false, true, true );
+                            WriteNoIndentation( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), Builder, null, false, true, true );
                             Builder.Append( ':' );
-                            Write( keyVals[i].Item2, RootType, Builder, null, Indent, false, true );
+                            WriteNoIndentation( keyVals[i].Item2, RootType, Builder, null, false, true );
                             if (count != keyVals.Length - 1){
                                 Builder.Append( ',' );
                             }
                         }else{
-                            Write( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), Builder, null, isIndended ? Indent : 0, false, true, true );
+                            WriteNoIndentation( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), Builder, null, false, true, true );
                             Builder.Append( ':' );
-                            Write( keyVals[i].Item2, RootType, Builder, null, 0, false, count == dict.Count - 1 );
+                            WriteNoIndentation( keyVals[i].Item2, RootType, Builder, null, false, count == dict.Count - 1 );
                         }
                     }
                     count++;

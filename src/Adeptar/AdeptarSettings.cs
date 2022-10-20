@@ -39,5 +39,15 @@ namespace Adeptar
         /// Tells the <see cref="AdeptarWriter"/> whether to apply indentation when serializing objects.
         /// </summary>
         public bool UseIndentation { get; set; }
+
+        /// <summary>
+        ///
+        /// </summary>
+        public bool IgnoreDefaultValues { get; set; }
+
+        /// <summary>
+        ///
+        /// </summary>
+        public bool IgnoreNullValues { get; set; }
     }
 }

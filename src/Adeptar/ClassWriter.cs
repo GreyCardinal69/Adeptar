@@ -66,7 +66,9 @@ namespace Adeptar
             int count = 0;
             MemberSet vals = accessor.GetMembers();
 
-            if (AdeptarWriter.CurrentSettings.CheckClassAttributes){
+            if (AdeptarWriter.CurrentSettings.CheckClassAttributes)
+            {
+                int last = vals.Count - 1;
                 foreach (var item in vals)
                 {
                     if (item.IsDefined( _ignoreAttribute )){
@@ -74,20 +76,31 @@ namespace Adeptar
                         continue;
                     }
 
-                    var value = accessor[target, item.Name];
+                    var itemType = item.Type;
+                    string name = item.Name;
+                    var value = accessor[target, name];
 
-                    if (value is null){
-                        WriteRaw( value, GetSerializableType( item.Type ), builder, item.Name, indent, count == vals.Count - 1 );
-                    }else{
-                        Write( value, GetSerializableType( item.Type ), builder, item.Name, indent, true, count == vals.Count - 1, false );
-                    }
-
-                    if (AdeptarWriter.CurrentSettings.UseIndentation){
+                    if (AdeptarWriter.CurrentSettings.UseIndentation)
+                    {
+                        if (value is null)
+                        {
+                            WriteRaw( value, GetSerializableType( itemType ), builder, name, indent, count == last );
+                        }
+                        else
+                        {
+                            Write( value, GetSerializableType( itemType ), builder, name, indent, true, count == last, false );
+                        }
                         builder.Append( '\n' );
+                    }
+                    else
+                    {
+                        WriteNoIndentation( value, GetSerializableType( itemType ), builder, name, true, count == last, false );
                     }
                     count++;
                 }
-            }else{
+            }
+            else
+            {
                 AdeptarConfiguration config = _defaultConfig;
 
                 foreach (var item in vals)
@@ -131,14 +144,33 @@ namespace Adeptar
 
                     var value = accessor[target, name];
 
-                    if (value is null){
-                        WriteRaw( value, GetSerializableType( itemType ), builder, name, indent, count == last );
-                    }else{
-                        Write( value, GetSerializableType( itemType ), builder, name, indent, true, count == last, false );
+                    if (AdeptarWriter.CurrentSettings.IgnoreNullValues && value is null)
+                    {
+                        continue;
+                    }
+                    if (AdeptarWriter.CurrentSettings.IgnoreDefaultValues)
+                    {
+                        if (Activator.CreateInstance( itemType ).Equals( value ))
+                        {
+                            continue;
+                        }
                     }
 
-                    if (AdeptarWriter.CurrentSettings.UseIndentation){
+                    if (AdeptarWriter.CurrentSettings.UseIndentation)
+                    {
+                        if (value is null)
+                        {
+                            WriteRaw( value, GetSerializableType( itemType ), builder, name, indent, count == last );
+                        }
+                        else
+                        {
+                            Write( value, GetSerializableType( itemType ), builder, name, indent, true, count == last, false );
+                        }
                         builder.Append( '\n' );
+                    }
+                    else
+                    {
+                        WriteNoIndentation( value, GetSerializableType( itemType ), builder, name, true, count == last, false );
                     }
                     count++;
                 }
@@ -162,13 +194,22 @@ namespace Adeptar
 
             FieldInfo[] FieldTypes = type.GetFields( BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly );
 
-            foreach (var param in FieldTypes)
+            if (AdeptarWriter.CurrentSettings.UseIndentation)
             {
-                Write( param.GetValue(target), GetSerializableType( param.FieldType ), builder, param.Name, indent, true, count == FieldTypes.Length - 1, false );
-                if (AdeptarWriter.CurrentSettings.UseIndentation){
+                foreach (var param in FieldTypes)
+                {
+                    Write( param.GetValue( target ), GetSerializableType( param.FieldType ), builder, param.Name, indent, true, count == FieldTypes.Length - 1, false );
                     builder.Append( '\n' );
+                    count++;
                 }
-                count++;
+            }
+            else
+            {
+                foreach (var param in FieldTypes)
+                {
+                    WriteNoIndentation( param.GetValue( target ), GetSerializableType( param.FieldType ), builder, param.Name, true, count == FieldTypes.Length - 1, false );
+                    count++;
+                }
             }
         }
     }

@@ -83,9 +83,10 @@ namespace Adeptar
             bool inId = false;
             bool exit = false;
             int i = 0, j = 0, w = 0;
-
+            int index = -1;
             foreach (var item in text)
             {
+                index++;
                 if (exit){
                     break;
                 }
@@ -104,22 +105,23 @@ namespace Adeptar
                     case '~':
                         if (!inString){
                             inId = !inId;
-                            if (inId){
-                                if (i == 0 && j == 0){
-                                    i = w;
-                                }
-                                else if (j != 0){
-                                    i = w;
-                                }else{
-                                    j = w;
-                                }
-                            }else{
-                                if (name.ToString() == id){
-                                    exit = true;
-                                    break;
-                                }else{
-                                    name.Clear();
-                                }
+                            if (inId)
+                            {
+                                w = index;
+                            }
+                            if (!inId && name.ToString() == id)
+                            {
+                                i = w + 1;
+                            }
+                            if (inId && i != 0)
+                            {
+                                j = index;
+                                exit = true;
+                                break;
+                            }
+                            if (inId && i == 0)
+                            {
+                                name.Clear();
                             }
                         }
                         break;
@@ -132,7 +134,7 @@ namespace Adeptar
                 w++;
             }
 
-            return ( T ) DeserializeObject( typeof( T ), text.Slice( i + 3 + name.Length, text.Length - 4 - ( 2 * i ) - name.Length ) );
+            return ( T ) DeserializeObject( typeof( T ), CleanText( text.Slice( i, j - i ) ));
         }
 
         /// <summary>
@@ -146,15 +148,18 @@ namespace Adeptar
         {
             ReadOnlySpan<char> text = File.ReadAllText( path );
             StringBuilder name = new();
+
             bool inString = false;
             bool falseEnd = false;
             bool inId = false;
             bool exit = false;
             int i = 0, j = 0, w = 0;
-
+            int index = -1;
             foreach (var item in text)
             {
-                if (exit){
+                index++;
+                if (exit)
+                {
                     break;
                 }
                 switch (item)
@@ -170,29 +175,32 @@ namespace Adeptar
                             falseEnd = true;
                         break;
                     case '~':
-                        if (!inString){
+                        if (!inString)
+                        {
                             inId = !inId;
-                            if (inId){
-                                if (i == 0 && j == 0){
-                                    i = w;
-                                }
-                                else if (j != 0){
-                                    i = w;
-                                }else{
-                                    j = w;
-                                }
-                            }else{
-                                if (name.ToString() == id){
-                                    exit = true;
-                                    break;
-                                }else{
-                                    name.Clear();
-                                }
+                            if (inId)
+                            {
+                                w = index;
+                            }
+                            if (!inId && name.ToString() == id)
+                            {
+                                i = w + 1;
+                            }
+                            if (inId && i != 0)
+                            {
+                                j = index;
+                                exit = true;
+                                break;
+                            }
+                            if (inId && i == 0)
+                            {
+                                name.Clear();
                             }
                         }
                         break;
                     default:
-                        if (inId){
+                        if (inId)
+                        {
                             name.Append( item );
                         }
                         break;
@@ -200,7 +208,7 @@ namespace Adeptar
                 w++;
             }
 
-            return DeserializeObject( type, text.Slice( i + 3 + name.Length, text.Length - 4 - ( 2 * i ) - name.Length ) );
+            return DeserializeObject( type, CleanText( text.Slice( i, j - i ) ) );
         }
 
         /// <summary>
@@ -312,6 +320,26 @@ namespace Adeptar
             };
             AdeptarWriter.AssignSettings( settings );
             return AdeptarWriter.Serialize( toSerialize, FetchType( toSerialize ) );
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="toSerialize"></param>
+        /// <param name="id"></param>
+        /// <param name="formatting"></param>
+        public static void SerializeSetShared ( string path, object toSerialize, Formatting formatting = Formatting.Indented )
+        {
+            AdeptarSettings settings = new()
+            {
+                CheckClassAttributes = false,
+                UseIndentation = formatting == Formatting.Indented,
+                IgnoreDefaultValues = true,
+                IgnoreNullValues = true
+            };
+            AdeptarWriter.AssignSettings( settings );
+            AdeptarWriter.SerializeWrite( path, toSerialize, FetchType( toSerialize ), SerializationMode.SetShared );
         }
 
         /// <summary>

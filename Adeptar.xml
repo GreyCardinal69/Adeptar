@@ -150,6 +150,15 @@
             <param name="formatting">The formatting style.</param>
             <returns>A .Adeptar representation of the object with the provided formatting style.</returns>
         </member>
+        <member name="M:Adeptar.AdeptarConverter.SerializeSetShared(System.String,System.Object,Adeptar.Formatting)">
+             <summary>
+            
+             </summary>
+             <param name="path"></param>
+             <param name="toSerialize"></param>
+             <param name="id"></param>
+             <param name="formatting"></param>
+        </member>
         <member name="M:Adeptar.AdeptarConverter.SerializeAppend(System.String,System.Object,System.String,Adeptar.Formatting)">
             <summary>
             Serializes the object to a .Adeptar string using specified formatting style, and appends it to a file.
@@ -374,6 +383,16 @@
             Tells the <see cref="T:Adeptar.AdeptarWriter"/> whether to apply indentation when serializing objects.
             </summary>
         </member>
+        <member name="P:Adeptar.AdeptarSettings.IgnoreDefaultValues">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="P:Adeptar.AdeptarSettings.IgnoreNullValues">
+             <summary>
+            
+             </summary>
+        </member>
         <member name="T:Adeptar.AdeptarWriter">
             <summary>
             Core class that coordinates serialization via recursion.
@@ -427,6 +446,19 @@
             <param name="mainBuilder">The <see cref="T:System.Text.StringBuilder"/> instance text is appended to.</param>
             <param name="name">The name of the field or property of a class.</param>
             <param name="indent">The amount of indentation.</param>
+            <param name="calledByClassWriter">Tells the writer that the function was class from <see cref="T:Adeptar.ClassWriter"/>.</param>
+            <param name="last">If true tells the writer to not append a comma.</param>
+            <param name="addAtSign">True if the object is a complex key of a dictionary.</param>
+        </member>
+        <member name="M:Adeptar.AdeptarWriter.WriteNoIndentation(System.Object,Adeptar.SerializableType,System.Text.StringBuilder,System.String,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Alternative of <see cref="M:Adeptar.AdeptarWriter.Write(System.Object,Adeptar.SerializableType,System.Text.StringBuilder,System.String,System.Int32,System.Boolean,System.Boolean,System.Boolean)"/>
+            that doesnt write indentation.
+            </summary>
+            <param name="toSerialize">The object to serialize.</param>
+            <param name="type">The <see cref="T:Adeptar.SerializableType"/> of the object.</param>
+            <param name="mainBuilder">The <see cref="T:System.Text.StringBuilder"/> instance text is appended to.</param>
+            <param name="name">The name of the field or property of a class.</param>
             <param name="calledByClassWriter">Tells the writer that the function was class from <see cref="T:Adeptar.ClassWriter"/>.</param>
             <param name="last">If true tells the writer to not append a comma.</param>
             <param name="addAtSign">True if the object is a complex key of a dictionary.</param>
@@ -777,11 +809,6 @@
             True for objects considered primitive, such as numbers, enums, booleans and characters.
             </summary>
         </member>
-        <member name="F:Adeptar.SerializableType.Numeric">
-            <summary>
-            True for objects of type numeric.
-            </summary>
-        </member>
         <member name="F:Adeptar.SerializableType.String">
             <summary>
             True for objects of type <see cref="T:System.String"/>.
@@ -817,16 +844,6 @@
             True for objects of type <see cref="T:System.ValueTuple"/>.
             </summary>
         </member>
-        <member name="F:Adeptar.SerializableType.Enum">
-            <summary>
-            True for objects of type <see cref="T:System.Enum"/>.
-            </summary>
-        </member>
-        <member name="F:Adeptar.SerializableType.NULL">
-            <summary>
-            Object type is not known.
-            </summary>
-        </member>
         <member name="F:Adeptar.SerializableType.DateTime">
             <summary>
             True for objects of type <see cref="T:System.DateTime"/>.
@@ -836,6 +853,11 @@
             <summary>
             True for two or more dimensional arrays.
             </summary>
+        </member>
+        <member name="F:Adeptar.SerializableType.Ignore">
+             <summary>
+            
+             </summary>
         </member>
         <member name="T:Adeptar.SerializationMode">
             <summary>
@@ -858,6 +880,21 @@
             reads the file at the given path, overwrites the old version of the object with the new one and rewrites the file,
             leaving other objects untouched.
             </summary>
+        </member>
+        <member name="F:Adeptar.SerializationMode.AppendShared">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Adeptar.SerializationMode.ChangeSharedAppended">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:Adeptar.SerializationMode.SetShared">
+             <summary>
+            
+             </summary>
         </member>
         <member name="T:Adeptar.TupleReader">
             <summary>
@@ -892,6 +929,11 @@
             </summary>
             <param name="tuple">The type to check for.</param>
             <returns>True if the object is a <see cref="T:System.ValueTuple"/>.</returns>
+        </member>
+        <member name="F:Adeptar.TypeGetters._cachedTypes">
+            <summary>
+            Cached types for <see cref="T:Adeptar.TypeGetters"/> methods.
+            </summary>
         </member>
         <member name="M:Adeptar.TypeGetters.GetSerializableType(System.Type)">
             <summary>
@@ -928,29 +970,6 @@
             True if the type is a <see cref="T:System.Collections.Generic.Dictionary`2"/>.
             </returns>
         </member>
-        <member name="F:Adeptar.TypeGetters._cachedTypes">
-            <summary>
-            Cached types for <see cref="T:Adeptar.TypeGetters"/> methods.
-            </summary>
-        </member>
-        <member name="M:Adeptar.TypeGetters.IsDictionaryGenericKnown(System.Type)">
-            <summary>
-            Checks if the provided object is a <see cref="T:System.Collections.Generic.Dictionary`2"/>, uses a <see cref="T:System.Type"/>. Omits the .IsGeneric check.
-            </summary>
-            <param name="type">The type to check for.</param>
-            <returns>
-            True if the type is a <see cref="T:System.Collections.Generic.Dictionary`2"/>.
-            </returns>
-        </member>
-        <member name="M:Adeptar.TypeGetters.IsListGenericKnown(System.Type)">
-            <summary>
-            Checks if the provided object is a list, accepts a <see cref="T:System.Type"/> instead. Omits the .IsGeneric check.
-            </summary>
-            <param name="type">The type to check for.</param>
-            <returns>
-            True if the type is a list.
-            </returns>
-        </member>
         <member name="M:Adeptar.TypeGetters.IsTupleGenericKnown(System.Type)">
             <summary>
             Checks if an object is of type <see cref="T:System.ValueTuple"/>, such as (<see cref="T:System.Int32"/>, <see cref="T:System.Int32"/>). Omits the .IsGeneric check.
@@ -977,7 +996,7 @@
             </summary>
             <param name="received">The received object.</param>
             <returns>
-            The provided object's <see cref="T:Adeptar.SerializableType"/>. Returns <see cref="F:Adeptar.SerializableType.NULL"/> if the
+            The provided object's <see cref="T:Adeptar.SerializableType"/>. Returns <see cref="!:SerializableType.NULL"/> if the
             provided object is null or if its type can't be determined.
             </returns>
         </member>

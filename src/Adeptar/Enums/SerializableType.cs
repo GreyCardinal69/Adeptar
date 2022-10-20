@@ -37,10 +37,6 @@ namespace Adeptar
         /// </summary>
         Simple,
         /// <summary>
-        /// True for objects of type numeric.
-        /// </summary>
-        Numeric,
-        /// <summary>
         /// True for objects of type <see cref="System.String"/>.
         /// </summary>
         String,
@@ -69,20 +65,16 @@ namespace Adeptar
         /// </summary>
         Tuple,
         /// <summary>
-        /// True for objects of type <see cref="System.Enum"/>.
-        /// </summary>
-        Enum,
-        /// <summary>
-        /// Object type is not known.
-        /// </summary>
-        NULL,
-        /// <summary>
         /// True for objects of type <see cref="System.DateTime"/>.
         /// </summary>
         DateTime,
         /// <summary>
         /// True for two or more dimensional arrays.
         /// </summary>
-        DimensionalArray
+        DimensionalArray,
+        /// <summary>
+        ///
+        /// </summary>
+        Ignore
     }
 }

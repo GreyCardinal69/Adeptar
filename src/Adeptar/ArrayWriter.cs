@@ -52,7 +52,6 @@ namespace Adeptar
 
             if (!AdeptarWriter.CurrentSettings.UseIndentation){
                 int count = 0;
-                bool isIntended = indent > 0;
                 IList tempList = target as IList;
                 for (int i = 0; i < tempList.Count; i++)
                 {
@@ -60,13 +59,13 @@ namespace Adeptar
                         if (indent >= 1){
                             builder.Append( '[' );
                         }
-                        WriteArray( tempList[i], indent + 1, builder );
+                        WriteArray( tempList[i], 0, builder );
                         builder.Append( ']' );
                         if (count != tempList.Count - 1){
                             builder.Append( ',' );
                         }
                     }else{
-                        Write( tempList[i], FetchType( tempList[i] ), builder, null, isIntended ? indent - 1 : indent, false, count == tempList.Count - 1 , false );
+                        WriteNoIndentation( tempList[i], FetchType( tempList[i] ), builder, null, false, count == tempList.Count - 1 , false );
                     }
                     count++;
                 }
@@ -132,28 +131,41 @@ namespace Adeptar
                 }
             }
             builder.Append( '>' );
-            if (AdeptarWriter.CurrentSettings.UseIndentation){
+
+            if (AdeptarWriter.CurrentSettings.UseIndentation)
+            {
                 for (int i = 0; i < indent; i++)
                 {
                     builder.Append( '\n' );
                 }
-            }
-            do
-            {
-                for (var iterator = stack.Pop(); iterator.MoveNext();)
+                do
                 {
-                    Write( iterator.Current, FetchType( iterator.Current ),
-                        builder, null, indent, false, count == len - 1, false );
-                    if (AdeptarWriter.CurrentSettings.UseIndentation && count != len - 1){
+                    for (var iterator = stack.Pop(); iterator.MoveNext();)
+                    {
+                        Write( iterator.Current, FetchType( iterator.Current ),
+                            builder, null, indent, false, count == len - 1, false );
                         for (int i = 0; i < indent; i++)
                         {
                             builder.Append( '\n' );
                         }
+                        count++;
                     }
-                    count++;
                 }
+                while (stack.Count > 0);
             }
-            while (stack.Count > 0);
+            else
+            {
+                do
+                {
+                    for (var iterator = stack.Pop(); iterator.MoveNext();)
+                    {
+                        WriteNoIndentation( iterator.Current, FetchType( iterator.Current ),
+                            builder, null, false, count == len - 1, false );
+                        count++;
+                    }
+                }
+                while (stack.Count > 0);
+            }
         }
     }
 }

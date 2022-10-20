@@ -23,6 +23,11 @@ namespace AdeptarBenchmarks
 #if DEBUG
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
+
+            var x = AdeptarConverter.DeserializeAppended<MemoryBenchmarkerDemo.MyClass>( serializePath, "34332" );
+
+            Console.WriteLine(x.Odds[1]);
+
 #else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
             Console.ReadLine();
@@ -35,7 +40,7 @@ namespace AdeptarBenchmarks
     {
         public class MyClass
         {
-            public SerializableType type = SerializableType.NULL;
+            public SerializableType type = SerializableType.Ignore;
             public int Number;
             public int Number3;
             public int[] Odds;
@@ -50,7 +55,7 @@ namespace AdeptarBenchmarks
             {
                 ToIgnore = new string[] { "Odds", "Maps" }
             };
-            public SerializableType type = SerializableType.NULL;
+            public SerializableType type = SerializableType.Ignore;
             public int Number;
             public int Number3;
             public int[] Odds;
@@ -81,7 +86,7 @@ namespace AdeptarBenchmarks
                 Number3 = 4,
                 Odds = new int[] { 1, 3, 5, 7, 9 },
                 type = SerializableType.Dictionary
-            } );
+            } ) ;
         }
 
         [Benchmark]
@@ -98,6 +103,35 @@ namespace AdeptarBenchmarks
             } );
         }
 
+        [Benchmark]
+        public void ClassAdeptarNoIndentation ()
+        {
+            AdeptarConverter.Serialize( new MyClass()
+            {
+                date = DateTime.Now,
+                Maps = new Dictionary<int, string>() { { 1, "hello" }, { 2, "world" } },
+                Number = 1,
+                Number3 = 4,
+                Odds = new int[] { 1, 3, 5, 7, 9 },
+                type = SerializableType.Dictionary
+            }, Adeptar.Formatting.NoIndentation );
+        }
+
+        [Benchmark]
+        public void ClassJsonNoIndentation ()
+        {
+            JsonConvert.SerializeObject( new MyClass()
+            {
+                date = DateTime.Now,
+                Maps = new Dictionary<int, string>() { { 1, "hello" }, { 2, "world" } },
+                Number = 1,
+                Number3 = 4,
+                Odds = new int[] { 1, 3, 5, 7, 9 },
+                type = SerializableType.Dictionary
+            }, Newtonsoft.Json.Formatting.None );
+        }
+
+        /*
         [Benchmark]
         public void TupleAdeptar ()
         {
@@ -396,6 +430,6 @@ namespace AdeptarBenchmarks
         public void ListJsonDeserialize ()
         {
             JsonConvert.DeserializeObject<List<string>>( @"[""Some"",""Random"",""Words"",""Words""]" );
-        }
+        }*/
     }
 }

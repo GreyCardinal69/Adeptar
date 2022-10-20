@@ -71,6 +71,29 @@ namespace Adeptar
         }
 
         /// <summary>
+        /// Cached types for <see cref="TypeGetters"/> methods.
+        /// </summary>
+        private static Type[] _cachedTypes = new Type[]
+        {
+            typeof( Dictionary<,> ),
+            typeof( List<> ),
+            typeof( IList<> ),
+            typeof( ValueTuple<> ),
+            typeof( ValueTuple<,> ),
+            typeof( ValueTuple<,,> ),
+            typeof( ValueTuple<,,,> ),
+            typeof( ValueTuple<,,,,> ),
+            typeof( ValueTuple<,,,,,> ),
+            typeof( ValueTuple<,,,,,,> ),
+            typeof( ValueTuple<,,,,,,,> ),
+            typeof( char ),
+            typeof( string ),
+            typeof( DateTime ),
+            typeof( bool ),
+            typeof( decimal )
+        };
+
+        /// <summary>
         /// Gets the <see cref="SerializableType"/> of the provided <see cref="Type"/>.
         /// </summary>
         /// <param name="fInfo">The <see cref="Type"/> to check.</param>
@@ -89,9 +112,9 @@ namespace Adeptar
                 var genericTypeDef = fInfo.GetGenericTypeDefinition();
                 if (IsTupleGenericKnown( genericTypeDef ))
                     return SerializableType.Tuple;
-                if (IsDictionaryGenericKnown( genericTypeDef ))
+                if (genericTypeDef == _cachedTypes[0])
                     return SerializableType.Dictionary;
-                if (IsListGenericKnown( genericTypeDef ))
+                if (genericTypeDef == _cachedTypes[1] || genericTypeDef == _cachedTypes[2])
                     return SerializableType.Array;
             }
             if (fInfo.IsArray)
@@ -126,9 +149,9 @@ namespace Adeptar
                 var genericTypeDef = fInfo.GetGenericTypeDefinition();
                 if (IsTupleGenericKnown( genericTypeDef ))
                     return DeserializableType.Tuple;
-                if (IsDictionaryGenericKnown( genericTypeDef ))
+                if (genericTypeDef == _cachedTypes[0])
                     return DeserializableType.Dictionary;
-                if (IsListGenericKnown( genericTypeDef ))
+                if (genericTypeDef == _cachedTypes[1] || genericTypeDef == _cachedTypes[2])
                     return DeserializableType.List;
             }
             if (fInfo.IsArray)
@@ -156,47 +179,6 @@ namespace Adeptar
         /// True if the type is a <see cref="Dictionary{TKey, TValue}"/>.
         /// </returns>
         public static bool IsDictionary ( Type type ) => type.IsGenericType && type.GetGenericTypeDefinition() == typeof( Dictionary<,> );
-
-        /// <summary>
-        /// Cached types for <see cref="TypeGetters"/> methods.
-        /// </summary>
-        private static Type[] _cachedTypes = new Type[]
-        {
-            typeof( Dictionary<,> ),
-            typeof( List<> ),
-            typeof( IList<> ),
-            typeof( ValueTuple<> ),
-            typeof( ValueTuple<,> ),
-            typeof( ValueTuple<,,> ),
-            typeof( ValueTuple<,,,> ),
-            typeof( ValueTuple<,,,,> ),
-            typeof( ValueTuple<,,,,,> ),
-            typeof( ValueTuple<,,,,,,> ),
-            typeof( ValueTuple<,,,,,,,> ),
-            typeof( char ),
-            typeof( string ),
-            typeof( DateTime ),
-            typeof( bool ),
-            typeof( decimal )
-        };
-
-        /// <summary>
-        /// Checks if the provided object is a <see cref="Dictionary{TKey, TValue}"/>, uses a <see cref="Type"/>. Omits the .IsGeneric check.
-        /// </summary>
-        /// <param name="type">The type to check for.</param>
-        /// <returns>
-        /// True if the type is a <see cref="Dictionary{TKey, TValue}"/>.
-        /// </returns>
-        public static bool IsDictionaryGenericKnown ( Type type ) => type == _cachedTypes[0];
-
-        /// <summary>
-        /// Checks if the provided object is a list, accepts a <see cref="Type"/> instead. Omits the .IsGeneric check.
-        /// </summary>
-        /// <param name="type">The type to check for.</param>
-        /// <returns>
-        /// True if the type is a list.
-        /// </returns>
-        public static bool IsListGenericKnown ( Type type ) => ( type == _cachedTypes[1] || type == _cachedTypes[2] );
 
         /// <summary>
         /// Checks if an object is of type <see cref="ValueTuple"/>, such as (<see cref="int"/>, <see cref="int"/>). Omits the .IsGeneric check.

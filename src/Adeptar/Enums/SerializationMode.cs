@@ -44,5 +44,17 @@ namespace Adeptar
         /// leaving other objects untouched.
         /// </summary>
         ChangeAppended,
+        /// <summary>
+        ///
+        /// </summary>
+        AppendShared,
+        /// <summary>
+        ///
+        /// </summary>
+        ChangeSharedAppended,
+        /// <summary>
+        ///
+        /// </summary>
+        SetShared,
     }
 }
