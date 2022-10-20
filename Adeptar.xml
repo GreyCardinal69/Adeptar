@@ -81,6 +81,15 @@
             <param name="id">The id used to serialize the object with.</param>
             <returns>The deserialized .NET object.</returns>
         </member>
+        <member name="M:Adeptar.AdeptarConverter.DeserializeAppendedWithSharedData``1(System.String,System.String)">
+            <summary>
+            Deserializes an object serialized with the ID feature using shared data of the object pool to override
+            field and property values on deserialization.
+            </summary>
+            <param name="path">The path to the file where the object is serialized.</param>
+            <param name="id">The id used to serialize the object with.</param>
+            <returns>The deserialized .NET object.</returns>
+        </member>
         <member name="M:Adeptar.AdeptarConverter.SerializeWrite(System.String,System.Object,Adeptar.AdeptarSettings)">
             <summary>
             Serializes the object to a .Adeptar string and writes it to a file, the file is overwritten.
@@ -153,6 +162,7 @@
         <member name="M:Adeptar.AdeptarConverter.SerializeSetShared(System.String,System.Object,Adeptar.Formatting)">
             <summary>
             Sets or rewrites the shared data of an Index feature object collection using specified formatting style.
+            Fields or properties with null or default values are not serialized.
             </summary>
             <param name="path">The path to the file to append the object to.</param>
             <param name="toSerialize">The object to serialize as the shared data.</param>
@@ -672,6 +682,15 @@
             </summary>
             <param name="type">The type to check.</param>
             <returns>The <see cref="T:Adeptar.DeserializationHelpers.NumericType"/> of the provided <see cref="T:System.Type"/>.</returns>
+        </member>
+        <member name="M:Adeptar.DeserializationHelpers.FetchAppendedSegment(System.ReadOnlySpan{System.Char},System.String,System.Int32)">
+             <summary>
+            
+             </summary>
+             <param name="text"></param>
+             <param name="id"></param>
+             <param name="additionalTakeAway"></param>
+             <returns></returns>
         </member>
         <member name="M:Adeptar.DeserializationHelpers.StringResolver(System.ReadOnlySpan{System.Char})">
             <summary>

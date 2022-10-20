@@ -235,6 +235,81 @@ namespace Adeptar
         }
 
         /// <summary>
+        /// Extracts the string data of an object with the provided id from the ID feature object collection.
+        /// </summary>
+        /// <param name="text">The object collection string to extract from.</param>
+        /// <param name="id">The id of the object to extract.</param>
+        /// <param name="additionalTakeAway">Amount of additional characters taken away from the end of the extracted string.</param>
+        /// <returns></returns>
+        internal static ReadOnlySpan<char> FetchAppendedSegment(  ReadOnlySpan<char> text, string id, int additionalTakeAway = 0 )
+        {
+            StringBuilder name = new();
+
+            bool inString = false;
+            bool falseEnd = false;
+            bool inId = false;
+            bool exit = false;
+
+            int i = 0, j = 0, w = 0;
+            int index = -1;
+
+            foreach (var item in text)
+            {
+                index++;
+                if (exit)
+                {
+                    break;
+                }
+                switch (item)
+                {
+                    case '"':
+                        if (falseEnd && inString)
+                            falseEnd = false;
+                        else if (!falseEnd)
+                            inString = !inString;
+                        break;
+                    case '\\':
+                        if (inString)
+                            falseEnd = true;
+                        break;
+                    case '~':
+                        if (!inString)
+                        {
+                            inId = !inId;
+                            if (inId)
+                            {
+                                w = index;
+                            }
+                            if (!inId && name.ToString() == id)
+                            {
+                                i = w + 1;
+                            }
+                            if (inId && i != 0)
+                            {
+                                j = index;
+                                exit = true;
+                                break;
+                            }
+                            if (inId && i == 0)
+                            {
+                                name.Clear();
+                            }
+                        }
+                        break;
+                    default:
+                        if (inId)
+                        {
+                            name.Append( item );
+                        }
+                        break;
+                }
+                w++;
+            }
+
+            return CleanText( text.Slice( i, j - i - additionalTakeAway ) );
+        }
+
+        /// <summary>
         /// Removes first and last quatation marks of the string as well as
         /// removes extra backslashes.
         /// </summary>

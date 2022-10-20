@@ -73,69 +73,7 @@ namespace Adeptar
         /// <param name="path">The path to the file where the object is serialized.</param>
         /// <param name="id">The id used to serialize the object with.</param>
         /// <returns>The deserialized .NET object.</returns>
-        public static T DeserializeAppended<T> ( string path, string id )
-        {
-            ReadOnlySpan<char> text = File.ReadAllText( path );
-            StringBuilder name = new();
-
-            bool inString = false;
-            bool falseEnd = false;
-            bool inId = false;
-            bool exit = false;
-            int i = 0, j = 0, w = 0;
-            int index = -1;
-            foreach (var item in text)
-            {
-                index++;
-                if (exit){
-                    break;
-                }
-                switch (item)
-                {
-                    case '"':
-                        if (falseEnd && inString)
-                            falseEnd = false;
-                        else if (!falseEnd)
-                            inString = !inString;
-                        break;
-                    case '\\':
-                        if (inString)
-                            falseEnd = true;
-                        break;
-                    case '~':
-                        if (!inString){
-                            inId = !inId;
-                            if (inId)
-                            {
-                                w = index;
-                            }
-                            if (!inId && name.ToString() == id)
-                            {
-                                i = w + 1;
-                            }
-                            if (inId && i != 0)
-                            {
-                                j = index;
-                                exit = true;
-                                break;
-                            }
-                            if (inId && i == 0)
-                            {
-                                name.Clear();
-                            }
-                        }
-                        break;
-                    default:
-                        if (inId){
-                            name.Append( item );
-                        }
-                        break;
-                }
-                w++;
-            }
-
-            return ( T ) DeserializeObject( typeof( T ), CleanText( text.Slice( i, j - i ) ));
-        }
+        public static T DeserializeAppended<T> ( string path, string id ) => (T) DeserializeObject( typeof(T), FetchAppendedSegment( File.ReadAllText( path ), id, 0 ) );
 
         /// <summary>
         /// Deserializes an object serialized with the ID feature. Accepts <see cref="Type"/>.
@@ -144,17 +82,26 @@ namespace Adeptar
         /// <param name="type">The type of the object.</param>
         /// <param name="id">The id used to serialize the object with.</param>
         /// <returns>The deserialized .NET object.</returns>
-        public static object DeserializeAppended ( string path, Type type, string id )
+        public static object DeserializeAppended ( string path, Type type, string id ) => DeserializeObject( type, FetchAppendedSegment( File.ReadAllText( path ), id, 0 ));
+
+        /// <summary>
+        /// Deserializes an object serialized with the ID feature using shared data of the object pool to override
+        /// field and property values on deserialization.
+        /// </summary>
+        /// <param name="path">The path to the file where the object is serialized.</param>
+        /// <param name="id">The id used to serialize the object with.</param>
+        /// <returns>The deserialized .NET object.</returns>
+        public static T DeserializeAppendedWithSharedData<T> ( string path, string id )
         {
             ReadOnlySpan<char> text = File.ReadAllText( path );
-            StringBuilder name = new();
 
             bool inString = false;
             bool falseEnd = false;
-            bool inId = false;
+            bool inSharedData = false;
             bool exit = false;
-            int i = 0, j = 0, w = 0;
+            int i = 0;
             int index = -1;
+
             foreach (var item in text)
             {
                 index++;
@@ -174,41 +121,26 @@ namespace Adeptar
                         if (inString)
                             falseEnd = true;
                         break;
-                    case '~':
+                    case '&':
                         if (!inString)
                         {
-                            inId = !inId;
-                            if (inId)
+                            inSharedData = !inSharedData;
+                            if (!inSharedData)
                             {
-                                w = index;
-                            }
-                            if (!inId && name.ToString() == id)
-                            {
-                                i = w + 1;
-                            }
-                            if (inId && i != 0)
-                            {
-                                j = index;
+                                i = index;
                                 exit = true;
                                 break;
-                            }
-                            if (inId && i == 0)
-                            {
-                                name.Clear();
                             }
                         }
                         break;
                     default:
-                        if (inId)
-                        {
-                            name.Append( item );
-                        }
                         break;
                 }
-                w++;
             }
 
-            return DeserializeObject( type, CleanText( text.Slice( i, j - i ) ) );
+            return ( T ) DeserializeObject( typeof( T ), string.Concat(
+                string.Concat( FetchAppendedSegment( text, id, 2 ), "," ),
+                string.Concat( CleanText( text.Slice( 3, i - 5 ) ), "}" )));
         }
 
         /// <summary>
@@ -324,6 +256,7 @@ namespace Adeptar
 
         /// <summary>
         /// Sets or rewrites the shared data of an Index feature object collection using specified formatting style.
+        /// Fields or properties with null or default values are not serialized.
         /// </summary>
         /// <param name="path">The path to the file to append the object to.</param>
         /// <param name="toSerialize">The object to serialize as the shared data.</param>
