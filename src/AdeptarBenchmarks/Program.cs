@@ -24,10 +24,6 @@ namespace AdeptarBenchmarks
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
 
-            var x = AdeptarConverter.DeserializeAppended<MemoryBenchmarkerDemo.MyClass>( serializePath, "34332" );
-
-            Console.WriteLine(x.Odds[1]);
-
 #else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
             Console.ReadLine();
@@ -131,7 +127,6 @@ namespace AdeptarBenchmarks
             }, Newtonsoft.Json.Formatting.None );
         }
 
-        /*
         [Benchmark]
         public void TupleAdeptar ()
         {
@@ -430,6 +425,6 @@ namespace AdeptarBenchmarks
         public void ListJsonDeserialize ()
         {
             JsonConvert.DeserializeObject<List<string>>( @"[""Some"",""Random"",""Words"",""Words""]" );
-        }*/
+        }
     }
 }

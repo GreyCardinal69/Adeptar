@@ -41,12 +41,12 @@ namespace Adeptar
         public bool UseIndentation { get; set; }
 
         /// <summary>
-        ///
+        /// Tells the <see cref="AdeptarWriter"/> to not serialize fields or properties whos value is the default of their type.
         /// </summary>
         public bool IgnoreDefaultValues { get; set; }
 
         /// <summary>
-        ///
+        /// Tells the <see cref="AdeptarWriter"/> to not serialize fields or properties that are null.
         /// </summary>
         public bool IgnoreNullValues { get; set; }
     }

@@ -80,7 +80,7 @@ namespace Adeptar
         {
             bool simple = false;
 
-            if (mode == SerializationMode.Append || mode == SerializationMode.AppendShared){
+            if (mode == SerializationMode.Append || mode == SerializationMode.ChangeAppended){
                 List<string> ids = new();
                 foreach (var line in File.ReadLines( path ))
                 {
@@ -88,35 +88,26 @@ namespace Adeptar
                         ids.Add( line );
                     }
                 }
-                if (ids.Contains( $"~{id}" )){
-                    throw new AdeptarException( "Can not append the object, an object with the same id already exists." );
-                }
-            }
-
-            if (mode == SerializationMode.ChangeAppended)
-            {
-                List<string> ids = new();
-                foreach (var line in File.ReadLines( path ))
+                if (mode == SerializationMode.Append)
                 {
-                    if (line[0] == '~' && line[line.Length - 1] == '~' && line.Length > 1)
+                    if (ids.Contains( $"~{id}" ))
                     {
-                        ids.Add( line );
+                        throw new AdeptarException( "Can not append the object, an object with the same id already exists." );
                     }
                 }
-                if (!ids.Contains($"~{id}~"))
+                else
                 {
-                    throw new AdeptarException( $"Can not change appended object with id: {id}, an object with such an id does not exist." );
+                    if (!ids.Contains( $"~{id}~" ))
+                    {
+                        throw new AdeptarException( $"Can not change appended object with id: {id}, an object with such an id does not exist." );
+                    }
                 }
             }
 
             if (CurrentSettings.UseIndentation)
-            {
                 Write( target, type, _result, null, 0, false, true, false );
-            }
             else
-            {
                 WriteNoIndentation( target, type, _result, null, false, true, false );
-            }
 
             switch (mode)
             {
@@ -218,6 +209,7 @@ namespace Adeptar
                     File.WriteAllText( path, final.ToString() );
                     break;
                 case SerializationMode.SetShared:
+
                     int start = -1;
                     int end = 0;
                     bool inShared = false;
@@ -268,13 +260,10 @@ namespace Adeptar
         internal static string Serialize ( object target, SerializableType type )
         {
             if (CurrentSettings.UseIndentation)
-            {
                 Write( target, type, _result, null, 0, false, true, false );
-            }
             else
-            {
                 WriteNoIndentation( target, type, _result, null, false, true, false );
-            }
+
             string final = _result.ToString();
             _result.Clear();
             CurrentSettings = DefaultSettings;

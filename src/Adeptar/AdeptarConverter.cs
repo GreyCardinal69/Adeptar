@@ -323,12 +323,11 @@ namespace Adeptar
         }
 
         /// <summary>
-        ///
+        /// Sets or rewrites the shared data of an Index feature object collection using specified formatting style.
         /// </summary>
-        /// <param name="path"></param>
-        /// <param name="toSerialize"></param>
-        /// <param name="id"></param>
-        /// <param name="formatting"></param>
+        /// <param name="path">The path to the file to append the object to.</param>
+        /// <param name="toSerialize">The object to serialize as the shared data.</param>
+        /// <param name="formatting">The formatting style.</param>
         public static void SerializeSetShared ( string path, object toSerialize, Formatting formatting = Formatting.Indented )
         {
             AdeptarSettings settings = new()

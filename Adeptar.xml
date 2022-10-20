@@ -151,13 +151,12 @@
             <returns>A .Adeptar representation of the object with the provided formatting style.</returns>
         </member>
         <member name="M:Adeptar.AdeptarConverter.SerializeSetShared(System.String,System.Object,Adeptar.Formatting)">
-             <summary>
-            
-             </summary>
-             <param name="path"></param>
-             <param name="toSerialize"></param>
-             <param name="id"></param>
-             <param name="formatting"></param>
+            <summary>
+            Sets or rewrites the shared data of an Index feature object collection using specified formatting style.
+            </summary>
+            <param name="path">The path to the file to append the object to.</param>
+            <param name="toSerialize">The object to serialize as the shared data.</param>
+            <param name="formatting">The formatting style.</param>
         </member>
         <member name="M:Adeptar.AdeptarConverter.SerializeAppend(System.String,System.Object,System.String,Adeptar.Formatting)">
             <summary>
@@ -384,14 +383,14 @@
             </summary>
         </member>
         <member name="P:Adeptar.AdeptarSettings.IgnoreDefaultValues">
-             <summary>
-            
-             </summary>
+            <summary>
+            Tells the <see cref="T:Adeptar.AdeptarWriter"/> to not serialize fields or properties whos value is the default of their type.
+            </summary>
         </member>
         <member name="P:Adeptar.AdeptarSettings.IgnoreNullValues">
-             <summary>
-            
-             </summary>
+            <summary>
+            Tells the <see cref="T:Adeptar.AdeptarWriter"/> to not serialize fields or properties that are null.
+            </summary>
         </member>
         <member name="T:Adeptar.AdeptarWriter">
             <summary>
@@ -881,20 +880,10 @@
             leaving other objects untouched.
             </summary>
         </member>
-        <member name="F:Adeptar.SerializationMode.AppendShared">
-             <summary>
-            
-             </summary>
-        </member>
-        <member name="F:Adeptar.SerializationMode.ChangeSharedAppended">
-             <summary>
-            
-             </summary>
-        </member>
         <member name="F:Adeptar.SerializationMode.SetShared">
-             <summary>
-            
-             </summary>
+            <summary>
+            Sets or changes the shared data section of an Index feature object collection.
+            </summary>
         </member>
         <member name="T:Adeptar.TupleReader">
             <summary>

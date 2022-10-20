@@ -24,9 +24,10 @@
 #endregion
 
 namespace Adeptar
-{    /// <summary>
-     /// Enum to define whether an object should be serialized with indentation.
-     /// </summary>
+{
+    /// <summary>
+    /// Enum to define whether an object should be serialized with indentation.
+    /// </summary>
     public enum Formatting
     {
         /// <summary>

@@ -45,15 +45,7 @@ namespace Adeptar
         /// </summary>
         ChangeAppended,
         /// <summary>
-        ///
-        /// </summary>
-        AppendShared,
-        /// <summary>
-        ///
-        /// </summary>
-        ChangeSharedAppended,
-        /// <summary>
-        ///
+        /// Sets or changes the shared data section of an Index feature object collection.
         /// </summary>
         SetShared,
     }

@@ -80,16 +80,27 @@ namespace Adeptar
                     string name = item.Name;
                     var value = accessor[target, name];
 
+                    if (AdeptarWriter.CurrentSettings.IgnoreNullValues && value is null)
+                    {
+                        count++;
+                        continue;
+                    }
+
+                    if (AdeptarWriter.CurrentSettings.IgnoreDefaultValues)
+                    {
+                        if (Activator.CreateInstance( itemType ).Equals( value ))
+                        {
+                            count++;
+                            continue;
+                        }
+                    }
+
                     if (AdeptarWriter.CurrentSettings.UseIndentation)
                     {
                         if (value is null)
-                        {
                             WriteRaw( value, GetSerializableType( itemType ), builder, name, indent, count == last );
-                        }
                         else
-                        {
                             Write( value, GetSerializableType( itemType ), builder, name, indent, true, count == last, false );
-                        }
                         builder.Append( '\n' );
                     }
                     else
@@ -146,12 +157,15 @@ namespace Adeptar
 
                     if (AdeptarWriter.CurrentSettings.IgnoreNullValues && value is null)
                     {
+                        count++;
                         continue;
                     }
+
                     if (AdeptarWriter.CurrentSettings.IgnoreDefaultValues)
                     {
                         if (Activator.CreateInstance( itemType ).Equals( value ))
                         {
+                            count++;
                             continue;
                         }
                     }
@@ -159,13 +173,9 @@ namespace Adeptar
                     if (AdeptarWriter.CurrentSettings.UseIndentation)
                     {
                         if (value is null)
-                        {
                             WriteRaw( value, GetSerializableType( itemType ), builder, name, indent, count == last );
-                        }
                         else
-                        {
                             Write( value, GetSerializableType( itemType ), builder, name, indent, true, count == last, false );
-                        }
                         builder.Append( '\n' );
                     }
                     else
