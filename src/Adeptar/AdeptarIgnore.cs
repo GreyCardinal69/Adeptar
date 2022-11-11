@@ -1,4 +1,17 @@
-﻿#region License
+﻿using System;
+
+namespace Adeptar
+{
+    /// <summary>
+    /// Instructs the <see cref="AdeptarWriter"/> to not serialize the property or the field.
+    /// </summary>
+    [AttributeUsage( AttributeTargets.Field | AttributeTargets.Property )]
+    public class AdeptarIgnore : Attribute
+    {
+    }
+}
+
+#region License
 // Copyright (c) 2022 The Grey Cardinal ( Michael Kananov )
 //
 // Permission is hereby granted, free of charge, to any person
@@ -22,16 +35,3 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
-
-using System;
-
-namespace Adeptar
-{
-    /// <summary>
-    /// Instructs the <see cref="AdeptarWriter"/> to not serialize the property or the field.
-    /// </summary>
-    [AttributeUsage( AttributeTargets.Field | AttributeTargets.Property )]
-    public class AdeptarIgnore : Attribute
-    {
-    }
-}

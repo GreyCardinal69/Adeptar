@@ -684,13 +684,13 @@
             <returns>The <see cref="T:Adeptar.DeserializationHelpers.NumericType"/> of the provided <see cref="T:System.Type"/>.</returns>
         </member>
         <member name="M:Adeptar.DeserializationHelpers.FetchAppendedSegment(System.ReadOnlySpan{System.Char},System.String,System.Int32)">
-             <summary>
-            
-             </summary>
-             <param name="text"></param>
-             <param name="id"></param>
-             <param name="additionalTakeAway"></param>
-             <returns></returns>
+            <summary>
+            Extracts the string data of an object with the provided id from the ID feature object collection.
+            </summary>
+            <param name="text">The object collection string to extract from.</param>
+            <param name="id">The id of the object to extract.</param>
+            <param name="additionalTakeAway">Amount of additional characters taken away from the end of the extracted string.</param>
+            <returns></returns>
         </member>
         <member name="M:Adeptar.DeserializationHelpers.StringResolver(System.ReadOnlySpan{System.Char})">
             <summary>

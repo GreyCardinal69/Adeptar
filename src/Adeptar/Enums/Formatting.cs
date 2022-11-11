@@ -1,4 +1,22 @@
-﻿#region License
+﻿namespace Adeptar
+{
+    /// <summary>
+    /// Enum to define whether an object should be serialized with indentation.
+    /// </summary>
+    public enum Formatting
+    {
+        /// <summary>
+        /// The Adeptar writer will use indentation.
+        /// </summary>
+        Indented,
+        /// <summary>
+        /// The Adeptar writer will not use indentation.
+        /// </summary>
+        NoIndentation,
+    }
+}
+
+#region License
 // Copyright (c) 2022 The Grey Cardinal ( Michael Kananov )
 //
 // Permission is hereby granted, free of charge, to any person
@@ -22,21 +40,3 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 #endregion
-
-namespace Adeptar
-{
-    /// <summary>
-    /// Enum to define whether an object should be serialized with indentation.
-    /// </summary>
-    public enum Formatting
-    {
-        /// <summary>
-        /// The Adeptar writer will use indentation.
-        /// </summary>
-        Indented,
-        /// <summary>
-        /// The Adeptar writer will not use indentation.
-        /// </summary>
-        NoIndentation,
-    }
-}

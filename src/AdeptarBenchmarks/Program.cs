@@ -58,7 +58,7 @@ namespace AdeptarBenchmarks
             public Dictionary<int, string> Maps;
             public DateTime date;
         }
-
+        
         [Benchmark]
         public void ClassAdeptarEmpty ()
         {
@@ -174,7 +174,7 @@ namespace AdeptarBenchmarks
         {
             JsonConvert.SerializeObject( new int[2, 2, 2, 2] { { { { 1, 2 }, { 3, 4 } }, { { 5, 6 }, { 7, 8 } } }, { { { 1, 2 }, { 3, 4 } }, { { 5, 6 }, { 7, 8 } } } } );
         }
-
+        
         [Benchmark]
         public void NestedListAdeptar ()
         {
