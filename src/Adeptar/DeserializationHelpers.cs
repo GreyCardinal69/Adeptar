@@ -7,7 +7,7 @@ namespace Adeptar
     /// <summary>
     /// A class that contains methods for deserialization of .Adeptar objects.
     /// </summary>
-    public class DeserializationHelpers
+    internal class DeserializationHelpers
     {
         /// <summary>
         /// Cached type for <see cref="sbyte"/>.
@@ -296,7 +296,7 @@ namespace Adeptar
         /// Increments an array with a binary style.
         /// Starting from the end and traversing towards the start.
         /// The array serves as an index for a dimensional array.
-        /// Accepts a <see cref="List{T}"/> of ints that server as an upper bound.
+        /// Accepts a <see cref="List{T}"/> of ints that serves as an upper bound.
         /// </summary>
         /// <param name="sizes">The sizes of the dimensional array.</param>
         /// <param name="index">The current index of the dimensional array to use.</param>

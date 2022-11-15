@@ -12,6 +12,7 @@ using BenchmarkDotNet.Attributes;
 using Adeptar;
 using Newtonsoft.Json;
 using FastMember;
+using static AdeptarBenchmarks.MemoryBenchmarkerDemo;
 
 namespace AdeptarBenchmarks
 {
@@ -33,7 +34,7 @@ namespace AdeptarBenchmarks
 
     [MemoryDiagnoser]
     public class MemoryBenchmarkerDemo
-    {
+    {   
         public class MyClass
         {
             public SerializableType type = SerializableType.Ignore;
@@ -138,7 +139,7 @@ namespace AdeptarBenchmarks
         {
             JsonConvert.SerializeObject( (1, "Hello World", new MyClass(), new int[] { 1, 2, 3, 4 }) );
         }
-
+        
         [Benchmark]
         public void DictionaryWithArrayKeyAdeptar ()
         {
@@ -162,7 +163,7 @@ namespace AdeptarBenchmarks
         {
             JsonConvert.SerializeObject( new Dictionary<int, int> { { 1, 2 }, { 3, 4 } } );
         }
-
+        
         [Benchmark]
         public void FourDimensionalArrayAdeptar ()
         {

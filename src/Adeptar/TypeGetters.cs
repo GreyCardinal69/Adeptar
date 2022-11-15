@@ -195,7 +195,7 @@ namespace Adeptar
         /// </summary>
         /// <param name="received">The received object.</param>
         /// <returns>
-        /// The provided object's <see cref="SerializableType"/>. Returns <see cref="SerializableType.NULL"/> if the
+        /// The provided object's <see cref="SerializableType"/>. Returns <see cref="SerializableType.Class"/> if the
         /// provided object is null or if its type can't be determined.
         /// </returns>
         public static SerializableType FetchType ( object received )
@@ -279,7 +279,7 @@ namespace Adeptar
         /// <param name="obj">The object that is the enum.</param>
         /// <param name="enumType">The type of the enum to parse to.</param>
         /// <returns>Returns an object casted to the provided enum type.</returns>
-        public static object ParseToEnumNonGeneric ( ReadOnlySpan<char> obj, Type enumType ) => Enum.Parse(enumType, obj.ToString() );
+        public static object ParseToEnumNonGeneric ( ReadOnlySpan<char> obj, Type enumType ) => Enum.Parse( enumType, obj.ToString() );
     }
 }
 

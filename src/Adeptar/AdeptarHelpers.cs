@@ -5,7 +5,7 @@ namespace Adeptar
     /// <summary>
     /// A class containing helper methods for different uses.
     /// </summary>
-    public class AdeptarHelper
+    public class AdeptarHelpers
     {
         /// <summary>
         /// Checks if the provided file already has an object appended using the Id feature with the specified id.

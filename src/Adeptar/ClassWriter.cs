@@ -70,17 +70,19 @@ namespace Adeptar
                         }
                     }
 
+                    FieldPropertyName = name;
+
                     if (AdeptarWriter.CurrentSettings.UseIndentation)
                     {
                         if (value is null)
-                            WriteRaw( value, GetSerializableType( itemType ), builder, name, indent, count == last );
+                            WriteRaw( value, GetSerializableType( itemType ), builder, indent, count == last );
                         else
-                            Write( value, GetSerializableType( itemType ), builder, name, indent, true, count == last, false );
+                            Write( value, GetSerializableType( itemType ), builder, indent, count == last, false );
                         builder.Append( '\n' );
                     }
                     else
                     {
-                        WriteNoIndentation( value, GetSerializableType( itemType ), builder, name, true, count == last, false );
+                        WriteNoIndentation( value, GetSerializableType( itemType ), builder, count == last, false );
                     }
                     count++;
                 }
@@ -145,17 +147,19 @@ namespace Adeptar
                         }
                     }
 
+                    FieldPropertyName = name;
+
                     if (AdeptarWriter.CurrentSettings.UseIndentation)
                     {
                         if (value is null)
-                            WriteRaw( value, GetSerializableType( itemType ), builder, name, indent, count == last );
+                            WriteRaw( value, GetSerializableType( itemType ), builder, indent, count == last );
                         else
-                            Write( value, GetSerializableType( itemType ), builder, name, indent, true, count == last, false );
+                            Write( value, GetSerializableType( itemType ), builder, indent, count == last, false );
                         builder.Append( '\n' );
                     }
                     else
                     {
-                        WriteNoIndentation( value, GetSerializableType( itemType ), builder, name, true, count == last, false );
+                        WriteNoIndentation( value, GetSerializableType( itemType ), builder, count == last, false );
                     }
                     count++;
                 }
@@ -183,7 +187,9 @@ namespace Adeptar
             {
                 foreach (var param in FieldTypes)
                 {
-                    Write( param.GetValue( target ), GetSerializableType( param.FieldType ), builder, param.Name, indent, true, count == FieldTypes.Length - 1, false );
+                    FieldPropertyName = param.Name;
+
+                    Write( param.GetValue( target ), GetSerializableType( param.FieldType ), builder, indent, count == FieldTypes.Length - 1, false );
                     builder.Append( '\n' );
                     count++;
                 }
@@ -192,7 +198,9 @@ namespace Adeptar
             {
                 foreach (var param in FieldTypes)
                 {
-                    WriteNoIndentation( param.GetValue( target ), GetSerializableType( param.FieldType ), builder, param.Name, true, count == FieldTypes.Length - 1, false );
+                    FieldPropertyName = param.Name;
+
+                    WriteNoIndentation( param.GetValue( target ), GetSerializableType( param.FieldType ), builder, count == FieldTypes.Length - 1, false );
                     count++;
                 }
             }

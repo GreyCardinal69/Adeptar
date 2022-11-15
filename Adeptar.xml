@@ -336,12 +336,12 @@
             </summary>
             <param name="message">The error message that explains the reason for the exception.</param>
         </member>
-        <member name="T:Adeptar.AdeptarHelper">
+        <member name="T:Adeptar.AdeptarHelpers">
             <summary>
             A class containing helper methods for different uses.
             </summary>
         </member>
-        <member name="M:Adeptar.AdeptarHelper.ContainsId(System.String,System.String)">
+        <member name="M:Adeptar.AdeptarHelpers.ContainsId(System.String,System.String)">
             <summary>
             Checks if the provided file already has an object appended using the Id feature with the specified id.
             The id is limited to numbers and letters.
@@ -350,7 +350,7 @@
             <param name="id">The id of the object to check for.</param>
             <returns>True if the already exists in the file.</returns>
         </member>
-        <member name="M:Adeptar.AdeptarHelper.ContainsIdInternal(System.String,System.String)">
+        <member name="M:Adeptar.AdeptarHelpers.ContainsIdInternal(System.String,System.String)">
             <summary>
             Checks if the provided file already has an object appended using the Id feature with the specified id.
             The id is limited to numbers and letters.
@@ -446,40 +446,35 @@
             <param name="type">The <see cref="T:Adeptar.SerializableType"/> of the object.</param>
             <returns></returns>
         </member>
-        <member name="M:Adeptar.AdeptarWriter.Write(System.Object,Adeptar.SerializableType,System.Text.StringBuilder,System.String,System.Int32,System.Boolean,System.Boolean,System.Boolean)">
+        <member name="M:Adeptar.AdeptarWriter.Write(System.Object,Adeptar.SerializableType,System.Text.StringBuilder,System.Int32,System.Boolean,System.Boolean)">
             <summary>
             The core function that handles serialization of object via recursion.
             </summary>
             <param name="toSerialize">The object to serialize.</param>
             <param name="type">The <see cref="T:Adeptar.SerializableType"/> of the object.</param>
             <param name="mainBuilder">The <see cref="T:System.Text.StringBuilder"/> instance text is appended to.</param>
-            <param name="name">The name of the field or property of a class.</param>
             <param name="indent">The amount of indentation.</param>
-            <param name="calledByClassWriter">Tells the writer that the function was class from <see cref="T:Adeptar.ClassWriter"/>.</param>
             <param name="last">If true tells the writer to not append a comma.</param>
             <param name="addAtSign">True if the object is a complex key of a dictionary.</param>
         </member>
-        <member name="M:Adeptar.AdeptarWriter.WriteNoIndentation(System.Object,Adeptar.SerializableType,System.Text.StringBuilder,System.String,System.Boolean,System.Boolean,System.Boolean)">
+        <member name="M:Adeptar.AdeptarWriter.WriteNoIndentation(System.Object,Adeptar.SerializableType,System.Text.StringBuilder,System.Boolean,System.Boolean)">
             <summary>
-            Alternative of <see cref="M:Adeptar.AdeptarWriter.Write(System.Object,Adeptar.SerializableType,System.Text.StringBuilder,System.String,System.Int32,System.Boolean,System.Boolean,System.Boolean)"/>
+            Alternative of <see cref="M:Adeptar.AdeptarWriter.Write(System.Object,Adeptar.SerializableType,System.Text.StringBuilder,System.Int32,System.Boolean,System.Boolean)"/>
             that doesnt write indentation.
             </summary>
             <param name="toSerialize">The object to serialize.</param>
             <param name="type">The <see cref="T:Adeptar.SerializableType"/> of the object.</param>
             <param name="mainBuilder">The <see cref="T:System.Text.StringBuilder"/> instance text is appended to.</param>
-            <param name="name">The name of the field or property of a class.</param>
-            <param name="calledByClassWriter">Tells the writer that the function was class from <see cref="T:Adeptar.ClassWriter"/>.</param>
             <param name="last">If true tells the writer to not append a comma.</param>
             <param name="addAtSign">True if the object is a complex key of a dictionary.</param>
         </member>
-        <member name="M:Adeptar.AdeptarWriter.WriteRaw(System.Object,Adeptar.SerializableType,System.Text.StringBuilder,System.String,System.Int32,System.Boolean)">
+        <member name="M:Adeptar.AdeptarWriter.WriteRaw(System.Object,Adeptar.SerializableType,System.Text.StringBuilder,System.Int32,System.Boolean)">
             <summary>
             Called by <see cref="T:Adeptar.ClassWriter"/> to write null objects.
             </summary>
             <param name="toSerialize">The object to serialize.</param>
             <param name="type">The <see cref="T:Adeptar.SerializableType"/> of the object.</param>
             <param name="mainBuilder">The <see cref="T:System.Text.StringBuilder"/> instance text is appended to.</param>
-            <param name="name">The name of the field or property of a class.</param>
             <param name="indent">The amount of indentation.</param>
             <param name="last">If true tells the writer to not append a comma.</param>
         </member>
@@ -705,7 +700,7 @@
             Increments an array with a binary style.
             Starting from the end and traversing towards the start.
             The array serves as an index for a dimensional array.
-            Accepts a <see cref="T:System.Collections.Generic.List`1"/> of ints that server as an upper bound.
+            Accepts a <see cref="T:System.Collections.Generic.List`1"/> of ints that serves as an upper bound.
             </summary>
             <param name="sizes">The sizes of the dimensional array.</param>
             <param name="index">The current index of the dimensional array to use.</param>
@@ -1004,7 +999,7 @@
             </summary>
             <param name="received">The received object.</param>
             <returns>
-            The provided object's <see cref="T:Adeptar.SerializableType"/>. Returns <see cref="!:SerializableType.NULL"/> if the
+            The provided object's <see cref="T:Adeptar.SerializableType"/>. Returns <see cref="F:Adeptar.SerializableType.Class"/> if the
             provided object is null or if its type can't be determined.
             </returns>
         </member>

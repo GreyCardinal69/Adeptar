@@ -40,7 +40,7 @@ namespace Adeptar
                             builder.Append( ',' );
                         }
                     }else{
-                        WriteNoIndentation( tempList[i], FetchType( tempList[i] ), builder, null, false, count == tempList.Count - 1 , false );
+                        WriteNoIndentation( tempList[i], FetchType( tempList[i] ), builder, count == tempList.Count - 1 , false );
                     }
                     count++;
                 }
@@ -69,7 +69,7 @@ namespace Adeptar
                         }
                         builder.Append( '\n' );
                     }else{
-                        Write( tempList[i], FetchType( tempList[i] ), builder, null, isIntended ? indent - 1 : indent, false, count == tempList.Count - 1, false );
+                        Write( tempList[i], FetchType( tempList[i] ), builder, isIntended ? indent - 1 : indent, count == tempList.Count - 1, false );
                         builder.Append( '\n' );
                     }
                     count++;
@@ -117,8 +117,7 @@ namespace Adeptar
                 {
                     for (var iterator = stack.Pop(); iterator.MoveNext();)
                     {
-                        Write( iterator.Current, FetchType( iterator.Current ),
-                            builder, null, indent, false, count == len - 1, false );
+                        Write( iterator.Current, FetchType( iterator.Current ), builder, indent, count == len - 1, false );
                         for (int i = 0; i < indent; i++)
                         {
                             builder.Append( '\n' );
@@ -134,8 +133,7 @@ namespace Adeptar
                 {
                     for (var iterator = stack.Pop(); iterator.MoveNext();)
                     {
-                        WriteNoIndentation( iterator.Current, FetchType( iterator.Current ),
-                            builder, null, false, count == len - 1, false );
+                        WriteNoIndentation( iterator.Current, FetchType( iterator.Current ), builder, count == len - 1, false );
                         count++;
                     }
                 }
