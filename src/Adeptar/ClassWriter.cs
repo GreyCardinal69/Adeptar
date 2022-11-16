@@ -70,6 +70,7 @@ namespace Adeptar
                                 count++;
                                 continue;
                             }
+                            count++;
                         }
                         else if ( Activator.CreateInstance( itemType ).Equals( value ) )
                         {
@@ -157,6 +158,7 @@ namespace Adeptar
                                 count++;
                                 continue;
                             }
+                            count++;
                         } 
                         else if ( Activator.CreateInstance( itemType ).Equals( value ) )
                         {

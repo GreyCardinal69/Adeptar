@@ -120,7 +120,7 @@ namespace Adeptar
                 // the individual value of the field/property will be overriden by the shared data value, since it is deserialized later.
                 // This is faster than deserializing the shared data as an individual object, deserializing the needed object, and then iterating
                 // through fields/properties of both and setting values.
-                string.Concat( CleanText( text.Slice( 3, i - 5 ) ), "}" )));
+                string.Concat( CleanText( text.Slice( 3, i - 5 ) ), "}" ) ) );
         }
 
         /// <summary>

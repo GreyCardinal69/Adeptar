@@ -280,8 +280,8 @@ namespace Adeptar
                 }
                 w++;
             }
-
-            return CleanText( text.Slice( i, j - i - additionalTakeAway ) );
+         
+            return CleanText( text.Slice( i, ( j == 0 ? text.Length : j ) - i - additionalTakeAway ) );
         }
 
         /// <summary>
