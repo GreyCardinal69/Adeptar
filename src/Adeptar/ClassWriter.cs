@@ -140,15 +140,23 @@ namespace Adeptar
                         continue;
                     }
 
-                    if (AdeptarWriter.CurrentSettings.IgnoreDefaultValues)
+                    if ( AdeptarWriter.CurrentSettings.IgnoreDefaultValues )
                     {
-                        if (Activator.CreateInstance( itemType ).Equals( value ))
+                        if ( value is string )
+                        {
+                            if ( value as string == "" )
+                            {
+                                count++;
+                                continue;
+                            }
+                        } 
+                        else if ( Activator.CreateInstance( itemType ).Equals( value ) )
                         {
                             count++;
                             continue;
                         }
                     }
-
+                    
                     FieldPropertyName = name;
 
                     if ( value is null )
