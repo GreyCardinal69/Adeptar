@@ -200,7 +200,7 @@ namespace Adeptar
                 return;
             }
 
-            var type = target.GetType();
+            Type type = target.GetType();
             int count = 0;
 
             FieldInfo[] FieldTypes = type.GetFields( BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly );
@@ -210,8 +210,9 @@ namespace Adeptar
                 foreach (var param in FieldTypes)
                 {
                     FieldPropertyName = param.Name;
+                    object value = param.GetValue( target );
 
-                    Write( param.GetValue( target ), GetSerializableType( param.FieldType ), builder, indent, count == FieldTypes.Length - 1, false );
+                    Write( value, FetchType(value), builder, indent, count == FieldTypes.Length - 1, false );
                     builder.Append( '\n' );
                     count++;
                 }
@@ -221,8 +222,9 @@ namespace Adeptar
                 foreach (var param in FieldTypes)
                 {
                     FieldPropertyName = param.Name;
+                    object value = param.GetValue( target );
 
-                    WriteNoIndentation( param.GetValue( target ), GetSerializableType( param.FieldType ), builder, count == FieldTypes.Length - 1, false );
+                    WriteNoIndentation( value, FetchType( value ), builder, count == FieldTypes.Length - 1, false );
                     count++;
                 }
             }
