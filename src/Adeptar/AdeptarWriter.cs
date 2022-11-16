@@ -55,8 +55,6 @@ namespace Adeptar
         /// <param name="id">The optional id provided used in the id feature.</param>
         internal static void SerializeWrite ( string path, object target, SerializableType type, SerializationMode mode, string id = null )
         {
-            bool simple = false;
-
             if (mode == SerializationMode.Append || mode == SerializationMode.ChangeAppended){
                 List<string> ids = new();
                 foreach (var line in File.ReadLines( path ))
@@ -94,18 +92,11 @@ namespace Adeptar
             {
                 case SerializationMode.Append:
                     bool noText = File.ReadAllLines( path ).Length < 2;
-                    if (simple){
-                        File.AppendAllText( path, noText
-                            ? $"~{id}~\n" + _result.Append( '\n' ).ToString()
-                            : $"\n~{id}~\n" + _result.Append( '\n' ).ToString() );
-                    }else{
-                        File.AppendAllText( path, noText
-                            ? $"~{id}~\n" + _result.ToString()
-                            : $"\n~{id}~\n" + _result.ToString() );
-                    }
+                    File.AppendAllText( path, noText
+                        ? $"~{id}~\n" + _result.ToString()
+                        : $"\n~{id}~\n" + _result.ToString() );
                     break;
                 case SerializationMode.ChangeAppended:
-
                     StringBuilder final = new();
                     StringBuilder name = new();
 
@@ -190,7 +181,6 @@ namespace Adeptar
                     File.WriteAllText( path, final.ToString() );
                     break;
                 case SerializationMode.SetShared:
-
                     int start = -1;
                     int end = 0;
                     bool inShared = false;
@@ -217,11 +207,14 @@ namespace Adeptar
                         }
                     }
 
-                    if (end == 0 && start == fileText.Length - 1)
-                        _result.Insert( 0, '&' ).Append( '&' ).Append( '\n' ).Append( fileText );
+                    if (end == 0 && start == fileText.Length - 1 )
+                    {
+                        _result.Insert( 0, '&' ).Append( '&' ).Append( fileText );
+                    }
                     else
-                        _result.Insert( 0, '&' ).Append( '&' ).Append( '\n' ).Append( fileText.Remove( end, ( start - end + 1 ) ) );
-
+                    {
+                        _result.Insert( 0, '&' ).Append( '&' ).Append( fileText.Remove( end, ( start - end + 1 ) ) );
+                    }
                     File.WriteAllText( path, _result.ToString() );
                     break;
                 case SerializationMode.Default:
