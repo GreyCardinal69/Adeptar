@@ -67,7 +67,7 @@ namespace Adeptar
                 }
                 if (mode == SerializationMode.Append)
                 {
-                    if (ids.Contains( $"~{id}" ))
+                    if (ids.Contains( $"~{id}~" ))
                     {
                         throw new AdeptarException( "Can not append the object, an object with the same id already exists." );
                     }
