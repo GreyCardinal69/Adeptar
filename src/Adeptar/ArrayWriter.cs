@@ -119,7 +119,7 @@ namespace Adeptar
                 }
                 do
                 {
-                    for (var iterator = stack.Pop(); iterator.MoveNext();)
+                    for (IEnumerator iterator = stack.Pop(); iterator.MoveNext();)
                     {
                         Write( iterator.Current, FetchType( iterator.Current ), builder, indent, count == len - 1, false );
                         for (int i = 0; i < indent; i++)
@@ -135,7 +135,7 @@ namespace Adeptar
             {
                 do
                 {
-                    for (var iterator = stack.Pop(); iterator.MoveNext();)
+                    for (IEnumerator iterator = stack.Pop(); iterator.MoveNext();)
                     {
                         WriteNoIndentation( iterator.Current, FetchType( iterator.Current ), builder, count == len - 1, false );
                         count++;

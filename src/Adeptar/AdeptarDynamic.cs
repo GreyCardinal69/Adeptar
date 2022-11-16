@@ -45,7 +45,7 @@ namespace Adeptar
             get
             {
                 int len = 0;
-                foreach (var item in _keyMaps)
+                foreach (KeyValuePair<string, string> item in _keyMaps)
                 {
                     len += item.Key.Length + item.Value.Length;
                 }

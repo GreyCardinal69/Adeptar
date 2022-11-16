@@ -95,7 +95,7 @@ namespace Adeptar
             bool inStr = false;
             bool falseMark = false;
 
-            foreach (var item in str)
+            foreach (char item in str)
             {
                 switch (item)
                 {
@@ -228,7 +228,7 @@ namespace Adeptar
             int i = 0, j = 0, w = 0;
             int index = -1;
 
-            foreach (var item in text)
+            foreach (char item in text)
             {
                 index++;
                 if (exit)

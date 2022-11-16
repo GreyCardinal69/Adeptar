@@ -182,7 +182,7 @@ namespace Adeptar
                     int end = 0;
                     bool inShared = false;
                     bool leave = false;
-                    var fileText = File.ReadAllText( path );
+                    string fileText = File.ReadAllText( path );
 
                     foreach (char ch in fileText)
                     {
@@ -330,9 +330,9 @@ namespace Adeptar
                         mainBuilder.Append( '\n' );
                         if (toSerialize is IEnumerable tempList)
                         {
-                            var enumerator = tempList.GetEnumerator();
-                            var final = enumerator.MoveNext();
-                            foreach (var item in tempList)
+                            IEnumerator enumerator = tempList.GetEnumerator();
+                            bool final = enumerator.MoveNext();
+                            foreach (object item in tempList)
                             {
                                 Write( item, FetchType( item ), mainBuilder, indent + 1, ( final == !enumerator.MoveNext() ), false );
                                 mainBuilder.Append( '\n' );
@@ -489,9 +489,9 @@ namespace Adeptar
                     {
                         if (toSerialize is IEnumerable tempList)
                         {
-                            var enumerator = tempList.GetEnumerator();
-                            var final = enumerator.MoveNext();
-                            foreach (var item in tempList)
+                            IEnumerator enumerator = tempList.GetEnumerator();
+                            bool final = enumerator.MoveNext();
+                            foreach (object item in tempList)
                             {
                                 WriteNoIndentation( item, FetchType( item ), mainBuilder, ( final == !enumerator.MoveNext() ), false );
                             }

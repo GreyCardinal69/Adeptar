@@ -37,23 +37,23 @@ namespace Adeptar
         /// <param name="builder"><see cref="StringBuilder"/> instance to append text to.</param>
         internal static void WriteClassStruct ( object target, int indent, StringBuilder builder )
         {
-            var accessor = TypeAccessor.Create( target.GetType() );
+            TypeAccessor accessor = TypeAccessor.Create( target.GetType() );
             int count = 0;
             MemberSet vals = accessor.GetMembers();
 
             if (AdeptarWriter.CurrentSettings.CheckClassAttributes)
             {
                 int last = vals.Count - 1;
-                foreach (var item in vals)
+                foreach (Member item in vals)
                 {
                     if (item.IsDefined( _ignoreAttribute )){
                         count++;
                         continue;
                     }
 
-                    var itemType = item.Type;
+                    Type itemType = item.Type;
                     string name = item.Name;
-                    var value = accessor[target, name];
+                    object value = accessor[target, name];
 
                     if (AdeptarWriter.CurrentSettings.IgnoreNullValues && value is null)
                     {
@@ -102,10 +102,10 @@ namespace Adeptar
             {
                 AdeptarConfiguration config = _defaultConfig;
 
-                foreach (var item in vals)
+                foreach (Member item in vals)
                 {
                     if (item.Type == _adeptarConfiguration){
-                        var value = accessor[target, item.Name];
+                        object value = accessor[target, item.Name];
                         config = value == null ? config : ( AdeptarConfiguration ) value;
                         config.MustBeUsed = true;
                         break;
@@ -114,9 +114,9 @@ namespace Adeptar
 
                 int last = config.ToIgnore.Length > 0 ? vals.Count - 1 + config.ToIgnore.Length : vals.Count - 1;
 
-                foreach (var item in vals)
+                foreach (Member item in vals)
                 {
-                    var itemType = item.Type;
+                    Type itemType = item.Type;
                     string name = item.Name;
 
                     if (config.MustBeUsed){
@@ -141,7 +141,7 @@ namespace Adeptar
                         }
                     }
 
-                    var value = accessor[target, name];
+                    object value = accessor[target, name];
 
                     if (AdeptarWriter.CurrentSettings.IgnoreNullValues && value is null)
                     {

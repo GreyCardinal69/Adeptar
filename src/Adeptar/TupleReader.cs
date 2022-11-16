@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Text;
 
 using static Adeptar.AdeptarReader;
@@ -23,7 +24,7 @@ namespace Adeptar
             int w = 0;
             int j = 0;
 
-            var target = Activator.CreateInstance( type );
+            object target = Activator.CreateInstance( type );
 
             bool nested = false;
             bool inString = false;
@@ -32,7 +33,7 @@ namespace Adeptar
             text = text.Slice( 1, text.Length - 1 );
             string name = "";
 
-            foreach (var item in text)
+            foreach (char item in text)
             {
                 switch (item)
                 {
@@ -67,7 +68,7 @@ namespace Adeptar
                         break;
                     case ',':
                         if (!nested && !inString){
-                            var field = type.GetField( name );
+                            FieldInfo field = type.GetField( name );
                             field.SetValue( target, DeserializeObject( field.FieldType, text.Slice( j, w - j )));
                             j = w + 1;
                             i++;
@@ -99,7 +100,7 @@ namespace Adeptar
                         else if (level - 1 == -1 && !inString){
                             level--;
                             if (w == text.Length - 1){
-                                var field = type.GetField( name );
+                                FieldInfo field = type.GetField( name );
                                 field.SetValue( target, DeserializeObject( field.FieldType, text.Slice( j, w - j ) ) );
                                 j = w + 1;
                                 i++;

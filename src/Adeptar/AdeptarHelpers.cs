@@ -29,7 +29,7 @@ namespace Adeptar
             bool startWrite = false;
             string temp = "";
 
-            foreach (var item in File.ReadAllText( path ))
+            foreach (char item in File.ReadAllText( path ))
             {
                 switch (item)
                 {

@@ -77,7 +77,7 @@ namespace Adeptar
             int i = 0;
             int index = -1;
 
-            foreach (var item in text)
+            foreach (char item in text)
             {
                 index++;
                 if (exit)

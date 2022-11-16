@@ -22,13 +22,13 @@ namespace Adeptar
             }
 
             bool isIndended = Indent > 1;
-            var dict = data as IDictionary;
+            IDictionary dict = data as IDictionary;
 
             (object, object)[] keyVals = new (object, object)[dict.Count];
 
             int count = 0;
 
-            foreach (var item in dict.Keys){
+            foreach (object item in dict.Keys){
                 keyVals[count] = (item, dict[item]);
                 count++;
             }

@@ -34,7 +34,7 @@ namespace Adeptar
             if (!tuple.IsGenericType){
                 return false;
             }
-            var openType = tuple.GetGenericTypeDefinition();
+            Type openType = tuple.GetGenericTypeDefinition();
             return openType == typeof( ValueTuple<> )
                 || openType == typeof( ValueTuple<,> )
                 || openType == typeof( ValueTuple<,,> )
@@ -84,7 +84,7 @@ namespace Adeptar
             if (fInfo.IsPrimitive)
                 return SerializableType.Simple;
             if (fInfo.IsGenericType){
-                var genericTypeDef = fInfo.GetGenericTypeDefinition();
+                Type genericTypeDef = fInfo.GetGenericTypeDefinition();
                 if (IsTupleGenericKnown( genericTypeDef ))
                     return SerializableType.Tuple;
                 if (genericTypeDef == _cachedTypes[0])
@@ -119,7 +119,7 @@ namespace Adeptar
             if (fInfo.IsPrimitive || fInfo == _cachedTypes[15])
                 return DeserializableType.Numeric;
             if (fInfo.IsGenericType){
-                var genericTypeDef = fInfo.GetGenericTypeDefinition();
+                Type genericTypeDef = fInfo.GetGenericTypeDefinition();
                 if (IsTupleGenericKnown( genericTypeDef ))
                     return DeserializableType.Tuple;
                 if (genericTypeDef == _cachedTypes[0])

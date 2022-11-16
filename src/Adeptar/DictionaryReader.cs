@@ -43,7 +43,7 @@ namespace Adeptar
 
             text = text.Slice( 1, text.Length - 1 );
 
-            foreach (var item in text)
+            foreach (char item in text)
             {
                 switch (item)
                 {
