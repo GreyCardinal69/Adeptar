@@ -24,8 +24,6 @@ namespace AdeptarBenchmarks
 #if DEBUG
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
-             
-            Console.WriteLine(AdeptarConverter.Serialize(new MyClass(), Adeptar.Formatting.Indented));
 #else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
             Console.ReadLine();

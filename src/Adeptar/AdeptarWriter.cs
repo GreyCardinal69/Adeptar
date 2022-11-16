@@ -92,14 +92,11 @@ namespace Adeptar
             {
                 case SerializationMode.Append:
                     bool noText = File.ReadAllLines( path ).Length < 2;
-                    File.AppendAllText( path, noText
-                        ? $"~{id}~\n" + _result.ToString()
-                        : $"\n~{id}~\n" + _result.ToString() );
+                    File.AppendAllText( path, noText ? $"~{id}~\n{_result.ToString()}" : $"\n~{id}~\n{_result.ToString()}" );
                     break;
                 case SerializationMode.ChangeAppended:
                     StringBuilder final = new();
                     StringBuilder name = new();
-
                     bool inString = false;
                     bool falseEnd = false;
                     bool inId = false;
