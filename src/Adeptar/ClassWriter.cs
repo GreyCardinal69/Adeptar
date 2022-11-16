@@ -72,18 +72,20 @@ namespace Adeptar
 
                     FieldPropertyName = name;
 
-                    if (AdeptarWriter.CurrentSettings.UseIndentation)
+                    if ( value is null )
                     {
-                        if (value is null)
-                            WriteRaw( value, GetSerializableType( itemType ), builder, indent, count == last );
-                        else
-                            Write( value, GetSerializableType( itemType ), builder, indent, count == last, false );
+                        WriteRaw( value, GetSerializableType( itemType ), builder, indent, count == last );
+                    }
+                    else if ( AdeptarWriter.CurrentSettings.UseIndentation )
+                    {
+                        Write( value, FetchType( value ), builder, indent, count == last, false );
                         builder.Append( '\n' );
                     }
                     else
                     {
-                        WriteNoIndentation( value, GetSerializableType( itemType ), builder, count == last, false );
+                        WriteNoIndentation( value, FetchType( value ), builder, count == last, false );
                     }
+
                     count++;
                 }
             }
@@ -149,18 +151,20 @@ namespace Adeptar
 
                     FieldPropertyName = name;
 
-                    if (AdeptarWriter.CurrentSettings.UseIndentation)
+                    if ( value is null )
                     {
-                        if (value is null)
-                            WriteRaw( value, GetSerializableType( itemType ), builder, indent, count == last );
-                        else
-                            Write( value, GetSerializableType( itemType ), builder, indent, count == last, false );
+                        WriteRaw( value, GetSerializableType( itemType ), builder, indent, count == last );
+                    }
+                    else if ( AdeptarWriter.CurrentSettings.UseIndentation )
+                    {
+                        Write( value, FetchType( value ), builder, indent, count == last, false );
                         builder.Append( '\n' );
                     }
                     else
                     {
-                        WriteNoIndentation( value, GetSerializableType( itemType ), builder, count == last, false );
+                        WriteNoIndentation( value, FetchType( value ), builder, count == last, false );
                     }
+
                     count++;
                 }
             }

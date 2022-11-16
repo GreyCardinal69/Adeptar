@@ -24,7 +24,8 @@ namespace AdeptarBenchmarks
 #if DEBUG
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
-
+             
+            Console.WriteLine(AdeptarConverter.Serialize(new MyClass(), Adeptar.Formatting.Indented));
 #else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
             Console.ReadLine();
@@ -59,6 +60,7 @@ namespace AdeptarBenchmarks
             public Dictionary<int, string> Maps;
             public DateTime date;
         }
+
         
         [Benchmark]
         public void ClassAdeptarEmpty ()
@@ -127,7 +129,7 @@ namespace AdeptarBenchmarks
                 type = SerializableType.Dictionary
             }, Newtonsoft.Json.Formatting.None );
         }
-
+        
         [Benchmark]
         public void TupleAdeptar ()
         {

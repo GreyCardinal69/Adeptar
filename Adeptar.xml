@@ -444,7 +444,7 @@
             </summary>
             <param name="target">The object to serialize.</param>
             <param name="type">The <see cref="T:Adeptar.SerializableType"/> of the object.</param>
-            <returns></returns>
+            <returns>The serialized Adeptar string.</returns>
         </member>
         <member name="M:Adeptar.AdeptarWriter.Write(System.Object,Adeptar.SerializableType,System.Text.StringBuilder,System.Int32,System.Boolean,System.Boolean)">
             <summary>

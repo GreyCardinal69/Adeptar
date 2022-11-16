@@ -94,10 +94,8 @@ namespace Adeptar
             }
             if (fInfo.IsArray)
                return fInfo.GetArrayRank() > 1 ? SerializableType.DimensionalArray : SerializableType.Array;
-            if (!fInfo.IsValueType)
-                return SerializableType.Class;
 
-            return SerializableType.Simple;
+            return SerializableType.Class;
         }
 
         /// <summary>
@@ -202,12 +200,12 @@ namespace Adeptar
         {
             if (received is string)
                 return SerializableType.String;
+            if ( received is DateTime || received is DateTimeOffset )
+                return SerializableType.DateTime;
             if (received is Enum || received is bool || received is IConvertible)
                 return SerializableType.Simple;
             if (received is char)
                 return SerializableType.Char;
-            if (received is DateTime || received is DateTimeOffset)
-                return SerializableType.DateTime;
             if (received is Array)
                 return IsMultiDimensionalArray( received ) ? SerializableType.DimensionalArray : SerializableType.Array;
             if (received is ITuple)

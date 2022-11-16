@@ -81,10 +81,14 @@ namespace Adeptar
                 }
             }
 
-            if (CurrentSettings.UseIndentation)
+            if ( CurrentSettings.UseIndentation )
+            {
                 Write( target, type, _result, 0, true, false );
+            }
             else
+            {
                 WriteNoIndentation( target, type, _result, true, false );
+            }
 
             switch (mode)
             {
@@ -233,13 +237,17 @@ namespace Adeptar
         /// </summary>
         /// <param name="target">The object to serialize.</param>
         /// <param name="type">The <see cref="SerializableType"/> of the object.</param>
-        /// <returns></returns>
+        /// <returns>The serialized Adeptar string.</returns>
         internal static string Serialize ( object target, SerializableType type )
         {
-            if (CurrentSettings.UseIndentation)
-                Write( target, type, _result, 0, true,false );
+            if ( CurrentSettings.UseIndentation )
+            {
+                Write( target, type, _result, 0, true, false );
+            }
             else
+            {
                 WriteNoIndentation( target, type, _result, true, false );
+            }
 
             string final = _result.ToString();
             _result.Clear();
@@ -426,7 +434,7 @@ namespace Adeptar
         /// <param name="last">If true tells the writer to not append a comma.</param>
         /// <param name="addAtSign">True if the object is a complex key of a dictionary.</param>
         internal static void WriteNoIndentation ( object toSerialize, SerializableType type, StringBuilder mainBuilder,
-                                     bool last = false, bool addAtSign = false )
+                                                  bool last = false, bool addAtSign = false )
         {
             bool calledByClassWriter = false;
             string name = "";
@@ -609,6 +617,10 @@ namespace Adeptar
 
             if (!last){
                 mainBuilder.Append( ',' );
+            }
+
+            if ( AdeptarWriter.CurrentSettings.UseIndentation ){
+                mainBuilder.Append( '\n' );
             }
         }
     }
