@@ -205,28 +205,22 @@ namespace Adeptar
 
             FieldInfo[] FieldTypes = type.GetFields( BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly );
 
-            if (AdeptarWriter.CurrentSettings.UseIndentation)
+            foreach ( FieldInfo param in FieldTypes )
             {
-                foreach (var param in FieldTypes)
-                {
-                    FieldPropertyName = param.Name;
-                    object value = param.GetValue( target );
+                FieldPropertyName = param.Name;
+                object value = param.GetValue( target );
 
-                    Write( value, FetchType(value), builder, indent, count == FieldTypes.Length - 1, false );
+                if ( AdeptarWriter.CurrentSettings.UseIndentation )
+                {
+                    Write( value, FetchType( value ), builder, indent, count == FieldTypes.Length - 1, false );
                     builder.Append( '\n' );
-                    count++;
                 }
-            }
-            else
-            {
-                foreach (var param in FieldTypes)
+                else
                 {
-                    FieldPropertyName = param.Name;
-                    object value = param.GetValue( target );
-
                     WriteNoIndentation( value, FetchType( value ), builder, count == FieldTypes.Length - 1, false );
-                    count++;
                 }
+
+                count++;
             }
         }
     }

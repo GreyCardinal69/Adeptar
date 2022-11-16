@@ -94,10 +94,13 @@ namespace Adeptar
             stack.Push( array.GetEnumerator() );
             int count = 0;
             int len = array.Length;
+
             if (AdeptarWriter.CurrentSettings.UseIndentation){
                 builder.Append( '\t' );
             }
+
             builder.Append( '<' );
+
             for (int i = 0; i < array.Rank; i ++)
             {
                 builder.Append( array.GetLength( i ) );
@@ -105,6 +108,7 @@ namespace Adeptar
                     builder.Append ( ',' );
                 }
             }
+
             builder.Append( '>' );
 
             if (AdeptarWriter.CurrentSettings.UseIndentation)

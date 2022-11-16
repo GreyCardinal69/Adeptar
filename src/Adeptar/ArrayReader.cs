@@ -117,7 +117,7 @@ namespace Adeptar
             }
 
             Type childType = type.GetElementType();
-            var main = ( IList ) Array.CreateInstance( childType, ( int ) length );
+            IList main = ( IList ) Array.CreateInstance( childType, ( int ) length );
 
             inString = false;
             nested = false;
@@ -125,7 +125,7 @@ namespace Adeptar
 
             text = text.Slice(  1, text.Length - 1 );
 
-            foreach (var Char in text)
+            foreach (char Char in text)
             {
                 switch (Char)
                 {
@@ -228,11 +228,11 @@ namespace Adeptar
             int j = 0;
 
             Type childType = type.GetGenericArguments()[0];
-            var main = ( IList ) Activator.CreateInstance( type );
+            IList main = ( IList ) Activator.CreateInstance( type );
 
             text = text.Slice( 1, text.Length - 1 );
 
-            foreach (var Char in text)
+            foreach (char Char in text)
             {
                 switch (Char)
                 {
@@ -326,7 +326,7 @@ namespace Adeptar
 
             int i = 0, j = 0;
 
-            foreach (var item in text)
+            foreach (char item in text)
             {
                 if (exit)
                     break;
@@ -354,7 +354,7 @@ namespace Adeptar
 
             text = text.Slice( j );
 
-            var elementType = type.GetElementType();
+            Type elementType = type.GetElementType();
 
             IList flat =  DeserializeArray( $"[{text.ToString()}", elementType.MakeArrayType() );
             Array main = Array.CreateInstance( elementType, sizes.ToArray() );

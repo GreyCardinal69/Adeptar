@@ -28,14 +28,14 @@ namespace Adeptar
             int w = 0;
             int j = 0;
 
-            var target = Activator.CreateInstance( type );
+            object target = Activator.CreateInstance( type );
 
-            var accessor = TypeAccessor.Create( type, true );
-            var members = accessor.GetMembers();
+            TypeAccessor accessor = TypeAccessor.Create( type, true );
+            MemberSet members = accessor.GetMembers();
 
             List<String> ids = new();
 
-            foreach (var item in members)
+            foreach (Member item in members)
             {
                 ids.Add( item.Name );
             }
@@ -47,7 +47,7 @@ namespace Adeptar
             text = text.Slice( 1, text.Length - 1 );
             string name = "";
 
-            foreach (var item in text)
+            foreach (char item in text)
             {
                 switch (item)
                 {
@@ -153,14 +153,14 @@ namespace Adeptar
             int w = 0;
             int j = 0;
 
-            var target = Activator.CreateInstance( type );
+            object target = Activator.CreateInstance( type );
 
-            var accessor = TypeAccessor.Create( type, true );
-            var members = accessor.GetMembers();
+            TypeAccessor accessor = TypeAccessor.Create( type, true );
+            MemberSet members = accessor.GetMembers();
 
             List<String> ids = new( members.Count );
 
-            foreach (var item in members)
+            foreach (Member item in members)
             {
                 ids.Add( item.Name );
             }
@@ -172,7 +172,7 @@ namespace Adeptar
             text = text.Slice( 1, text.Length - 1 );
             string name = "";
 
-            foreach (var item in text)
+            foreach (char item in text)
             {
                 switch (item)
                 {

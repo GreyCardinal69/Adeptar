@@ -97,7 +97,7 @@ namespace Adeptar
             int i = 0;
 
             str.Append( '{' );
-            foreach (var value in _keyMaps)
+            foreach (KeyValuePair<string, string> value in _keyMaps)
             {
                 str.Append( value.Key );
                 str.Append( ':' );
@@ -126,7 +126,7 @@ namespace Adeptar
             int i = 0;
 
             str.Append( '{' );
-            foreach (var value in _keyMaps)
+            foreach (KeyValuePair<string, string> value in _keyMaps)
             {
                 str.Append( value.Key );
                 str.Append( ':' );
@@ -155,7 +155,7 @@ namespace Adeptar
             int i = 0;
 
             str.Append( '{' );
-            foreach (var value in _keyMaps)
+            foreach (KeyValuePair<string, string> value in _keyMaps)
             {
                 str.Append( value.Key );
                 str.Append( ':' );
@@ -218,7 +218,7 @@ namespace Adeptar
 
             string name = "";
 
-            foreach (var item in str)
+            foreach (char item in str)
             {
                 switch (item)
                 {

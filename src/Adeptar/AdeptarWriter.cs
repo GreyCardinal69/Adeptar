@@ -57,7 +57,7 @@ namespace Adeptar
         {
             if (mode == SerializationMode.Append || mode == SerializationMode.ChangeAppended){
                 List<string> ids = new();
-                foreach (var line in File.ReadLines( path ))
+                foreach (string line in File.ReadLines( path ))
                 {
                     if (line[0] == '~' && line[line.Length-1] == '~' && line.Length > 1){
                         ids.Add( line );
@@ -106,7 +106,7 @@ namespace Adeptar
 
                     ReadOnlySpan<char> text = File.ReadAllText( path );
 
-                    foreach (var item in text)
+                    foreach (char item in text)
                     {
                         index++;
                         if (exit){
@@ -184,7 +184,7 @@ namespace Adeptar
                     bool leave = false;
                     var fileText = File.ReadAllText( path );
 
-                    foreach (var ch in fileText)
+                    foreach (char ch in fileText)
                     {
                         start++;
                         switch (ch)
