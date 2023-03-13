@@ -127,7 +127,7 @@ namespace AdeptarBenchmarks
                 type = SerializableType.Dictionary
             }, Newtonsoft.Json.Formatting.None );
         }
-        
+        /*
         [Benchmark]
         public void TupleAdeptar ()
         {
@@ -271,7 +271,7 @@ namespace AdeptarBenchmarks
         {
             JsonConvert.SerializeObject( new List<string>() { "Some", "Random", "Words", "Words" } );
         }
-
+        
         [Benchmark]
         public void ClassAdeptarDeserialize ()
         {
@@ -283,7 +283,7 @@ namespace AdeptarBenchmarks
         {
             JsonConvert.DeserializeObject<MyClass>( @"{""Number"":5,""Number2"":5,""Number3"":5,""Odds"":[1,3,5,7,9],""Maps"":{""1"":""Hello"",""2"":""World""}}" );
         }
-
+        
         [Benchmark]
         public void TupleAdeptarDeserialize ()
         {
@@ -426,6 +426,6 @@ namespace AdeptarBenchmarks
         public void ListJsonDeserialize ()
         {
             JsonConvert.DeserializeObject<List<string>>( @"[""Some"",""Random"",""Words"",""Words""]" );
-        }
+        }*/
     }
 }

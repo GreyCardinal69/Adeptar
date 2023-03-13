@@ -35,18 +35,20 @@ namespace Adeptar
         /// <param name="target">The object to serialize.</param>
         /// <param name="indent">Indentation amount.</param>
         /// <param name="builder"><see cref="StringBuilder"/> instance to append text to.</param>
-        internal static void WriteClassStruct ( object target, int indent, StringBuilder builder )
+        internal static void WriteClassStruct( object target, int indent, StringBuilder builder )
         {
             TypeAccessor accessor = TypeAccessor.Create( target.GetType() );
+
             int count = 0;
             MemberSet vals = accessor.GetMembers();
 
-            if (AdeptarWriter.CurrentSettings.CheckClassAttributes)
+            if ( AdeptarWriter.CurrentSettings.CheckClassAttributes )
             {
                 int last = vals.Count - 1;
-                foreach (Member item in vals)
+                foreach ( Member item in vals )
                 {
-                    if (item.IsDefined( _ignoreAttribute )){
+                    if ( item.IsDefined( _ignoreAttribute ) )
+                    {
                         count++;
                         continue;
                     }
@@ -55,7 +57,7 @@ namespace Adeptar
                     string name = item.Name;
                     object value = accessor[target, name];
 
-                    if (AdeptarWriter.CurrentSettings.IgnoreNullValues && value is null)
+                    if ( AdeptarWriter.CurrentSettings.IgnoreNullValues && value is null )
                     {
                         count++;
                         continue;
@@ -102,9 +104,10 @@ namespace Adeptar
             {
                 AdeptarConfiguration config = _defaultConfig;
 
-                foreach (Member item in vals)
+                foreach ( Member item in vals )
                 {
-                    if (item.Type == _adeptarConfiguration){
+                    if ( item.Type == _adeptarConfiguration )
+                    {
                         object value = accessor[target, item.Name];
                         config = value == null ? config : ( AdeptarConfiguration ) value;
                         config.MustBeUsed = true;
@@ -114,27 +117,32 @@ namespace Adeptar
 
                 int last = config.ToIgnore.Length > 0 ? vals.Count - 1 + config.ToIgnore.Length : vals.Count - 1;
 
-                foreach (Member item in vals)
+                foreach ( Member item in vals )
                 {
                     Type itemType = item.Type;
                     string name = item.Name;
 
-                    if (config.MustBeUsed){
-                        if (itemType == _adeptarConfiguration){
+                    if ( config.MustBeUsed )
+                    {
+                        if ( itemType == _adeptarConfiguration )
+                        {
                             count++;
                             continue;
                         }
-                        if (config.ToIgnore is not null){
+                        if ( config.ToIgnore is not null )
+                        {
                             bool exit = false;
-                            for (int i = 0; i < config.ToIgnore.Length; i++)
+                            for ( int i = 0; i < config.ToIgnore.Length; i++ )
                             {
-                                if (name == config.ToIgnore[i]){
+                                if ( name == config.ToIgnore[i] )
+                                {
                                     count++;
                                     exit = true;
                                     break;
                                 }
                             }
-                            if (exit){
+                            if ( exit )
+                            {
                                 count++;
                                 continue;
                             }
@@ -143,7 +151,7 @@ namespace Adeptar
 
                     object value = accessor[target, name];
 
-                    if (AdeptarWriter.CurrentSettings.IgnoreNullValues && value is null)
+                    if ( AdeptarWriter.CurrentSettings.IgnoreNullValues && value is null )
                     {
                         count++;
                         continue;
@@ -159,14 +167,14 @@ namespace Adeptar
                                 continue;
                             }
                             count++;
-                        } 
+                        }
                         else if ( Activator.CreateInstance( itemType ).Equals( value ) )
                         {
                             count++;
                             continue;
                         }
                     }
-                    
+
                     FieldPropertyName = name;
 
                     if ( value is null )
@@ -194,9 +202,10 @@ namespace Adeptar
         /// <param name="target">The object to serialize.</param>
         /// <param name="indent">Indentation amount.</param>
         /// <param name="builder"><see cref="StringBuilder"/> instance to append text to.</param>
-        internal static void WriteTuple ( object target, int indent, StringBuilder builder )
+        internal static void WriteTuple( object target, int indent, StringBuilder builder )
         {
-            if (target is null){
+            if ( target is null )
+            {
                 return;
             }
 

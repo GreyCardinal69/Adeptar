@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace Adeptar
@@ -181,12 +182,7 @@ namespace Adeptar
         /// </summary>
         /// <param name="received">The object to check.</param>
         /// <returns>True if the object has two or three dimensions.</returns>
-        public static bool IsMultiDimensionalArray ( object received )
-        {
-            if (received is Array array)
-                return array.Rank > 1;
-            return false;
-        }
+        public static bool IsMultiDimensionalArray ( object received ) => ( received as Array ).Rank > 1;
 
         /// <summary>
         /// Gets the object's <see cref="SerializableType"/>.
@@ -198,24 +194,30 @@ namespace Adeptar
         /// </returns>
         public static SerializableType FetchType ( object received )
         {
-            if (received is string)
-                return SerializableType.String;
-            if ( received is DateTime || received is DateTimeOffset )
-                return SerializableType.DateTime;
-            if ( received is char )
-                return SerializableType.Char;
-            if (received is Enum || received is bool || received is IConvertible)
-                return SerializableType.Simple;
-            if (received is Array)
-                return IsMultiDimensionalArray( received ) ? SerializableType.DimensionalArray : SerializableType.Array;
-            if (received is ITuple)
-                return SerializableType.Tuple;
-            if (received is IDictionary)
-                return SerializableType.Dictionary;
-            if (received is IList)
-                return SerializableType.Array;
-
-            return SerializableType.Class;
+            switch ( received )
+            {
+                case string _:
+                    return SerializableType.String;
+                case DateTime _:
+                case DateTimeOffset _:
+                    return SerializableType.DateTime;
+                case char _:
+                    return SerializableType.Char;
+                case Enum _:
+                case bool _:
+                case IConvertible _:
+                    return SerializableType.Simple;
+                case Array array:
+                    return IsMultiDimensionalArray( array ) ? SerializableType.DimensionalArray : SerializableType.Array;
+                case ITuple _:
+                    return SerializableType.Tuple;
+                case IDictionary _:
+                    return SerializableType.Dictionary;
+                case IList _:
+                    return SerializableType.Array;
+                default:
+                    return SerializableType.Class;
+            }
         }
 
         /// <summary>
