@@ -42,11 +42,16 @@ namespace Adeptar
             int count = 0;
             MemberSet vals = accessor.GetMembers();
 
+            int arrayLen = vals.Count;
+
             if ( AdeptarWriter.CurrentSettings.CheckClassAttributes )
             {
                 int last = vals.Count - 1;
-                foreach ( Member item in vals )
+
+                for ( int e = 0; e < arrayLen; e++ )
                 {
+                    Member item = vals[ e ];
+
                     if ( item.IsDefined( _ignoreAttribute ) )
                     {
                         count++;
@@ -104,12 +109,12 @@ namespace Adeptar
             {
                 AdeptarConfiguration config = _defaultConfig;
 
-                foreach ( Member item in vals )
+                for ( int i = 0; i < arrayLen; i++ )
                 {
-                    if ( item.Type == _adeptarConfiguration )
+                    if ( vals[i].Type == _adeptarConfiguration )
                     {
-                        object value = accessor[target, item.Name];
-                        config = value == null ? config : ( AdeptarConfiguration ) value;
+                        object value = accessor[target, vals[i].Name];
+                        config = value is null ? config : ( AdeptarConfiguration ) value;
                         config.MustBeUsed = true;
                         break;
                     }
@@ -117,8 +122,10 @@ namespace Adeptar
 
                 int last = config.ToIgnore.Length > 0 ? vals.Count - 1 + config.ToIgnore.Length : vals.Count - 1;
 
-                foreach ( Member item in vals )
+                for ( int i = 0; i < arrayLen; i++ )
                 {
+                    Member item = vals[i];
+
                     Type itemType = item.Type;
                     string name = item.Name;
 
@@ -132,9 +139,9 @@ namespace Adeptar
                         if ( config.ToIgnore is not null )
                         {
                             bool exit = false;
-                            for ( int i = 0; i < config.ToIgnore.Length; i++ )
+                            for ( int e = 0; e < config.ToIgnore.Length; e++ )
                             {
-                                if ( name == config.ToIgnore[i] )
+                                if ( name == config.ToIgnore[e] )
                                 {
                                     count++;
                                     exit = true;
@@ -214,10 +221,10 @@ namespace Adeptar
 
             FieldInfo[] FieldTypes = type.GetFields( BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly );
 
-            foreach ( FieldInfo param in FieldTypes )
+            for ( int i = 0; i < FieldTypes.Length; i++ )
             {
-                FieldPropertyName = param.Name;
-                object value = param.GetValue( target );
+                FieldPropertyName = FieldTypes[i].Name;
+                object value = FieldTypes[i].GetValue( target );
 
                 if ( AdeptarWriter.CurrentSettings.UseIndentation )
                 {

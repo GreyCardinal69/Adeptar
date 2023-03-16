@@ -58,7 +58,6 @@ namespace AdeptarBenchmarks
             public Dictionary<int, string> Maps;
             public DateTime date;
         }
-
         
         [Benchmark]
         public void ClassAdeptarEmpty ()
@@ -71,7 +70,7 @@ namespace AdeptarBenchmarks
         {
             JsonConvert.SerializeObject( new MyClass() );
         }
-
+        
         [Benchmark]
         public void ClassAdeptar()
         {
@@ -99,7 +98,7 @@ namespace AdeptarBenchmarks
                 type = SerializableType.Dictionary
             } );
         }
-
+        /*
         [Benchmark]
         public void ClassAdeptarNoIndentation ()
         {
@@ -127,7 +126,7 @@ namespace AdeptarBenchmarks
                 type = SerializableType.Dictionary
             }, Newtonsoft.Json.Formatting.None );
         }
-        /*
+        
         [Benchmark]
         public void TupleAdeptar ()
         {

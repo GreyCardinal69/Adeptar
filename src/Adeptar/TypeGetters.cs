@@ -84,17 +84,17 @@ namespace Adeptar
                 return SerializableType.DateTime;
             if (fInfo.IsPrimitive)
                 return SerializableType.Simple;
+            if ( fInfo == _cachedTypes[2] )
+                return SerializableType.Array;
             if (fInfo.IsGenericType){
                 Type genericTypeDef = fInfo.GetGenericTypeDefinition();
                 if (IsTupleGenericKnown( genericTypeDef ))
                     return SerializableType.Tuple;
                 if (genericTypeDef == _cachedTypes[0])
                     return SerializableType.Dictionary;
-                if (genericTypeDef == _cachedTypes[1] || genericTypeDef == _cachedTypes[2])
-                    return SerializableType.Array;
             }
             if (fInfo.IsArray)
-               return fInfo.GetArrayRank() > 1 ? SerializableType.DimensionalArray : SerializableType.Array;
+               return SerializableType.DimensionalArray;
 
             return SerializableType.Class;
         }

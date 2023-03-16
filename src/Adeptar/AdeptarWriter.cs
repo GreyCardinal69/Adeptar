@@ -327,18 +327,14 @@ namespace Adeptar
                     mainBuilder.Append( '[' );
                     if (toSerialize is not null)
                     {
-                        mainBuilder.Append( '\n' );
-                        if (toSerialize is IEnumerable tempList)
+                        IList tempList = toSerialize as IList;
+                        int count = tempList.Count;
+                        for ( int i = 0; i < count; i++ )
                         {
-                            IEnumerator enumerator = tempList.GetEnumerator();
-                            bool final = enumerator.MoveNext();
-                            foreach (object item in tempList)
-                            {
-                                Write( item, FetchType( item ), mainBuilder, indent + 1, ( final == !enumerator.MoveNext() ), false );
-                                mainBuilder.Append( '\n' );
-                            }
+                            Write( tempList[i], FetchType( tempList[i] ), mainBuilder, indent + 1, count - 1 == i, false );
+                            mainBuilder.Append( '\n' );
                         }
-                        for (int i = 0; i < indent; i++)
+                        for ( int i = 0; i < indent; i++)
                         {
                             mainBuilder.Append( '\t' );
                         }
@@ -485,16 +481,13 @@ namespace Adeptar
                         mainBuilder.Append( name ).Append( ':' ).Append( ' ' );
                     }
                     mainBuilder.Append( '[' );
-                    if (toSerialize is not null)
+                    if ( toSerialize is not null )
                     {
-                        if (toSerialize is IEnumerable tempList)
+                        IList tempList = toSerialize as IList;
+                        int count = tempList.Count;
+                        for ( int i = 0; i < count; i++ )
                         {
-                            IEnumerator enumerator = tempList.GetEnumerator();
-                            bool final = enumerator.MoveNext();
-                            foreach (object item in tempList)
-                            {
-                                WriteNoIndentation( item, FetchType( item ), mainBuilder, ( final == !enumerator.MoveNext() ), false );
-                            }
+                            WriteNoIndentation( tempList[i], FetchType( tempList[i] ), mainBuilder, count - 1 == i, false );
                         }
                     }
                     mainBuilder.Append( ']' );
