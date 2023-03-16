@@ -287,12 +287,25 @@ namespace Adeptar
                         mainBuilder.Append( name ).Append( ':' ).Append( ' ' );
                     }
                     mainBuilder.Append( '"' );
-                    mainBuilder.Append(
-                        Convert.ToString( toSerialize )
-                        .Replace( "\t", "\\t" )
-                        .Replace( "\n", "\\n" )
-                        .Replace( "\"", "\\\"" )
-                    );
+                    string str = Convert.ToString( toSerialize );
+                    for ( int i = 0; i < str.Length; i++ )
+                    {
+                        switch ( str[i] )
+                        {
+                            case '\n':
+                                mainBuilder.Append( "\\n" );
+                                break;
+                            case '\t':
+                                mainBuilder.Append( "\\t" );
+                                break;
+                            case '\\':
+                                mainBuilder.Append( "\\" );
+                                break;
+                            default:
+                                mainBuilder.Append( str[i] );
+                                break;
+                        }
+                    }
                     mainBuilder.Append( '"' );
                     break;
                 case SerializableType.Char:
@@ -447,13 +460,25 @@ namespace Adeptar
                         mainBuilder.Append( name ).Append( ':' ).Append( ' ' );
                     }
                     mainBuilder.Append( '"' );
-                    
-                    mainBuilder.Append(
-                        Convert.ToString( toSerialize )
-                        .Replace( "\t", "\\t" )
-                        .Replace( "\n", "\\n" )
-                        .Replace( "\"", "\\\"" )
-                    );
+                    string str = Convert.ToString( toSerialize );
+                    for ( int i = 0; i < str.Length; i++ )
+                    {
+                        switch ( str[i] )
+                        {
+                            case '\n':
+                                mainBuilder.Append( "\\n" );
+                                break;
+                            case '\t':
+                                mainBuilder.Append( "\\t" );
+                                break;
+                            case '\\':
+                                mainBuilder.Append( "\\" );
+                                break;
+                            default:
+                                mainBuilder.Append( str[i] );
+                                break;
+                        }
+                    }
                     mainBuilder.Append( '"' );
                     break;
                 case SerializableType.Char:

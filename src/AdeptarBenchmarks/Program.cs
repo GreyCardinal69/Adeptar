@@ -1,12 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
-using System.Linq;
-using System.IO;
-using System.Reflection;
-using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
-using System.Text;
 
 using BenchmarkDotNet.Attributes;
 using Adeptar;
@@ -58,7 +52,7 @@ namespace AdeptarBenchmarks
             public Dictionary<int, string> Maps;
             public DateTime date;
         }
-        
+
         [Benchmark]
         public void ClassAdeptarEmpty ()
         {
@@ -98,7 +92,7 @@ namespace AdeptarBenchmarks
                 type = SerializableType.Dictionary
             } );
         }
-        /*
+        
         [Benchmark]
         public void ClassAdeptarNoIndentation ()
         {
@@ -270,7 +264,7 @@ namespace AdeptarBenchmarks
         {
             JsonConvert.SerializeObject( new List<string>() { "Some", "Random", "Words", "Words" } );
         }
-        
+        /*
         [Benchmark]
         public void ClassAdeptarDeserialize ()
         {

@@ -82,10 +82,10 @@ namespace Adeptar
                 return SerializableType.Char;
             if (fInfo == _cachedTypes[13])
                 return SerializableType.DateTime;
-            if (fInfo.IsPrimitive)
-                return SerializableType.Simple;
             if ( fInfo == _cachedTypes[2] )
                 return SerializableType.Array;
+            if (fInfo.IsPrimitive)
+                return SerializableType.Simple;
             if (fInfo.IsGenericType){
                 Type genericTypeDef = fInfo.GetGenericTypeDefinition();
                 if (IsTupleGenericKnown( genericTypeDef ))
