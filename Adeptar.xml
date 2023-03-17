@@ -591,30 +591,15 @@
         </member>
         <member name="T:Adeptar.DateTimeWriterHelper">
             <summary>
-            
+            A class containing custom <see cref="T:System.DateTime"/> formatting functions.
             </summary>
         </member>
-        <member name="M:Adeptar.DateTimeWriterHelper.FormatDateTimeUpdated(System.DateTime)">
+        <member name="M:Adeptar.DateTimeWriterHelper.FormatDateTime(System.DateTime)">
             <summary>
-            
+            A faster <see cref="T:System.DateTime"/> string formatter.
             </summary>
-            <param name="dateTime"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Adeptar.DateTimeWriterHelper.Write2Chars(System.Span{System.Char}@,System.Int32,System.Int32)">
-            <summary>
-            
-            </summary>
-            <param name="chars"></param>
-            <param name="offset"></param>
-            <param name="value"></param>
-        </member>
-        <member name="M:Adeptar.DateTimeWriterHelper.Digit(System.Int32)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
-            <returns></returns>
+            <param name="dateTime">The date to format.</param>
+            <returns>The formatted <see cref="T:System.DateTime"/></returns>
         </member>
         <member name="T:Adeptar.DeserializationHelpers">
             <summary>

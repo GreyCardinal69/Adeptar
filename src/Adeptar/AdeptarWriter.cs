@@ -37,6 +37,9 @@ namespace Adeptar
             IgnoreNullValues = false,
         };
 
+        /// <summary>
+        /// A class' field or property name passed by the <see cref="ClassWriter"/> to append to the main <see cref="StringBuilder"/>.
+        /// </summary>
         internal static string FieldPropertyName;
 
         /// <summary>
@@ -398,7 +401,7 @@ namespace Adeptar
                         mainBuilder.Append( name ).Append( ':' ).Append( ' ' );
                     }
                     mainBuilder.Append( '"' );
-                    mainBuilder.Append( DateTimeWriterHelper.FormatDateTimeUpdated((DateTime)toSerialize) );
+                    mainBuilder.Append( toSerialize );
                     mainBuilder.Append( '"' );
                     break;
                 case SerializableType.DimensionalArray:
@@ -550,8 +553,7 @@ namespace Adeptar
                     {
                         mainBuilder.Append( name ).Append( ':' ).Append( ' ' );
                     }
-                    mainBuilder.Append( '"' );
-                    
+                    mainBuilder.Append( '"' );                    
                     mainBuilder.Append( toSerialize );
                     mainBuilder.Append( '"' );
                     break;

@@ -19,17 +19,9 @@ namespace AdeptarBenchmarks
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
 
-            Dictionary<string, SerializableType> map = new Dictionary<string, SerializableType>()
-            {
-                { "type", SerializableType.Simple },
-                { "Number", SerializableType.Simple },
-                { "Number3", SerializableType.Simple },
-                { "Odds", SerializableType.Array },
-                { "Maps", SerializableType.Dictionary },
-                { "date", SerializableType.DateTime },
-            };
 
-            Console.WriteLine(  AdeptarConverter.SerializeWithMap(new MyClass(), map, Adeptar.Formatting.NoIndentation )  );
+            Console.WriteLine(  AdeptarConverter.Serialize( DateTime.Now )  );
+            Console.WriteLine( AdeptarConverter.Serialize( DateTime.Now, Adeptar.Formatting.NoIndentation ) );
 #else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
             Console.ReadLine();
@@ -275,7 +267,7 @@ namespace AdeptarBenchmarks
         {
             JsonConvert.SerializeObject( new List<string>() { "Some", "Random", "Words", "Words" } );
         }
-        /*
+        
         [Benchmark]
         public void ClassAdeptarDeserialize ()
         {
@@ -430,6 +422,6 @@ namespace AdeptarBenchmarks
         public void ListJsonDeserialize ()
         {
             JsonConvert.DeserializeObject<List<string>>( @"[""Some"",""Random"",""Words"",""Words""]" );
-        }*/
+        }
     }
 }
