@@ -25,10 +25,12 @@ namespace Adeptar
                 return;
             }
 
+            IList tempList = target as IList;
+            SerializableType type = FetchType( tempList[0] );
+            int count = tempList.Count;
+
             if (!AdeptarWriter.CurrentSettings.UseIndentation){
-                int count = 0;
-                IList tempList = target as IList;
-                for (int i = 0; i < tempList.Count; i++)
+                for (int i = 0; i < count; i++)
                 {
                     if ( tempList[i] is IList ){
                         if (indent >= 1){
@@ -36,19 +38,16 @@ namespace Adeptar
                         }
                         WriteArray( tempList[i], 0, builder );
                         builder.Append( ']' );
-                        if (count != tempList.Count - 1){
+                        if (i != count - 1){
                             builder.Append( ',' );
                         }
                     }else{
-                        WriteNoIndentation( tempList[i], FetchType( tempList[i] ), builder, count == tempList.Count - 1 , false );
+                        WriteNoIndentation( tempList[i], type, builder, i == count - 1 , false );
                     }
-                    count++;
                 }
             }else{
-                int count = 0;
                 bool isIntended = indent > 0;
-                IList tempList = target as IList;
-                for (int i = 0; i < tempList.Count; i++)
+                for (int i = 0; i < count; i++)
                 {
                     if (tempList[i] is IList){
                         for (int w = 1; w <= indent; w++)
@@ -64,15 +63,14 @@ namespace Adeptar
                             builder.Append( '\t' );
                         }
                         builder.Append( ']' );
-                        if (count != tempList.Count - 1){
+                        if (i != count - 1){
                             builder.Append( ',' );
                         }
                         builder.Append( '\n' );
                     }else{
-                        Write( tempList[i], FetchType( tempList[i] ), builder, isIntended ? indent - 1 : indent, count == tempList.Count - 1, false );
+                        Write( tempList[i], type, builder, isIntended ? indent - 1 : indent, i == count - 1, false );
                         builder.Append( '\n' );
                     }
-                    count++;
                 }
             }
         }

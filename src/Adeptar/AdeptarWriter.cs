@@ -398,7 +398,7 @@ namespace Adeptar
                         mainBuilder.Append( name ).Append( ':' ).Append( ' ' );
                     }
                     mainBuilder.Append( '"' );
-                    mainBuilder.Append( toSerialize );
+                    mainBuilder.Append( DateTimeWriterHelper.FormatDateTimeUpdated((DateTime)toSerialize) );
                     mainBuilder.Append( '"' );
                     break;
                 case SerializableType.DimensionalArray:

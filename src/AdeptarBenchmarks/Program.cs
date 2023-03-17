@@ -18,6 +18,18 @@ namespace AdeptarBenchmarks
 #if DEBUG
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
+
+            Dictionary<string, SerializableType> map = new Dictionary<string, SerializableType>()
+            {
+                { "type", SerializableType.Simple },
+                { "Number", SerializableType.Simple },
+                { "Number3", SerializableType.Simple },
+                { "Odds", SerializableType.Array },
+                { "Maps", SerializableType.Dictionary },
+                { "date", SerializableType.DateTime },
+            };
+
+            Console.WriteLine(  AdeptarConverter.SerializeWithMap(new MyClass(), map, Adeptar.Formatting.NoIndentation )  );
 #else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
             Console.ReadLine();
@@ -27,7 +39,7 @@ namespace AdeptarBenchmarks
 
     [MemoryDiagnoser]
     public class MemoryBenchmarkerDemo
-    {   
+    {
         public class MyClass
         {
             public SerializableType type = SerializableType.Ignore;
@@ -52,15 +64,14 @@ namespace AdeptarBenchmarks
             public Dictionary<int, string> Maps;
             public DateTime date;
         }
-
-        [Benchmark]
-        public void ClassAdeptarEmpty ()
+        
+        public void ClassAdeptarEmpty()
         {
             AdeptarConverter.Serialize( new MyClass() );
         }
 
         [Benchmark]
-        public void ClassJsonEmpty ()
+        public void ClassJsonEmpty()
         {
             JsonConvert.SerializeObject( new MyClass() );
         }
@@ -76,11 +87,11 @@ namespace AdeptarBenchmarks
                 Number3 = 4,
                 Odds = new int[] { 1, 3, 5, 7, 9 },
                 type = SerializableType.Dictionary
-            } ) ;
+            } );
         }
 
         [Benchmark]
-        public void ClassJson ()
+        public void ClassJson()
         {
             JsonConvert.SerializeObject( new MyClass()
             {
@@ -94,7 +105,7 @@ namespace AdeptarBenchmarks
         }
         
         [Benchmark]
-        public void ClassAdeptarNoIndentation ()
+        public void ClassAdeptarNoIndentation()
         {
             AdeptarConverter.Serialize( new MyClass()
             {
@@ -108,7 +119,7 @@ namespace AdeptarBenchmarks
         }
 
         [Benchmark]
-        public void ClassJsonNoIndentation ()
+        public void ClassJsonNoIndentation()
         {
             JsonConvert.SerializeObject( new MyClass()
             {

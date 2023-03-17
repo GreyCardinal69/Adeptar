@@ -589,6 +589,33 @@
             <param name="indent">Indentation amount.</param>
             <param name="builder"><see cref="T:System.Text.StringBuilder"/> instance to append text to.</param>
         </member>
+        <member name="T:Adeptar.DateTimeWriterHelper">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Adeptar.DateTimeWriterHelper.FormatDateTimeUpdated(System.DateTime)">
+            <summary>
+            
+            </summary>
+            <param name="dateTime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Adeptar.DateTimeWriterHelper.Write2Chars(System.Span{System.Char}@,System.Int32,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="chars"></param>
+            <param name="offset"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:Adeptar.DateTimeWriterHelper.Digit(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
         <member name="T:Adeptar.DeserializationHelpers">
             <summary>
             A class that contains methods for deserialization of .Adeptar objects.
