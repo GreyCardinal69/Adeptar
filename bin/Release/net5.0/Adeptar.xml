@@ -422,6 +422,11 @@
             Default <see cref="T:Adeptar.AdeptarSettings"/> configuration used when the user does not provide a custom <see cref="T:Adeptar.AdeptarSettings"/> object.
             </summary>
         </member>
+        <member name="F:Adeptar.AdeptarWriter.FieldPropertyName">
+            <summary>
+            A class' field or property name passed by the <see cref="T:Adeptar.ClassWriter"/> to append to the main <see cref="T:System.Text.StringBuilder"/>.
+            </summary>
+        </member>
         <member name="M:Adeptar.AdeptarWriter.AssignSettings(Adeptar.AdeptarSettings)">
             <summary>
             Assigns the <see cref="T:Adeptar.AdeptarSettings"/> for the current serialization task.

@@ -343,6 +343,7 @@ namespace Adeptar
                     mainBuilder.Append( '[' );
                     if (toSerialize is not null)
                     {
+                        mainBuilder.Append( '\n' );
                         IList tempList = toSerialize as IList;
                         int count = tempList.Count;
                         for ( int i = 0; i < count; i++ )
