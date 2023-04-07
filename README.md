@@ -1,11 +1,6 @@
 # Adeptar
 A small .NET file extension aimed to be fast and easy to use, aimed for modding purposes, with manual work in mind.
 
-TO DO:
-- Code optimization for certain cases.
-- More features.
-- Proper documentation
-
 First some benchmarks, both serialization and deserialization.
 Benchmakrs are compared to NewtonSoft.Json library
 ``` ini
