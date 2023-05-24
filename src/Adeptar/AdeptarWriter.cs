@@ -19,7 +19,7 @@ namespace Adeptar
         /// <summary>
         /// The main instance of a <see cref="StringBuilder"/> the text is appended to.
         /// </summary>
-        private static StringBuilder _result = new(100);
+        private static StringBuilder _result = new( 100 );
 
         /// <summary>
         /// A static instance of an <see cref="AdeptarSettings"/> class that dictates serialization rules.
@@ -56,26 +56,28 @@ namespace Adeptar
         /// <param name="type">The <see cref="SerializableType"/> of the object.</param>
         /// <param name="mode">The serialization mode.</param>
         /// <param name="id">The optional id provided used in the id feature.</param>
-        internal static void SerializeWrite ( string path, object target, SerializableType type, SerializationMode mode, string id = null )
+        internal static void SerializeWrite( string path, object target, SerializableType type, SerializationMode mode, string id = null )
         {
-            if (mode == SerializationMode.Append || mode == SerializationMode.ChangeAppended){
+            if ( mode == SerializationMode.Append || mode == SerializationMode.ChangeAppended )
+            {
                 List<string> ids = new();
-                foreach (string line in File.ReadLines( path ))
+                foreach ( string line in File.ReadLines( path ) )
                 {
-                    if (line[0] == '~' && line[line.Length-1] == '~' && line.Length > 1){
+                    if ( line[0] == '~' && line[line.Length - 1] == '~' && line.Length > 1 )
+                    {
                         ids.Add( line );
                     }
                 }
-                if (mode == SerializationMode.Append)
+                if ( mode == SerializationMode.Append )
                 {
-                    if (ids.Contains( $"~{id}~" ))
+                    if ( ids.Contains( $"~{id}~" ) )
                     {
                         throw new AdeptarException( "Can not append the object, an object with the same id already exists." );
                     }
                 }
                 else
                 {
-                    if (!ids.Contains( $"~{id}~" ))
+                    if ( !ids.Contains( $"~{id}~" ) )
                     {
                         throw new AdeptarException( $"Can not change appended object with id: {id}, an object with such an id does not exist." );
                     }
@@ -91,7 +93,7 @@ namespace Adeptar
                 WriteNoIndentation( target, type, _result, true, false );
             }
 
-            switch (mode)
+            switch ( mode )
             {
                 case SerializationMode.Append:
                     bool noText = File.ReadAllLines( path ).Length < 2;
@@ -109,56 +111,59 @@ namespace Adeptar
 
                     ReadOnlySpan<char> text = File.ReadAllText( path );
 
-                    foreach (char item in text)
+                    foreach ( char item in text )
                     {
                         index++;
-                        if (exit){
+                        if ( exit )
+                        {
                             break;
                         }
-                        switch (item)
+                        switch ( item )
                         {
                             case '"':
-                                if (falseEnd && inString)
+                                if ( falseEnd && inString )
                                     falseEnd = false;
-                                else if (!falseEnd)
+                                else if ( !falseEnd )
                                     inString = !inString;
                                 break;
                             case '\\':
-                                if (inString)
+                                if ( inString )
                                     falseEnd = true;
                                 break;
                             case '~':
-                                if (!inString){
+                                if ( !inString )
+                                {
                                     inId = !inId;
-                                    if (inId)
+                                    if ( inId )
                                     {
                                         w = index;
                                     }
-                                    if (!inId && name.ToString() == id)
+                                    if ( !inId && name.ToString() == id )
                                     {
                                         i = w;
                                     }
-                                    if (inId && i != 0)
+                                    if ( inId && i != 0 )
                                     {
                                         j = index;
                                         exit = true;
                                         break;
                                     }
-                                    if (inId && i == 0)
+                                    if ( inId && i == 0 )
                                     {
                                         name.Clear();
                                     }
                                 }
                                 break;
                             default:
-                                if (inId){
+                                if ( inId )
+                                {
                                     name.Append( item );
                                 }
                                 break;
                         }
                     }
 
-                    for (int e = 0; e < i; e++)
+                    for ( int e = 0; e < i; e++ )
                     {
                         final.Append( text[e] );
                     }
@@ -170,9 +175,9 @@ namespace Adeptar
                          .Append( _result )
                          .Append( '\n' );
 
-                    if (j!=0)
+                    if ( j != 0 )
                     {
-                        for (int e = j; e < text.Length; e++)
+                        for ( int e = j; e < text.Length; e++ )
                         {
                             final.Append( text[e] );
                         }
@@ -187,27 +192,27 @@ namespace Adeptar
                     bool leave = false;
                     string fileText = File.ReadAllText( path );
 
-                    foreach (char ch in fileText)
+                    foreach ( char ch in fileText )
                     {
                         start++;
-                        switch (ch)
+                        switch ( ch )
                         {
                             case '&':
                                 inShared = !inShared;
-                                if (!inShared)
+                                if ( !inShared )
                                 {
                                     leave = true;
                                 }
                                 else { end = start; }
                                 break;
                         }
-                        if (leave)
+                        if ( leave )
                         {
                             break;
                         }
                     }
 
-                    if (end == 0 && start == fileText.Length - 1 )
+                    if ( end == 0 && start == fileText.Length - 1 )
                     {
                         _result.Insert( 0, '&' ).Append( '&' ).Append( fileText );
                     }
@@ -231,7 +236,7 @@ namespace Adeptar
         /// <param name="target">The object to serialize.</param>
         /// <param name="type">The <see cref="SerializableType"/> of the object.</param>
         /// <returns>The serialized Adeptar string.</returns>
-        internal static string Serialize ( object target, SerializableType type )
+        internal static string Serialize( object target, SerializableType type )
         {
             if ( CurrentSettings.UseIndentation )
             {
@@ -257,10 +262,10 @@ namespace Adeptar
         /// <param name="indent">The amount of indentation.</param>
         /// <param name="last">If true tells the writer to not append a comma.</param>
         /// <param name="addAtSign">True if the object is a complex key of a dictionary.</param>
-        internal static void Write ( object toSerialize, SerializableType type, StringBuilder mainBuilder,
+        internal static void Write( object toSerialize, SerializableType type, StringBuilder mainBuilder,
                                      int indent = 0, bool last = false, bool addAtSign = false )
         {
-            for (int i = 0; i < indent; i++)
+            for ( int i = 0; i < indent; i++ )
             {
                 mainBuilder.Append( '\t' );
             }
@@ -275,10 +280,10 @@ namespace Adeptar
                 FieldPropertyName = null;
             }
 
-            switch (type)
+            switch ( type )
             {
                 case SerializableType.Simple:
-                    if (calledByClassWriter)
+                    if ( calledByClassWriter )
                     {
                         mainBuilder.Append( name ).Append( ':' ).Append( ' ' );
                     }
@@ -324,11 +329,11 @@ namespace Adeptar
                         mainBuilder.Append( name ).Append( ':' ).Append( ' ' );
                     }
                     mainBuilder.Append( '{' );
-                    if (toSerialize is not null)
+                    if ( toSerialize is not null )
                     {
                         mainBuilder.Append( '\n' );
                         WriteClassStruct( toSerialize, indent + 1, mainBuilder );
-                        for (int i = 0; i < indent; i++)
+                        for ( int i = 0; i < indent; i++ )
                         {
                             mainBuilder.Append( '\t' );
                         }
@@ -341,7 +346,7 @@ namespace Adeptar
                         mainBuilder.Append( name ).Append( ':' ).Append( ' ' );
                     }
                     mainBuilder.Append( '[' );
-                    if (toSerialize is not null)
+                    if ( toSerialize is not null )
                     {
                         mainBuilder.Append( '\n' );
                         IList tempList = toSerialize as IList;
@@ -351,7 +356,7 @@ namespace Adeptar
                             Write( tempList[i], FetchType( tempList[i] ), mainBuilder, indent + 1, count - 1 == i, false );
                             mainBuilder.Append( '\n' );
                         }
-                        for ( int i = 0; i < indent; i++)
+                        for ( int i = 0; i < indent; i++ )
                         {
                             mainBuilder.Append( '\t' );
                         }
@@ -363,16 +368,16 @@ namespace Adeptar
                     {
                         mainBuilder.Append( name ).Append( ':' ).Append( ' ' );
                     }
-                    if (addAtSign)
+                    if ( addAtSign )
                     {
                         mainBuilder.Append( '@' );
                     }
                     mainBuilder.Append( '[' );
-                    if (toSerialize is not null)
+                    if ( toSerialize is not null )
                     {
                         mainBuilder.Append( '\n' );
                         WriteDictionary( toSerialize, 1 + indent, mainBuilder );
-                        for (int i = 0; i < indent; i++)
+                        for ( int i = 0; i < indent; i++ )
                         {
                             mainBuilder.Append( '\t' );
                         }
@@ -385,11 +390,11 @@ namespace Adeptar
                         mainBuilder.Append( name ).Append( ':' ).Append( ' ' );
                     }
                     mainBuilder.Append( '(' );
-                    if (toSerialize is not null)
+                    if ( toSerialize is not null )
                     {
                         mainBuilder.Append( '\n' );
                         WriteTuple( toSerialize, 1 + indent, mainBuilder );
-                        for (int i = 0; i < indent; i++)
+                        for ( int i = 0; i < indent; i++ )
                         {
                             mainBuilder.Append( '\t' );
                         }
@@ -411,7 +416,7 @@ namespace Adeptar
                         mainBuilder.Append( name ).Append( ':' ).Append( ' ' );
                     }
                     mainBuilder.Append( '[' );
-                    if (toSerialize is not null)
+                    if ( toSerialize is not null )
                     {
                         mainBuilder.Append( '\n' );
                         WriteDimensionalArray( toSerialize, 1 + indent, mainBuilder );
@@ -421,7 +426,7 @@ namespace Adeptar
                     break;
             }
 
-            if (!last)
+            if ( !last )
             {
                 mainBuilder.Append( ',' );
             }
@@ -436,7 +441,7 @@ namespace Adeptar
         /// <param name="mainBuilder">The <see cref="StringBuilder"/> instance text is appended to.</param>
         /// <param name="last">If true tells the writer to not append a comma.</param>
         /// <param name="addAtSign">True if the object is a complex key of a dictionary.</param>
-        internal static void WriteNoIndentation ( object toSerialize, SerializableType type, StringBuilder mainBuilder,
+        internal static void WriteNoIndentation( object toSerialize, SerializableType type, StringBuilder mainBuilder,
                                                   bool last = false, bool addAtSign = false )
         {
             bool calledByClassWriter = false;
@@ -449,7 +454,7 @@ namespace Adeptar
                 FieldPropertyName = null;
             }
 
-            switch (type)
+            switch ( type )
             {
                 case SerializableType.Simple:
                     if ( calledByClassWriter )
@@ -498,7 +503,7 @@ namespace Adeptar
                         mainBuilder.Append( name ).Append( ':' ).Append( ' ' );
                     }
                     mainBuilder.Append( '{' );
-                    if (toSerialize is not null)
+                    if ( toSerialize is not null )
                     {
                         WriteClassStruct( toSerialize, 0, mainBuilder );
                     }
@@ -526,12 +531,12 @@ namespace Adeptar
                     {
                         mainBuilder.Append( name ).Append( ':' ).Append( ' ' );
                     }
-                    if (addAtSign)
+                    if ( addAtSign )
                     {
                         mainBuilder.Append( '@' );
                     }
                     mainBuilder.Append( '[' );
-                    if (toSerialize is not null)
+                    if ( toSerialize is not null )
                     {
                         WriteDictionary( toSerialize, 0, mainBuilder );
                     }
@@ -543,7 +548,7 @@ namespace Adeptar
                         mainBuilder.Append( name ).Append( ':' ).Append( ' ' );
                     }
                     mainBuilder.Append( '(' );
-                    if (toSerialize is not null)
+                    if ( toSerialize is not null )
                     {
                         WriteTuple( toSerialize, 0, mainBuilder );
                     }
@@ -554,7 +559,7 @@ namespace Adeptar
                     {
                         mainBuilder.Append( name ).Append( ':' ).Append( ' ' );
                     }
-                    mainBuilder.Append( '"' );                    
+                    mainBuilder.Append( '"' );
                     mainBuilder.Append( toSerialize );
                     mainBuilder.Append( '"' );
                     break;
@@ -564,7 +569,7 @@ namespace Adeptar
                         mainBuilder.Append( name ).Append( ':' ).Append( ' ' );
                     }
                     mainBuilder.Append( '[' );
-                    if (toSerialize is not null)
+                    if ( toSerialize is not null )
                     {
                         WriteDimensionalArray( toSerialize, 0, mainBuilder );
                     }
@@ -572,7 +577,7 @@ namespace Adeptar
                     break;
             }
 
-            if (!last)
+            if ( !last )
             {
                 mainBuilder.Append( ',' );
             }
@@ -586,10 +591,11 @@ namespace Adeptar
         /// <param name="mainBuilder">The <see cref="StringBuilder"/> instance text is appended to.</param>
         /// <param name="indent">The amount of indentation.</param>
         /// <param name="last">If true tells the writer to not append a comma.</param>
-        internal static void WriteRaw ( object toSerialize, SerializableType type, StringBuilder mainBuilder, int indent , bool last )
+        internal static void WriteRaw( object toSerialize, SerializableType type, StringBuilder mainBuilder, int indent, bool last )
         {
-            if (AdeptarWriter.CurrentSettings.UseIndentation){
-                for (int i = 0; i < indent; i++)
+            if ( AdeptarWriter.CurrentSettings.UseIndentation )
+            {
+                for ( int i = 0; i < indent; i++ )
                 {
                     mainBuilder.Append( '\t' );
                 }
@@ -601,13 +607,13 @@ namespace Adeptar
 
             FieldPropertyName = null;
 
-            switch (type)
+            switch ( type )
             {
                 case SerializableType.Simple:
                     mainBuilder.Append( toSerialize );
                     break;
                 case SerializableType.String:
-                    mainBuilder.Append( '"' ).Append('"');
+                    mainBuilder.Append( '"' ).Append( '"' );
                     break;
                 case SerializableType.Char:
                     mainBuilder.Append( '\'' ).Append( '\'' );
@@ -626,11 +632,13 @@ namespace Adeptar
                     break;
             }
 
-            if (!last){
+            if ( !last )
+            {
                 mainBuilder.Append( ',' );
             }
 
-            if ( AdeptarWriter.CurrentSettings.UseIndentation ){
+            if ( AdeptarWriter.CurrentSettings.UseIndentation )
+            {
                 mainBuilder.Append( '\n' );
             }
         }

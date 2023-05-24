@@ -44,13 +44,13 @@ namespace Adeptar
 
             int arrayLen = vals.Count;
 
-            if ( AdeptarWriter.CurrentSettings.CheckClassAttributes )
+            if ( CurrentSettings.CheckClassAttributes )
             {
                 int last = vals.Count - 1;
 
                 for ( int e = 0; e < arrayLen; e++ )
                 {
-                    Member item = vals[ e ];
+                    Member item = vals[e];
 
                     if ( item.IsDefined( _ignoreAttribute ) )
                     {
@@ -62,13 +62,13 @@ namespace Adeptar
                     string name = item.Name;
                     object value = accessor[target, name];
 
-                    if ( AdeptarWriter.CurrentSettings.IgnoreNullValues && value is null )
+                    if ( CurrentSettings.IgnoreNullValues && value is null )
                     {
                         count++;
                         continue;
                     }
 
-                    if ( AdeptarWriter.CurrentSettings.IgnoreDefaultValues )
+                    if ( CurrentSettings.IgnoreDefaultValues )
                     {
                         if ( value is string )
                         {
@@ -92,7 +92,7 @@ namespace Adeptar
                     {
                         WriteRaw( value, GetSerializableType( itemType ), builder, indent, count == last );
                     }
-                    else if ( AdeptarWriter.CurrentSettings.UseIndentation )
+                    else if ( CurrentSettings.UseIndentation )
                     {
                         Write( value, FetchType( value ), builder, indent, count == last, false );
                         builder.Append( '\n' );
@@ -158,13 +158,13 @@ namespace Adeptar
 
                     object value = accessor[target, name];
 
-                    if ( AdeptarWriter.CurrentSettings.IgnoreNullValues && value is null )
+                    if ( CurrentSettings.IgnoreNullValues && value is null )
                     {
                         count++;
                         continue;
                     }
 
-                    if ( AdeptarWriter.CurrentSettings.IgnoreDefaultValues )
+                    if ( CurrentSettings.IgnoreDefaultValues )
                     {
                         if ( value is string )
                         {
@@ -188,7 +188,7 @@ namespace Adeptar
                     {
                         WriteRaw( value, GetSerializableType( itemType ), builder, indent, count == last );
                     }
-                    else if ( AdeptarWriter.CurrentSettings.UseIndentation )
+                    else if ( CurrentSettings.UseIndentation )
                     {
                         Write( value, FetchType( value ), builder, indent, count == last, false );
                         builder.Append( '\n' );
@@ -226,7 +226,7 @@ namespace Adeptar
                 FieldPropertyName = FieldTypes[i].Name;
                 object value = FieldTypes[i].GetValue( target );
 
-                if ( AdeptarWriter.CurrentSettings.UseIndentation )
+                if ( CurrentSettings.UseIndentation )
                 {
                     Write( value, FetchType( value ), builder, indent, count == FieldTypes.Length - 1, false );
                     builder.Append( '\n' );

@@ -20,7 +20,7 @@ namespace Adeptar
         /// <summary>
         /// Creates a new instance of <see cref="AdeptarDynamic"/> with no mappings.
         /// </summary>
-        public AdeptarDynamic ()
+        public AdeptarDynamic()
         {
             _keyMaps = new();
         }
@@ -45,7 +45,7 @@ namespace Adeptar
             get
             {
                 int len = 0;
-                foreach (KeyValuePair<string, string> item in _keyMaps)
+                foreach ( KeyValuePair<string, string> item in _keyMaps )
                 {
                     len += item.Key.Length + item.Value.Length;
                 }
@@ -56,14 +56,14 @@ namespace Adeptar
         /// <summary>
         /// Clears the <see cref="AdeptarDynamic"/> object's key and value maps.
         /// </summary>
-        public void Clear () => _keyMaps.Clear();
+        public void Clear() => _keyMaps.Clear();
 
         /// <summary>
         /// Checks if the <see cref="AdeptarDynamic"/> object contains the field/property with the given name.
         /// </summary>
         /// <param name="key">The key name to check for.</param>
         /// <returns>True if the <see cref="AdeptarDynamic"/> object contains a field/property with the provided name.</returns>
-        public bool ContainsKey ( string key ) => _keyMaps.ContainsKey( key );
+        public bool ContainsKey( string key ) => _keyMaps.ContainsKey( key );
 
         /// <summary>
         /// Takes a key name of a field/property. If the key is not found throws an exception.
@@ -76,8 +76,9 @@ namespace Adeptar
         /// </returns>
         public T GetValue<T>( string key )
         {
-            if (!_keyMaps.ContainsKey(key)){
-                throw new AdeptarException($"Invalid variable name {key}, no property or field with such a name exists.");
+            if ( !_keyMaps.ContainsKey( key ) )
+            {
+                throw new AdeptarException( $"Invalid variable name {key}, no property or field with such a name exists." );
             }
 
             return ( T ) DeserializeObject( typeof( T ), _keyMaps[key] );
@@ -91,18 +92,19 @@ namespace Adeptar
         /// <returns>
         /// The deserialized .Net object.
         /// </returns>
-        public T Deserialize<T> () where T : class
+        public T Deserialize<T>() where T : class
         {
             StringBuilder str = new( _textLength );
             int i = 0;
 
             str.Append( '{' );
-            foreach (KeyValuePair<string, string> value in _keyMaps)
+            foreach ( KeyValuePair<string, string> value in _keyMaps )
             {
                 str.Append( value.Key );
                 str.Append( ':' );
                 str.Append( CleanText( value.Value ) );
-                if (i != _keyMaps.Count - 1){
+                if ( i != _keyMaps.Count - 1 )
+                {
                     str.Append( ',' );
                     i++;
                 }
@@ -120,18 +122,19 @@ namespace Adeptar
         /// <returns>
         /// The deserialized .Net object.
         /// </returns>
-        public T Deserialize<T> ( object ignore = null ) where T : struct
+        public T Deserialize<T>( object ignore = null ) where T : struct
         {
             StringBuilder str = new( _textLength );
             int i = 0;
 
             str.Append( '{' );
-            foreach (KeyValuePair<string, string> value in _keyMaps)
+            foreach ( KeyValuePair<string, string> value in _keyMaps )
             {
                 str.Append( value.Key );
                 str.Append( ':' );
                 str.Append( CleanText( value.Value ) );
-                if (i != _keyMaps.Count - 1){
+                if ( i != _keyMaps.Count - 1 )
+                {
                     str.Append( ',' );
                     i++;
                 }
@@ -155,12 +158,12 @@ namespace Adeptar
             int i = 0;
 
             str.Append( '{' );
-            foreach (KeyValuePair<string, string> value in _keyMaps)
+            foreach ( KeyValuePair<string, string> value in _keyMaps )
             {
                 str.Append( value.Key );
                 str.Append( ':' );
                 str.Append( CleanText( value.Value ) );
-                if (i != _keyMaps.Count - 1)
+                if ( i != _keyMaps.Count - 1 )
                 {
                     str.Append( ',' );
                     i++;
@@ -179,7 +182,7 @@ namespace Adeptar
         /// <returns>
         /// A <see cref="AdeptarDynamic"/> object that contains the data of the given .Adeptar string.
         /// </returns>
-        public static AdeptarDynamic FromFile ( string path )
+        public static AdeptarDynamic FromFile( string path )
         {
             AdeptarDynamic result = new();
             PopulateMaps( ( CleanText( File.ReadAllText( path ) ) ).Slice( 1 ), ref result );
@@ -193,7 +196,7 @@ namespace Adeptar
         /// <returns>
         /// A <see cref="AdeptarDynamic"/> object that contains the data of the given .Adeptar string.
         /// </returns>
-        public static AdeptarDynamic FromString ( string str )
+        public static AdeptarDynamic FromString( string str )
         {
             AdeptarDynamic result = new();
             PopulateMaps( ( CleanText( str ) ).Slice( 1 ), ref result );
@@ -218,77 +221,90 @@ namespace Adeptar
 
             string name = "";
 
-            foreach (char item in str)
+            foreach ( char item in str )
             {
-                switch (item)
+                switch ( item )
                 {
                     case '"':
-                        if (falseEnd && inString){
+                        if ( falseEnd && inString )
+                        {
                             falseEnd = false;
                         }
-                        else if (!falseEnd)
+                        else if ( !falseEnd )
                             inString = !inString;
                         break;
                     case '[':
-                        if (!inString){
+                        if ( !inString )
+                        {
                             level++; nested = true;
                         }
-                        else if (!inString)
+                        else if ( !inString )
                             level++;
                         break;
                     case ']':
-                        if (level - 1 == 0 && !inString){
+                        if ( level - 1 == 0 && !inString )
+                        {
                             nested = false;
                         }
                         level--;
                         break;
                     case '\\':
-                        if (inString){
+                        if ( inString )
+                        {
                             falseEnd = true;
-                        }else{
+                        }
+                        else
+                        {
                             throw new AdeptarException( "Invalid character '\\', such a character can appear only inside a string." );
                         }
                         break;
                     case ',':
-                        if (!nested && !inString){
+                        if ( !nested && !inString )
+                        {
                             result._keyMaps.Add( name, str.Slice( j, w - j ).ToString() );
                             j = w + 1;
                             i++;
                         }
                         break;
                     case '{':
-                        if (!inString){
+                        if ( !inString )
+                        {
                             level++;
                             nested = true;
                         }
                         break;
                     case '}':
-                        if (level - 1 == 0 && !inString){
+                        if ( level - 1 == 0 && !inString )
+                        {
                             nested = false;
                         }
                         level--;
                         break;
                     case '(':
-                        if (!inString){
+                        if ( !inString )
+                        {
                             level++;
                             nested = true;
                         }
                         break;
                     case ')':
-                        if (level - 1 == 0 && !inString){
+                        if ( level - 1 == 0 && !inString )
+                        {
                             nested = false;
                             level--;
                         }
                         break;
                     case ':':
-                        if (!nested && !inString){
+                        if ( !nested && !inString )
+                        {
                             name = str.Slice( j, w - j ).ToString();
                             j = w + 1;
                         }
                         break;
                 }
-                if (level - 1 == -2 && !inString){
-                    if (w == str.Length - 1)
+                if ( level - 1 == -2 && !inString )
+                {
+                    if ( w == str.Length - 1 )
                         result._keyMaps.Add( name, str.Slice( j, w - j ).ToString() );
                 }
                 w++;

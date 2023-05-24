@@ -19,9 +19,10 @@ namespace Adeptar
         /// <param name="target">The array of list to serialize.</param>
         /// <param name="indent">The amount of indentation.</param>
         /// <param name="builder">The <see cref="StringBuilder"/> instance to append to.</param>
-        internal static void WriteArray ( object target, int indent, StringBuilder builder )
+        internal static void WriteArray( object target, int indent, StringBuilder builder )
         {
-            if (target is null){
+            if ( target is null )
+            {
                 return;
             }
 
@@ -29,45 +30,58 @@ namespace Adeptar
             SerializableType type = FetchType( tempList[0] );
             int count = tempList.Count;
 
-            if (!AdeptarWriter.CurrentSettings.UseIndentation){
-                for (int i = 0; i < count; i++)
+            if ( !CurrentSettings.UseIndentation )
+            {
+                for ( int i = 0; i < count; i++ )
                 {
-                    if ( tempList[i] is IList ){
-                        if (indent >= 1){
+                    if ( tempList[i] is IList )
+                    {
+                        if ( indent >= 1 )
+                        {
                             builder.Append( '[' );
                         }
                         WriteArray( tempList[i], 0, builder );
                         builder.Append( ']' );
-                        if (i != count - 1){
+                        if ( i != count - 1 )
+                        {
                             builder.Append( ',' );
                         }
-                    }else{
-                        WriteNoIndentation( tempList[i], type, builder, i == count - 1 , false );
+                    }
+                    else
+                    {
+                        WriteNoIndentation( tempList[i], type, builder, i == count - 1, false );
                     }
                 }
-            }else{
+            }
+            else
+            {
                 bool isIntended = indent > 0;
-                for (int i = 0; i < count; i++)
+                for ( int i = 0; i < count; i++ )
                 {
-                    if (tempList[i] is IList){
-                        for (int w = 1; w <= indent; w++)
+                    if ( tempList[i] is IList )
+                    {
+                        for ( int w = 1; w <= indent; w++ )
                         {
                             builder.Append( '\t' );
                         }
-                        if (indent >= 1){
+                        if ( indent >= 1 )
+                        {
                             builder.Append( '[' ).Append( '\n' );
                         }
                         WriteArray( tempList[i], indent + 2, builder );
-                        for (int w = 1; w <= indent; w++)
+                        for ( int w = 1; w <= indent; w++ )
                         {
                             builder.Append( '\t' );
                         }
                         builder.Append( ']' );
-                        if (i != count - 1){
+                        if ( i != count - 1 )
+                        {
                             builder.Append( ',' );
                         }
                         builder.Append( '\n' );
-                    }else{
+                    }
+                    else
+                    {
                         Write( tempList[i], type, builder, isIntended ? indent - 1 : indent, i == count - 1, false );
                         builder.Append( '\n' );
                     }
@@ -81,9 +95,10 @@ namespace Adeptar
         /// <param name="target">The object to serialize.</param>
         /// <param name="indent">The amount of indentation.</param>
         /// <param name="builder">The <see cref="StringBuilder"/> to append to.</param>
-        internal static void WriteDimensionalArray ( object target, int indent, StringBuilder builder )
+        internal static void WriteDimensionalArray( object target, int indent, StringBuilder builder )
         {
-            if (target is null){
+            if ( target is null )
+            {
                 return;
             }
 
@@ -93,53 +108,55 @@ namespace Adeptar
             int count = 0;
             int len = array.Length;
 
-            if (AdeptarWriter.CurrentSettings.UseIndentation){
+            if ( CurrentSettings.UseIndentation )
+            {
                 builder.Append( '\t' );
             }
 
             builder.Append( '<' );
 
-            for (int i = 0; i < array.Rank; i ++)
+            for ( int i = 0; i < array.Rank; i++ )
             {
                 builder.Append( array.GetLength( i ) );
-                if (i < array.Rank - 1){
-                    builder.Append ( ',' );
+                if ( i < array.Rank - 1 )
+                {
+                    builder.Append( ',' );
                 }
             }
 
             builder.Append( '>' );
 
-            if (AdeptarWriter.CurrentSettings.UseIndentation)
+            if ( CurrentSettings.UseIndentation )
             {
-                for (int i = 0; i < indent; i++)
+                for ( int i = 0; i < indent; i++ )
                 {
                     builder.Append( '\n' );
                 }
                 do
                 {
-                    for (IEnumerator iterator = stack.Pop(); iterator.MoveNext();)
+                    for ( IEnumerator iterator = stack.Pop(); iterator.MoveNext(); )
                     {
                         Write( iterator.Current, FetchType( iterator.Current ), builder, indent, count == len - 1, false );
-                        for (int i = 0; i < indent; i++)
+                        for ( int i = 0; i < indent; i++ )
                         {
                             builder.Append( '\n' );
                         }
                         count++;
                     }
                 }
-                while (stack.Count > 0);
+                while ( stack.Count > 0 );
             }
             else
             {
                 do
                 {
-                    for (IEnumerator iterator = stack.Pop(); iterator.MoveNext();)
+                    for ( IEnumerator iterator = stack.Pop(); iterator.MoveNext(); )
                     {
                         WriteNoIndentation( iterator.Current, FetchType( iterator.Current ), builder, count == len - 1, false );
                         count++;
                     }
                 }
-                while (stack.Count > 0);
+                while ( stack.Count > 0 );
             }
         }
     }

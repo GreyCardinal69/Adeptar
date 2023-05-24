@@ -88,55 +88,68 @@ namespace Adeptar
         /// </summary>
         /// <param name="str">The .Adeptar string to clean.</param>
         /// <returns>The .Adeptar string with all the indentation removed.</returns>
-        public static ReadOnlySpan<char> CleanText ( ReadOnlySpan<char> str )
+        public static ReadOnlySpan<char> CleanText( ReadOnlySpan<char> str )
         {
-            StringBuilder sb = new(str.Length);
+            StringBuilder sb = new( str.Length );
 
             bool inStr = false;
             bool falseMark = false;
 
-            foreach (char item in str)
+            foreach ( char item in str )
             {
-                switch (item)
+                switch ( item )
                 {
                     case '"':
-                        if (falseMark){
+                        if ( falseMark )
+                        {
                             inStr = true;
                             falseMark = false;
                             sb.Append( item );
                             continue;
-                        }else{
+                        }
+                        else
+                        {
                             inStr = !inStr;
                             sb.Append( item );
                         }
                         break;
                     case '\\':
-                        if (inStr){
+                        if ( inStr )
+                        {
                             sb.Append( item );
                             falseMark = true;
                         }
                         break;
                     default:
-                        switch (item)
+                        switch ( item )
                         {
                             case '\t':
-                                if (inStr){
+                                if ( inStr )
+                                {
                                     sb.Append( item );
-                                }else{
+                                }
+                                else
+                                {
                                     continue;
                                 }
                                 break;
                             case ' ':
-                                if (inStr){
+                                if ( inStr )
+                                {
                                     sb.Append( item );
-                                }else{
+                                }
+                                else
+                                {
                                     continue;
                                 }
                                 break;
                             case '\n':
-                                if (inStr){
+                                if ( inStr )
+                                {
                                     sb.Append( item );
-                                }else{
+                                }
+                                else
+                                {
                                     continue;
                                 }
                                 break;
@@ -157,7 +170,7 @@ namespace Adeptar
         /// <param name="typeOf">The type to convert to.</param>
         /// <param name="value">The string representation of the number.</param>
         /// <returns>The adeptar string converted to a .NET object.</returns>
-        internal static object NumericResolver ( Type typeOf, string value )
+        internal static object NumericResolver( Type typeOf, string value )
         {
             return GetNumericType( typeOf ) switch
             {
@@ -182,29 +195,29 @@ namespace Adeptar
         /// </summary>
         /// <param name="type">The type to check.</param>
         /// <returns>The <see cref="NumericType"/> of the provided <see cref="Type"/>.</returns>
-        private static NumericType GetNumericType ( Type type )
+        private static NumericType GetNumericType( Type type )
         {
-            if (type == _sbyteType)
+            if ( type == _sbyteType )
                 return NumericType.Sbyte;
-            if (type == _byteType)
+            if ( type == _byteType )
                 return NumericType.Byte;
-            if (type == _shortType)
+            if ( type == _shortType )
                 return NumericType.Short;
-            if (type == _ushortType)
+            if ( type == _ushortType )
                 return NumericType.Ushort;
-            if (type == IntType)
+            if ( type == IntType )
                 return NumericType.Int;
-            if (type == _uintType)
+            if ( type == _uintType )
                 return NumericType.Uint;
-            if (type == _longType)
+            if ( type == _longType )
                 return NumericType.Long;
-            if (type == _ulongType)
+            if ( type == _ulongType )
                 return NumericType.Ulong;
-            if (type == _floatType)
+            if ( type == _floatType )
                 return NumericType.Single;
-            if (type == _decimalType)
+            if ( type == _decimalType )
                 return NumericType.Decimal;
-            if (type == _doubleType)
+            if ( type == _doubleType )
                 return NumericType.Double;
             return NumericType.NotNumeric;
         }
@@ -216,7 +229,7 @@ namespace Adeptar
         /// <param name="id">The id of the object to extract.</param>
         /// <param name="additionalTakeAway">Amount of additional characters taken away from the end of the extracted string.</param>
         /// <returns></returns>
-        internal static ReadOnlySpan<char> FetchAppendedSegment(  ReadOnlySpan<char> text, string id, int additionalTakeAway = 0 )
+        internal static ReadOnlySpan<char> FetchAppendedSegment( ReadOnlySpan<char> text, string id, int additionalTakeAway = 0 )
         {
             StringBuilder name = new();
 
@@ -228,51 +241,51 @@ namespace Adeptar
             int i = 0, j = 0, w = 0;
             int index = -1;
 
-            foreach (char item in text)
+            foreach ( char item in text )
             {
                 index++;
-                if (exit)
+                if ( exit )
                 {
                     break;
                 }
-                switch (item)
+                switch ( item )
                 {
                     case '"':
-                        if (falseEnd && inString)
+                        if ( falseEnd && inString )
                             falseEnd = false;
-                        else if (!falseEnd)
+                        else if ( !falseEnd )
                             inString = !inString;
                         break;
                     case '\\':
-                        if (inString)
+                        if ( inString )
                             falseEnd = true;
                         break;
                     case '~':
-                        if (!inString)
+                        if ( !inString )
                         {
                             inId = !inId;
-                            if (inId)
+                            if ( inId )
                             {
                                 w = index;
                             }
-                            if (!inId && name.ToString() == id)
+                            if ( !inId && name.ToString() == id )
                             {
                                 i = w + 1;
                             }
-                            if (inId && i != 0)
+                            if ( inId && i != 0 )
                             {
                                 j = index;
                                 exit = true;
                                 break;
                             }
-                            if (inId && i == 0)
+                            if ( inId && i == 0 )
                             {
                                 name.Clear();
                             }
                         }
                         break;
                     default:
-                        if (inId)
+                        if ( inId )
                         {
                             name.Append( item );
                         }
@@ -280,7 +293,7 @@ namespace Adeptar
                 }
                 w++;
             }
-         
+
             return CleanText( text.Slice( i, ( j == 0 ? text.Length : j ) - i - additionalTakeAway ) );
         }
 
@@ -290,7 +303,7 @@ namespace Adeptar
         /// </summary>
         /// <param name="text">The string to resolve.</param>
         /// <returns>The string with first and last quotation marks as well as extra backslashes removed.</returns>
-        internal static string StringResolver ( ReadOnlySpan<char> text ) => text.Slice( 1, text.Length - 2 ).ToString().Replace( "\\\"", "\"" );
+        internal static string StringResolver( ReadOnlySpan<char> text ) => text.Slice( 1, text.Length - 2 ).ToString().Replace( "\\\"", "\"" );
 
         /// <summary>
         /// Increments an array with a binary style.
@@ -301,14 +314,17 @@ namespace Adeptar
         /// <param name="sizes">The sizes of the dimensional array.</param>
         /// <param name="index">The current index of the dimensional array to use.</param>
         /// <returns>The index array incremented with binary style.</returns>
-        public static void BinaryStyleIndexArrayByRefIncrement ( in List<int> sizes, ref int[] index )
+        public static void BinaryStyleIndexArrayByRefIncrement( in List<int> sizes, ref int[] index )
         {
-            for (int i = sizes.Count - 1; i >= 0; i--)
+            for ( int i = sizes.Count - 1; i >= 0; i-- )
             {
-                if (sizes[i] > index[i]){
+                if ( sizes[i] > index[i] )
+                {
                     index[i]++;
                     return;
-                }else{
+                }
+                else
+                {
                     index[i] = 0;
                 }
             }

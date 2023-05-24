@@ -18,20 +18,20 @@ namespace Adeptar
         /// Deserializes the Adeptar string from the file at the specified path to the .NET <see cref="Type"/>.
         /// </summary>
         /// <param name="path">The path to the object.</param>
-        public static T Deserialize<T> ( string path ) => ( T ) DeserializeObject( typeof( T ), CleanText( File.ReadAllText( path ) ) );
+        public static T Deserialize<T>( string path ) => ( T ) DeserializeObject( typeof( T ), CleanText( File.ReadAllText( path ) ) );
 
         /// <summary>
         /// Deserializes the Adeptar string from the file at the specified path to the .NET <see cref="Type"/>.
         /// </summary>
         /// <param name="path">The path to the object.</param>
         /// <param name="type">The <see cref="Type"/> of the .NET object.</param>
-        public static object Deserialize ( string path, Type type ) => DeserializeObject( type, CleanText( File.ReadAllText( path ) ) );
+        public static object Deserialize( string path, Type type ) => DeserializeObject( type, CleanText( File.ReadAllText( path ) ) );
 
         /// <summary>
         /// Deserializes the Adeptar string to the specified .NET type.
         /// </summary>
         /// <param name="content">The Adeptar string.</param>
-        public static T DeserializeString<T> ( string content ) => ( T ) DeserializeObject( typeof( T ), CleanText( content ) );
+        public static T DeserializeString<T>( string content ) => ( T ) DeserializeObject( typeof( T ), CleanText( content ) );
 
         /// <summary>
         /// Deserializes the Adeptar string to the specified .NET <see cref="Type"/>.
@@ -39,7 +39,7 @@ namespace Adeptar
         /// <param name="content">The Adeptar string.</param>
         /// <param name="type">The <see cref="Type"/> of the .NET object.</param>
         /// <returns></returns>
-        public static object DeserializeString ( string content, Type type ) => DeserializeObject( type, CleanText( content ) );
+        public static object DeserializeString( string content, Type type ) => DeserializeObject( type, CleanText( content ) );
 
         /// <summary>
         /// Deserializes an object serialized with the ID feature. Accepts a generic <see cref="{T}"/> type.
@@ -48,7 +48,7 @@ namespace Adeptar
         /// <param name="path">The path to the file where the object is serialized.</param>
         /// <param name="id">The id used to serialize the object with.</param>
         /// <returns>The deserialized .NET object.</returns>
-        public static T DeserializeAppended<T> ( string path, string id ) => (T) DeserializeObject( typeof(T), FetchAppendedSegment( File.ReadAllText( path ), id, 0 ) );
+        public static T DeserializeAppended<T>( string path, string id ) => ( T ) DeserializeObject( typeof( T ), FetchAppendedSegment( File.ReadAllText( path ), id, 0 ) );
 
         /// <summary>
         /// Deserializes an object serialized with the ID feature. Accepts <see cref="Type"/>.
@@ -57,7 +57,7 @@ namespace Adeptar
         /// <param name="type">The type of the object.</param>
         /// <param name="id">The id used to serialize the object with.</param>
         /// <returns>The deserialized .NET object.</returns>
-        public static object DeserializeAppended ( string path, Type type, string id ) => DeserializeObject( type, FetchAppendedSegment( File.ReadAllText( path ), id, 0 ));
+        public static object DeserializeAppended( string path, Type type, string id ) => DeserializeObject( type, FetchAppendedSegment( File.ReadAllText( path ), id, 0 ) );
 
         /// <summary>
         /// Deserializes an object serialized with the ID feature using shared data of the object pool to override
@@ -66,7 +66,7 @@ namespace Adeptar
         /// <param name="path">The path to the file where the object is serialized.</param>
         /// <param name="id">The id used to serialize the object with.</param>
         /// <returns>The deserialized .NET object.</returns>
-        public static T DeserializeAppendedWithSharedData<T> ( string path, string id )
+        public static T DeserializeAppendedWithSharedData<T>( string path, string id )
         {
             ReadOnlySpan<char> text = File.ReadAllText( path );
 
@@ -77,30 +77,30 @@ namespace Adeptar
             int i = 0;
             int index = -1;
 
-            foreach (char item in text)
+            foreach ( char item in text )
             {
                 index++;
-                if (exit)
+                if ( exit )
                 {
                     break;
                 }
-                switch (item)
+                switch ( item )
                 {
                     case '"':
-                        if (falseEnd && inString)
+                        if ( falseEnd && inString )
                             falseEnd = false;
-                        else if (!falseEnd)
+                        else if ( !falseEnd )
                             inString = !inString;
                         break;
                     case '\\':
-                        if (inString)
+                        if ( inString )
                             falseEnd = true;
                         break;
                     case '&':
-                        if (!inString)
+                        if ( !inString )
                         {
                             inSharedData = !inSharedData;
-                            if (!inSharedData)
+                            if ( !inSharedData )
                             {
                                 i = index;
                                 exit = true;
@@ -130,7 +130,7 @@ namespace Adeptar
         /// <param name="path">The path of the file.</param>
         /// <param name="toSerialize">The object to serialize.</param>
         /// <param name="settings">The user provided serialization settings.</param>
-        public static void SerializeWrite ( string path, object toSerialize, AdeptarSettings settings )
+        public static void SerializeWrite( string path, object toSerialize, AdeptarSettings settings )
         {
             AdeptarWriter.AssignSettings( settings );
             AdeptarWriter.SerializeWrite( path, toSerialize, FetchType( toSerialize ), SerializationMode.Default );
@@ -142,7 +142,7 @@ namespace Adeptar
         /// <param name="toSerialize">The object to serialize.</param>
         /// <param name="settings">The user provided serialization settings.</param>
         /// <returns>A .Adeptar representation of the object.</returns>
-        public static string Serialize ( object toSerialize, AdeptarSettings settings )
+        public static string Serialize( object toSerialize, AdeptarSettings settings )
         {
             AdeptarWriter.AssignSettings( settings );
             return AdeptarWriter.Serialize( toSerialize, FetchType( toSerialize ) );
@@ -157,7 +157,7 @@ namespace Adeptar
         /// <param name="toSerialize">The object to serialize.</param>
         /// <param name="id">The id of the object used to append it.</param>
         /// <param name="settings">The user provided serialization settings.</param>
-        public static void SerializeAppend ( string path, object toSerialize, string id, AdeptarSettings settings )
+        public static void SerializeAppend( string path, object toSerialize, string id, AdeptarSettings settings )
         {
             AdeptarWriter.AssignSettings( settings );
             AdeptarWriter.SerializeWrite( path, toSerialize, FetchType( toSerialize ), SerializationMode.Append, id );
@@ -172,7 +172,7 @@ namespace Adeptar
         /// <param name="toSerialize">The object to serialize.</param>
         /// <param name="id">The id of the object used to append it.</param>
         /// <param name="settings">The user provided serialization settings.</param>
-        public static void SerializeRewriteAppended ( string path, object toSerialize, string id, AdeptarSettings settings )
+        public static void SerializeRewriteAppended( string path, object toSerialize, string id, AdeptarSettings settings )
         {
             AdeptarWriter.AssignSettings( settings );
             AdeptarWriter.SerializeWrite( path, toSerialize, FetchType( toSerialize ), SerializationMode.ChangeAppended, id );
@@ -183,10 +183,10 @@ namespace Adeptar
         /// </summary>
         /// <param name="path">The path of the file.</param>
         /// <param name="toSerialize">The object to serialize.</param>
-        public static void SerializeWrite ( string path, object toSerialize )
+        public static void SerializeWrite( string path, object toSerialize )
         {
             AdeptarWriter.AssignSettings( AdeptarWriter.DefaultSettings );
-            AdeptarWriter.SerializeWrite( path, toSerialize, FetchType(toSerialize), SerializationMode.Default );
+            AdeptarWriter.SerializeWrite( path, toSerialize, FetchType( toSerialize ), SerializationMode.Default );
         }
 
         /// <summary>
@@ -195,7 +195,7 @@ namespace Adeptar
         /// <param name="path">The path of the file.</param>
         /// <param name="toSerialize">The object to serialize.</param>
         /// <param name="formatting">The formatting style.</param>
-        public static void SerializeWrite ( string path, object toSerialize, Formatting formatting = Formatting.Indented )
+        public static void SerializeWrite( string path, object toSerialize, Formatting formatting = Formatting.Indented )
         {
             AdeptarSettings settings = new()
             {
@@ -211,7 +211,7 @@ namespace Adeptar
         /// </summary>
         /// <param name="toSerialize">The object to serialize.</param>
         /// <returns>A .Adeptar representation of the object.</returns>
-        public static string Serialize ( object toSerialize )
+        public static string Serialize( object toSerialize )
         {
             AdeptarWriter.AssignSettings( AdeptarWriter.DefaultSettings );
             return AdeptarWriter.Serialize( toSerialize, FetchType( toSerialize ) );
@@ -223,7 +223,7 @@ namespace Adeptar
         /// <param name="toSerialize">The object to serialize.</param>
         /// <param name="formatting">The formatting style.</param>
         /// <returns>A .Adeptar representation of the object with the provided formatting style.</returns>
-        public static string Serialize ( object toSerialize, Formatting formatting = Formatting.Indented )
+        public static string Serialize( object toSerialize, Formatting formatting = Formatting.Indented )
         {
             AdeptarSettings settings = new()
             {
@@ -241,7 +241,7 @@ namespace Adeptar
         /// <param name="path">The path to the file to append the object to.</param>
         /// <param name="toSerialize">The object to serialize as the shared data.</param>
         /// <param name="formatting">The formatting style.</param>
-        public static void SerializeSetShared ( string path, object toSerialize, Formatting formatting = Formatting.Indented )
+        public static void SerializeSetShared( string path, object toSerialize, Formatting formatting = Formatting.Indented )
         {
             AdeptarSettings settings = new()
             {
@@ -263,7 +263,7 @@ namespace Adeptar
         /// <param name="toSerialize">The object to serialize.</param>
         /// <param name="id">The id of the object used to append it.</param>
         /// <param name="formatting">The formatting style.</param>
-        public static void SerializeAppend ( string path, object toSerialize, string id, Formatting formatting = Formatting.Indented )
+        public static void SerializeAppend( string path, object toSerialize, string id, Formatting formatting = Formatting.Indented )
         {
             AdeptarSettings settings = new()
             {
@@ -283,7 +283,7 @@ namespace Adeptar
         /// <param name="toSerialize">The object to serialize.</param>
         /// <param name="id">The id of the object used to append it.</param>
         /// <param name="formatting">The formatting style.</param>
-        public static void SerializeRewriteAppended ( string path, object toSerialize, string id, Formatting formatting = Formatting.Indented )
+        public static void SerializeRewriteAppended( string path, object toSerialize, string id, Formatting formatting = Formatting.Indented )
         {
             AdeptarSettings settings = new()
             {

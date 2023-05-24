@@ -17,7 +17,8 @@ namespace Adeptar
         /// <param name="Builder">Main instance of <see cref="StringBuilder"/> to append to.</param>
         internal static void WriteDictionary( object data, int Indent, StringBuilder Builder )
         {
-            if (data is null){
+            if ( data is null )
+            {
                 return;
             }
 
@@ -28,36 +29,47 @@ namespace Adeptar
 
             int count = 0;
 
-            foreach (object item in dict.Keys){
+            foreach ( object item in dict.Keys )
+            {
                 keyVals[count] = (item, dict[item]);
                 count++;
             }
             count = 0;
 
-            if (!AdeptarWriter.CurrentSettings.UseIndentation){
-                for (int i = 0; i < dict.Count; i++)
+            if ( !AdeptarWriter.CurrentSettings.UseIndentation )
+            {
+                for ( int i = 0; i < dict.Count; i++ )
                 {
-                    if (IsDictionary( dict[i] )){
+                    if ( IsDictionary( dict[i] ) )
+                    {
                         WriteNoIndentation( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), Builder, true, true );
                         Builder.Append( ':' );
-                        if (Indent >= 1){
+                        if ( Indent >= 1 )
+                        {
                             Builder.Append( '[' );
                         }
                         WriteDictionary( keyVals[i].Item2, 0, Builder );
                         Builder.Append( ']' );
-                        if (count != keyVals.Length - 1){
+                        if ( count != keyVals.Length - 1 )
+                        {
                             Builder.Append( ',' );
                         }
-                    }else{
+                    }
+                    else
+                    {
                         SerializableType RootType = FetchType( keyVals[i].Item2 );
-                        if (RootType == SerializableType.Array){
+                        if ( RootType == SerializableType.Array )
+                        {
                             WriteNoIndentation( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), Builder, true, true );
                             Builder.Append( ':' );
                             WriteNoIndentation( keyVals[i].Item2, RootType, Builder, true, false );
-                            if (count != keyVals.Length - 1){
+                            if ( count != keyVals.Length - 1 )
+                            {
                                 Builder.Append( ',' );
                             }
-                        }else{
+                        }
+                        else
+                        {
                             WriteNoIndentation( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), Builder, true, true );
                             Builder.Append( ':' );
                             WriteNoIndentation( keyVals[i].Item2, RootType, Builder, count == dict.Count - 1, false );
@@ -65,14 +77,18 @@ namespace Adeptar
                     }
                     count++;
                 }
-            }else{
-                for (int i = 0; i < keyVals.Length; i++)
+            }
+            else
+            {
+                for ( int i = 0; i < keyVals.Length; i++ )
                 {
-                    if (IsDictionary( keyVals[i].Item2 )){
+                    if ( IsDictionary( keyVals[i].Item2 ) )
+                    {
                         Write( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), Builder, Indent, true, true );
                         Builder.Append( ':' ).Append( '\n' );
-                        if (Indent >= 1){
-                            for (int w = 0; w < Indent; w++)
+                        if ( Indent >= 1 )
+                        {
+                            for ( int w = 0; w < Indent; w++ )
                             {
                                 Builder.Append( '\t' );
                             }
@@ -80,32 +96,39 @@ namespace Adeptar
                         }
                         isIndended = true;
                         WriteDictionary( keyVals[i].Item2, Indent + 1, Builder );
-                        for (int w = 0; w < Indent; w++)
+                        for ( int w = 0; w < Indent; w++ )
                         {
                             Builder.Append( '\t' );
                         }
                         Builder.Append( ']' );
-                        if (count != keyVals.Length - 1){
+                        if ( count != keyVals.Length - 1 )
+                        {
                             Builder.Append( ',' );
                         }
                         Builder.Append( '\n' );
-                    }else{
+                    }
+                    else
+                    {
                         SerializableType RootType = FetchType( keyVals[i].Item2 );
-                        if (RootType == SerializableType.Array){
+                        if ( RootType == SerializableType.Array )
+                        {
                             Write( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), Builder, Indent, true, false );
                             Builder.Append( ':' );
                             Builder.Append( '\n' );
                             Write( keyVals[i].Item2, RootType, Builder, Indent, true, false );
-                            if (count != keyVals.Length - 1){
+                            if ( count != keyVals.Length - 1 )
+                            {
                                 Builder.Append( ',' );
                             }
-                        }else{
+                        }
+                        else
+                        {
                             Write( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), Builder, isIndended ? Indent : 0, true, false );
                             Builder.Append( ':' );
                             Write( keyVals[i].Item2, RootType, Builder, 0, count == dict.Count - 1, false );
                         }
-                            Builder.Append( '\n' );
-                        
+                        Builder.Append( '\n' );
+
                     }
                     count++;
                 }

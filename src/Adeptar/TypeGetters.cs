@@ -18,7 +18,7 @@ namespace Adeptar
         /// <returns>
         /// True if the object is a <see cref="List{T}"/>.
         /// </returns>
-        public static bool IsList ( object obj )
+        public static bool IsList( object obj )
         {
             return obj is IList &&
                    obj.GetType().IsGenericType &&
@@ -30,9 +30,10 @@ namespace Adeptar
         /// </summary>
         /// <param name="tuple">The type to check for.</param>
         /// <returns>True if the object is a <see cref="ValueTuple"/>.</returns>
-        public static bool IsTuple ( Type tuple )
+        public static bool IsTuple( Type tuple )
         {
-            if (!tuple.IsGenericType){
+            if ( !tuple.IsGenericType )
+            {
                 return false;
             }
             Type openType = tuple.GetGenericTypeDefinition();
@@ -74,27 +75,28 @@ namespace Adeptar
         /// </summary>
         /// <param name="fInfo">The <see cref="Type"/> to check.</param>
         /// <returns>The <see cref="SerializableType"/> of the provided <see cref="Type"/>.</returns>
-        public static SerializableType GetSerializableType ( Type fInfo )
+        public static SerializableType GetSerializableType( Type fInfo )
         {
-            if (fInfo == _cachedTypes[12])
+            if ( fInfo == _cachedTypes[12] )
                 return SerializableType.String;
-            if (fInfo == _cachedTypes[11])
+            if ( fInfo == _cachedTypes[11] )
                 return SerializableType.Char;
-            if (fInfo == _cachedTypes[13])
+            if ( fInfo == _cachedTypes[13] )
                 return SerializableType.DateTime;
             if ( fInfo == _cachedTypes[2] )
                 return SerializableType.Array;
-            if (fInfo.IsPrimitive)
+            if ( fInfo.IsPrimitive )
                 return SerializableType.Simple;
-            if (fInfo.IsGenericType){
+            if ( fInfo.IsGenericType )
+            {
                 Type genericTypeDef = fInfo.GetGenericTypeDefinition();
-                if (IsTupleGenericKnown( genericTypeDef ))
+                if ( IsTupleGenericKnown( genericTypeDef ) )
                     return SerializableType.Tuple;
-                if (genericTypeDef == _cachedTypes[0])
+                if ( genericTypeDef == _cachedTypes[0] )
                     return SerializableType.Dictionary;
             }
-            if (fInfo.IsArray)
-               return SerializableType.DimensionalArray;
+            if ( fInfo.IsArray )
+                return SerializableType.DimensionalArray;
 
             return SerializableType.Class;
         }
@@ -107,30 +109,31 @@ namespace Adeptar
         /// The object's <see cref="DeserializableType"/>. Returns <see cref="DeserializableType.Class"/> if the type
         /// cant be determined.
         /// </returns>
-        internal static DeserializableType GetDeserializableType ( Type fInfo )
+        internal static DeserializableType GetDeserializableType( Type fInfo )
         {
-            if (fInfo == _cachedTypes[12])
+            if ( fInfo == _cachedTypes[12] )
                 return DeserializableType.String;
-            if (fInfo == _cachedTypes[11])
+            if ( fInfo == _cachedTypes[11] )
                 return DeserializableType.Char;
-            if (fInfo == _cachedTypes[13])
+            if ( fInfo == _cachedTypes[13] )
                 return DeserializableType.DateTime;
-            if (fInfo == _cachedTypes[14])
+            if ( fInfo == _cachedTypes[14] )
                 return DeserializableType.Boolean;
-            if (fInfo.IsPrimitive || fInfo == _cachedTypes[15])
+            if ( fInfo.IsPrimitive || fInfo == _cachedTypes[15] )
                 return DeserializableType.Numeric;
-            if (fInfo.IsGenericType){
+            if ( fInfo.IsGenericType )
+            {
                 Type genericTypeDef = fInfo.GetGenericTypeDefinition();
-                if (IsTupleGenericKnown( genericTypeDef ))
+                if ( IsTupleGenericKnown( genericTypeDef ) )
                     return DeserializableType.Tuple;
-                if (genericTypeDef == _cachedTypes[0])
+                if ( genericTypeDef == _cachedTypes[0] )
                     return DeserializableType.Dictionary;
-                if (genericTypeDef == _cachedTypes[1] || genericTypeDef == _cachedTypes[2])
+                if ( genericTypeDef == _cachedTypes[1] || genericTypeDef == _cachedTypes[2] )
                     return DeserializableType.List;
             }
-            if (fInfo.IsArray)
+            if ( fInfo.IsArray )
                 return fInfo.GetArrayRank() > 1 ? DeserializableType.DimensionalArray : DeserializableType.Array;
-            if (fInfo.IsEnum)
+            if ( fInfo.IsEnum )
                 return DeserializableType.Enum;
 
             return DeserializableType.Class;
@@ -143,7 +146,7 @@ namespace Adeptar
         /// <returns>
         /// True/False if the object is of type <see cref="Dictionary{TKey, TValue}"/>.
         /// </returns>
-        public static bool IsDictionary ( object obj ) => obj is IDictionary;
+        public static bool IsDictionary( object obj ) => obj is IDictionary;
 
         /// <summary>
         /// Checks if the provided object is a <see cref="Dictionary{TKey, TValue}"/>, uses a <see cref="Type"/>.
@@ -152,14 +155,14 @@ namespace Adeptar
         /// <returns>
         /// True if the type is a <see cref="Dictionary{TKey, TValue}"/>.
         /// </returns>
-        public static bool IsDictionary ( Type type ) => type.IsGenericType && type.GetGenericTypeDefinition() == typeof( Dictionary<,> );
+        public static bool IsDictionary( Type type ) => type.IsGenericType && type.GetGenericTypeDefinition() == typeof( Dictionary<,> );
 
         /// <summary>
         /// Checks if an object is of type <see cref="ValueTuple"/>, such as (<see cref="int"/>, <see cref="int"/>). Omits the .IsGeneric check.
         /// </summary>
         /// <param name="tuple">The type to check for.</param>
         /// <returns>True if the object is a <see cref="ValueTuple"/>.</returns>
-        public static bool IsTupleGenericKnown ( Type tuple )
+        public static bool IsTupleGenericKnown( Type tuple )
         {
             return tuple == _cachedTypes[3]
                 || tuple == _cachedTypes[4]
@@ -175,14 +178,14 @@ namespace Adeptar
         /// Checks if the provided object has an empty constructor defined.
         /// </summary>
         /// <param name="type">The type to check</param>
-        public static bool HasDefaultConstructor ( Type type ) => type.IsValueType || type.GetConstructor( Type.EmptyTypes ) != null;
+        public static bool HasDefaultConstructor( Type type ) => type.IsValueType || type.GetConstructor( Type.EmptyTypes ) != null;
 
         /// <summary>
         /// Checks if the object is an array with two or more dimensions.
         /// </summary>
         /// <param name="received">The object to check.</param>
         /// <returns>True if the object has two or three dimensions.</returns>
-        public static bool IsMultiDimensionalArray ( object received ) => ( received as Array ).Rank > 1;
+        public static bool IsMultiDimensionalArray( object received ) => ( received as Array ).Rank > 1;
 
         /// <summary>
         /// Gets the object's <see cref="SerializableType"/>.
@@ -192,7 +195,7 @@ namespace Adeptar
         /// The provided object's <see cref="SerializableType"/>. Returns <see cref="SerializableType.Class"/> if the
         /// provided object is null or if its type can't be determined.
         /// </returns>
-        public static SerializableType FetchType ( object received )
+        public static SerializableType FetchType( object received )
         {
             switch ( received )
             {
@@ -227,9 +230,9 @@ namespace Adeptar
         /// </summary>
         /// <param name="value">The object to check.</param>
         /// <returns>True if an object is a number.</returns>
-        public static bool IsNumber ( object value )
+        public static bool IsNumber( object value )
         {
-            return     value is sbyte
+            return value is sbyte
                     || value is byte
                     || value is short
                     || value is ushort
@@ -249,7 +252,7 @@ namespace Adeptar
         /// </summary>
         /// <param name="type">The Type to check.</param>
         /// <returns>True if an object is a number.</returns>
-        public static bool IsNumericType ( Type type ) => Type.GetTypeCode( type ) switch
+        public static bool IsNumericType( Type type ) => Type.GetTypeCode( type ) switch
         {
             TypeCode.Byte => true,
             TypeCode.SByte => true,
@@ -271,7 +274,7 @@ namespace Adeptar
         /// <typeparam name="T">The type to parse to.</typeparam>
         /// <param name="obj">The object to parse.</param>
         /// <returns>The converted enum.</returns>
-        public static T ParseToEnum<T> ( object obj ) => ( T ) Enum.Parse ( typeof( T ), obj.ToString() );
+        public static T ParseToEnum<T>( object obj ) => ( T ) Enum.Parse( typeof( T ), obj.ToString() );
 
         /// <summary>
         /// Parses an object into an enum without a generic T type.
@@ -279,7 +282,7 @@ namespace Adeptar
         /// <param name="obj">The object that is the enum.</param>
         /// <param name="enumType">The type of the enum to parse to.</param>
         /// <returns>Returns an object casted to the provided enum type.</returns>
-        public static object ParseToEnumNonGeneric ( ReadOnlySpan<char> obj, Type enumType ) => Enum.Parse( enumType, obj.ToString() );
+        public static object ParseToEnumNonGeneric( ReadOnlySpan<char> obj, Type enumType ) => Enum.Parse( enumType, obj.ToString() );
     }
 }
 

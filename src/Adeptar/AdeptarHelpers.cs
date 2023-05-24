@@ -14,7 +14,7 @@ namespace Adeptar
         /// <param name="path">The path of the file.</param>
         /// <param name="id">The id of the object to check for.</param>
         /// <returns>True if the already exists in the file.</returns>
-        public static bool ContainsId ( string path, string id ) => ContainsIdInternal( path, id );
+        public static bool ContainsId( string path, string id ) => ContainsIdInternal( path, id );
 
         /// <summary>
         /// Checks if the provided file already has an object appended using the Id feature with the specified id.
@@ -23,18 +23,19 @@ namespace Adeptar
         /// <param name="path">The path of the file.</param>
         /// <param name="id">The id of the object to check for.</param>
         /// <returns>True if the already exists in the file.</returns>
-        private static bool ContainsIdInternal ( string path, string id )
+        private static bool ContainsIdInternal( string path, string id )
         {
             bool inString = false;
             bool startWrite = false;
             string temp = "";
 
-            foreach (char item in File.ReadAllText( path ))
+            foreach ( char item in File.ReadAllText( path ) )
             {
-                switch (item)
+                switch ( item )
                 {
                     case '~':
-                        if (!inString){
+                        if ( !inString )
+                        {
                             startWrite = true;
                         }
                         break;
@@ -42,15 +43,22 @@ namespace Adeptar
                         inString = !inString;
                         break;
                     default:
-                        if (startWrite && !inString){
-                            if (!char.IsLetterOrDigit(item)){
+                        if ( startWrite && !inString )
+                        {
+                            if ( !char.IsLetterOrDigit( item ) )
+                            {
                                 startWrite = false;
-                                if (temp == id){
+                                if ( temp == id )
+                                {
                                     return true;
-                                }else{
+                                }
+                                else
+                                {
                                     temp = "";
                                 }
-                            }else{
+                            }
+                            else
+                            {
                                 temp += item;
                             }
                         }

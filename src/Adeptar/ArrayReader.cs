@@ -23,7 +23,7 @@ namespace Adeptar
         /// <returns>The .NET version of the <see cref="Array"/>.</returns>
         internal static IList DeserializeArray( ReadOnlySpan<char> text, Type type )
         {
-            if (text.Length == 2)
+            if ( text.Length == 2 )
                 return ( IList ) Array.CreateInstance( type.GetElementType(), 0 );
 
             bool inString = false;
@@ -38,44 +38,51 @@ namespace Adeptar
             int i = 0;
             bool start = false;
 
-            foreach (char Char in text)
+            foreach ( char Char in text )
             {
-                switch (Char)
+                switch ( Char )
                 {
                     case '\\':
-                        if (inString){
+                        if ( inString )
+                        {
                             falseEnd = true;
-                        }else{
-                            throw new AdeptarException("Invalid character '\\', such a character can appear only inside a string.");
+                        }
+                        else
+                        {
+                            throw new AdeptarException( "Invalid character '\\', such a character can appear only inside a string." );
                         }
                         break;
                     case '"':
-                        if (falseEnd && !nested){
+                        if ( falseEnd && !nested )
+                        {
                             falseEnd = false;
                             break;
                         }
-                        if (!nested){
+                        if ( !nested )
+                        {
                             inString = !inString;
                         }
                         break;
                     case '{':
-                        if (inString)
+                        if ( inString )
                             continue;
                         firstCase++;
                         nested = true;
                         break;
                     case '}':
-                        if (inString)
+                        if ( inString )
                             continue;
                         firstCase--;
-                        if (firstCase == 0){
+                        if ( firstCase == 0 )
+                        {
                             nested = false;
                         }
                         break;
                     case '[':
-                        if (inString)
+                        if ( inString )
                             continue;
-                        if (firstCase == 0 && !start){
+                        if ( firstCase == 0 && !start )
+                        {
                             start = true;
                             continue;
                         }
@@ -83,33 +90,38 @@ namespace Adeptar
                         nested = true;
                         break;
                     case ']':
-                        if (inString)
+                        if ( inString )
                             continue;
-                        if (firstCase - 1 == -1){
+                        if ( firstCase - 1 == -1 )
+                        {
                             nested = false;
                             length++;
-                        }else{
+                        }
+                        else
+                        {
                             firstCase--;
                         }
                         break;
                     case '(':
-                        if (inString)
+                        if ( inString )
                             continue;
                         firstCase++;
                         nested = true;
                         break;
                     case ')':
-                        if (inString)
+                        if ( inString )
                             continue;
                         firstCase--;
-                        if (firstCase == 0){
+                        if ( firstCase == 0 )
+                        {
                             nested = false;
                         }
                         break;
                     case ',':
-                        if (inString)
+                        if ( inString )
                             continue;
-                        if (!nested){
+                        if ( !nested )
+                        {
                             length++;
                         }
                         break;
@@ -123,79 +135,97 @@ namespace Adeptar
             nested = false;
             firstCase = 0;
 
-            text = text.Slice(  1, text.Length - 1 );
+            text = text.Slice( 1, text.Length - 1 );
 
-            foreach (char Char in text)
+            foreach ( char Char in text )
             {
-                switch (Char)
+                switch ( Char )
                 {
                     case ':':
                         break;
                     case '\'':
                         break;
                     case '\\':
-                        if (inString){
+                        if ( inString )
+                        {
                             falseEnd = true;
-                        }else{
+                        }
+                        else
+                        {
                             throw new AdeptarException( "Invalid character '\\', such a character can appear only inside a string." );
                         }
                         break;
                     case '"':
-                        if (falseEnd && !nested){
+                        if ( falseEnd && !nested )
+                        {
                             falseEnd = false;
                             break;
                         }
-                        if (!nested){
+                        if ( !nested )
+                        {
                             inString = !inString;
                         }
                         break;
                     case '[':
-                        if (!inString){
+                        if ( !inString )
+                        {
                             firstCase++;
                             nested = true;
                         }
                         break;
                     case ']':
-                        if (firstCase - 1 == 0 && !inString){
+                        if ( firstCase - 1 == 0 && !inString )
+                        {
                             firstCase--;
                         }
-                        else if (firstCase - 1 == -1 && !inString){
+                        else if ( firstCase - 1 == -1 && !inString )
+                        {
                             firstCase--;
-                            if (i == text.Length - 1){
+                            if ( i == text.Length - 1 )
+                            {
                                 main[index] = DeserializeObject( childType, text.Slice( j, i - j ) );
                             }
-                        }else{
+                        }
+                        else
+                        {
                             firstCase--;
                         }
                         break;
                     case ',':
-                        if (!inString && !nested){
+                        if ( !inString && !nested )
+                        {
                             main[index] = DeserializeObject( childType, text.Slice( j, i - j ) );
                             j = i + 1;
                             index++;
                         }
                         break;
                     case '{':
-                        if (!inString){
+                        if ( !inString )
+                        {
                             firstCase++;
                             nested = true;
                         }
                         break;
                     case '}':
-                        if (firstCase - 1 == 0 && !inString){
+                        if ( firstCase - 1 == 0 && !inString )
+                        {
                             firstCase--;
                             nested = false;
-                        }else{
+                        }
+                        else
+                        {
                             firstCase--;
                         }
                         break;
                     case '(':
-                        if (!inString){
+                        if ( !inString )
+                        {
                             firstCase++; nested = true;
                         }
                         break;
                     case ')':
-                        if (firstCase - 1 == 0 && !inString){
+                        if ( firstCase - 1 == 0 && !inString )
+                        {
                             nested = false;
                             firstCase--;
                         }
@@ -213,9 +243,9 @@ namespace Adeptar
         /// <param name="text">The Adeptar string representation of the object.</param>
         /// <param name="type">The type of the <see cref="List{T}"/>.</param>
         /// <returns>The .NET version of the <see cref="List{T}"/>.</returns>
-        internal static IList DeserializeList ( ReadOnlySpan<char> text, Type type )
+        internal static IList DeserializeList( ReadOnlySpan<char> text, Type type )
         {
-            if (text.Length == 2)
+            if ( text.Length == 2 )
                 return ( IList ) Array.CreateInstance( type.GetElementType(), 0 );
 
             bool inString = false;
@@ -232,75 +262,89 @@ namespace Adeptar
 
             text = text.Slice( 1, text.Length - 1 );
 
-            foreach (char Char in text)
+            foreach ( char Char in text )
             {
-                switch (Char)
+                switch ( Char )
                 {
                     case ':':
                         break;
                     case '\'':
                         break;
                     case '\\':
-                        if (inString)
+                        if ( inString )
                             falseEnd = true;
                         else
                             throw new AdeptarException( "Invalid character '\\', such a character can appear only inside a string." );
                         break;
                     case '"':
-                        if (falseEnd && !nested){
+                        if ( falseEnd && !nested )
+                        {
                             falseEnd = false;
                             continue;
                         }
-                        if (!nested)
+                        if ( !nested )
                             inString = !inString;
                         break;
                     case '[':
-                        if (!inString){
+                        if ( !inString )
+                        {
                             level++;
                             nested = true;
                         }
                         break;
                     case ']':
-                        if (level - 1 == 0 && !inString){
+                        if ( level - 1 == 0 && !inString )
+                        {
                             level--;
                             nested = false;
                         }
-                        else if (level - 1 == - 1 && !inString){
+                        else if ( level - 1 == -1 && !inString )
+                        {
                             level--;
-                            if (i == text.Length - 1){
+                            if ( i == text.Length - 1 )
+                            {
                                 main.Add( DeserializeObject( childType, text.Slice( j, i - j ) ) );
                             }
-                        }else{
+                        }
+                        else
+                        {
                             level--;
                         }
                         break;
                     case ',':
-                        if (!inString && !nested){
+                        if ( !inString && !nested )
+                        {
                             main.Add( DeserializeObject( childType, text.Slice( j, i - j ) ) );
                             j = i + 1;
                         }
                         break;
                     case '{':
-                        if (!inString){
+                        if ( !inString )
+                        {
                             level++;
                             nested = true;
                         }
                         break;
                     case '}':
-                        if (level - 1 == 0 && !inString){
+                        if ( level - 1 == 0 && !inString )
+                        {
                             level--;
                             nested = false;
-                        }else{
+                        }
+                        else
+                        {
                             level--;
                         }
                         break;
                     case '(':
-                        if (!inString){
+                        if ( !inString )
+                        {
                             level++; nested = true;
                         }
                         break;
                     case ')':
-                        if (level - 1 == 0 && !inString){
+                        if ( level - 1 == 0 && !inString )
+                        {
                             nested = false;
                             level--;
                         }
@@ -326,18 +370,19 @@ namespace Adeptar
 
             int i = 0, j = 0;
 
-            foreach (char item in text)
+            foreach ( char item in text )
             {
-                if (exit)
+                if ( exit )
                     break;
-                switch (item)
+                switch ( item )
                 {
                     case '<':
                         inSizes = true;
                         j = i + 1;
                         break;
                     case '>':
-                        if (inSizes){
+                        if ( inSizes )
+                        {
                             sizes.Add( ( int ) NumericResolver( IntType, text.Slice( j, i - j ).ToString() ) );
                             j = i + 1;
                             inSizes = false;
@@ -356,17 +401,17 @@ namespace Adeptar
 
             Type elementType = type.GetElementType();
 
-            IList flat =  DeserializeArray( $"[{text.ToString()}", elementType.MakeArrayType() );
+            IList flat = DeserializeArray( $"[{text.ToString()}", elementType.MakeArrayType() );
             Array main = Array.CreateInstance( elementType, sizes.ToArray() );
 
             int[] index = new int[sizes.Count];
 
-            for (int e = 0; e < sizes.Count; e++)
+            for ( int e = 0; e < sizes.Count; e++ )
             {
                 sizes[e] = sizes[e] - 1;
             }
 
-            for (int w = 0; w < flat.Count; w++)
+            for ( int w = 0; w < flat.Count; w++ )
             {
                 main.SetValue( flat[w], index );
                 BinaryStyleIndexArrayByRefIncrement( in sizes, ref index );

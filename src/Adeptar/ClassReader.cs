@@ -21,7 +21,7 @@ namespace Adeptar
         /// <param name="text">The Adeptar string representation of the object.</param>
         /// <param name="type">The type of the class or struct.</param>
         /// <returns>The .NET version of the class or struct.</returns>
-        internal static object DeserializeClassStruct ( ReadOnlySpan<char> text, Type type )
+        internal static object DeserializeClassStruct( ReadOnlySpan<char> text, Type type )
         {
             int level = 0;
             int i = 0;
@@ -35,7 +35,7 @@ namespace Adeptar
 
             List<String> ids = new();
 
-            foreach (Member item in members)
+            foreach ( Member item in members )
             {
                 ids.Add( item.Name );
             }
@@ -47,42 +47,50 @@ namespace Adeptar
             text = text.Slice( 1, text.Length - 1 );
             string name = "";
 
-            foreach (char item in text)
+            foreach ( char item in text )
             {
-                switch (item)
+                switch ( item )
                 {
                     case '\'':
                         break;
                     case '"':
-                        if (falseEnd && inString){
+                        if ( falseEnd && inString )
+                        {
                             falseEnd = false;
                         }
-                        else if (!falseEnd)
+                        else if ( !falseEnd )
                             inString = !inString;
                         break;
                     case '[':
-                        if (!inString){
+                        if ( !inString )
+                        {
                             level++; nested = true;
                         }
-                        else if (!inString)
+                        else if ( !inString )
                             level++;
                         break;
                     case ']':
-                        if (level - 1 == 0 && !inString){
+                        if ( level - 1 == 0 && !inString )
+                        {
                             nested = false;
                         }
                         level--;
                         break;
                     case '\\':
-                        if (inString){
+                        if ( inString )
+                        {
                             falseEnd = true;
-                        }else{
-                            throw new AdeptarException("Invalid character '\\', such a character can appear only inside a string.");
+                        }
+                        else
+                        {
+                            throw new AdeptarException( "Invalid character '\\', such a character can appear only inside a string." );
                         }
                         break;
                     case ',':
-                        if (!nested && !inString){
-                            if (ids.Contains( name )){
+                        if ( !nested && !inString )
+                        {
+                            if ( ids.Contains( name ) )
+                            {
                                 accessor[target, name] = DeserializeObject( members[ids.IndexOf( name )].Type, text.Slice( j, w - j ) );
                             }
                             i++;
@@ -90,44 +98,51 @@ namespace Adeptar
                         }
                         break;
                     case '{':
-                        if (!inString){
+                        if ( !inString )
+                        {
                             level++;
                             nested = true;
                         }
                         break;
                     case '}':
-                        if (level - 1 == 0 && !inString){
+                        if ( level - 1 == 0 && !inString )
+                        {
                             nested = false;
                         }
-                        else if (w == text.Length - 1 && members.Count > 0 && ids.Contains( name )){
+                        else if ( w == text.Length - 1 && members.Count > 0 && ids.Contains( name ) )
+                        {
                             accessor[target, name] = DeserializeObject( members[ids.IndexOf( name )].Type, text.Slice( j, w - j ) );
                         }
                         level--;
                         break;
                     case '(':
-                        if (!inString){
+                        if ( !inString )
+                        {
                             level++;
                             nested = true;
                         }
                         break;
                     case ')':
-                        if (level - 1 == 0 && !inString){
+                        if ( level - 1 == 0 && !inString )
+                        {
                             nested = false;
                             level--;
                         }
                         break;
                     case ':':
-                        if (!nested && !inString){
+                        if ( !nested && !inString )
+                        {
                             name = text.Slice( j, w - j ).ToString();
                             j = w + 1;
                         }
                         break;
                     default:
-                        if (!inString              &&
-                            item != '_'            &&
-                            item != '-'            &&
+                        if ( !inString &&
+                            item != '_' &&
+                            item != '-' &&
                             !char.IsLetter( item ) &&
-                            !char.IsDigit ( item ) ){
+                            !char.IsDigit( item ) )
+                        {
                             throw new AdeptarException( $"Invalid character \"{item}\" outside of string at position {i} ( indentation removed )." );
                         }
                         break;
@@ -146,7 +161,7 @@ namespace Adeptar
         /// <param name="type">The type of the class or struct.</param>
         /// <param name="map">The map to use for names.</param>
         /// <returns>The .NET version of the class or struct.</returns>
-        internal static object DeserializeClassStructWithMap ( ReadOnlySpan<char> text, Type type, Dictionary<string, string> map )
+        internal static object DeserializeClassStructWithMap( ReadOnlySpan<char> text, Type type, Dictionary<string, string> map )
         {
             int level = 0;
             int i = 0;
@@ -160,7 +175,7 @@ namespace Adeptar
 
             List<String> ids = new( members.Count );
 
-            foreach (Member item in members)
+            foreach ( Member item in members )
             {
                 ids.Add( item.Name );
             }
@@ -172,42 +187,50 @@ namespace Adeptar
             text = text.Slice( 1, text.Length - 1 );
             string name = "";
 
-            foreach (char item in text)
+            foreach ( char item in text )
             {
-                switch (item)
+                switch ( item )
                 {
                     case '\'':
                         break;
                     case '"':
-                        if (falseEnd && inString){
+                        if ( falseEnd && inString )
+                        {
                             falseEnd = false;
                         }
-                        else if (!falseEnd)
+                        else if ( !falseEnd )
                             inString = !inString;
                         break;
                     case '[':
-                        if (!inString){
+                        if ( !inString )
+                        {
                             level++; nested = true;
                         }
-                        else if (!inString)
+                        else if ( !inString )
                             level++;
                         break;
                     case ']':
-                        if (level - 1 == 0 && !inString){
+                        if ( level - 1 == 0 && !inString )
+                        {
                             nested = false;
                         }
                         level--;
                         break;
                     case '\\':
-                        if (inString){
+                        if ( inString )
+                        {
                             falseEnd = true;
-                        }else{
+                        }
+                        else
+                        {
                             throw new AdeptarException( "Invalid character '\\', such a character can appear only inside a string." );
                         }
                         break;
                     case ',':
-                        if (!nested && !inString){
-                            if (ids.Contains( map[name] )){
+                        if ( !nested && !inString )
+                        {
+                            if ( ids.Contains( map[name] ) )
+                            {
                                 accessor[target, map[name]] = DeserializeObject( members[ids.IndexOf( map[name] )].Type, text.Slice( j, w - j ) );
                                 i++;
                             }
@@ -215,44 +238,51 @@ namespace Adeptar
                         }
                         break;
                     case '{':
-                        if (!inString){
+                        if ( !inString )
+                        {
                             level++;
                             nested = true;
                         }
                         break;
                     case '}':
-                        if (level - 1 == 0 && !inString){
+                        if ( level - 1 == 0 && !inString )
+                        {
                             nested = false;
                         }
-                        else if (level - 1 == -1 && !inString && w == text.Length - 1 && members.Count > 0 && ids.Contains( map[name] )){
+                        else if ( level - 1 == -1 && !inString && w == text.Length - 1 && members.Count > 0 && ids.Contains( map[name] ) )
+                        {
                             accessor[target, map[name]] = DeserializeObject( members[ids.IndexOf( map[name] )].Type, text.Slice( j, w - j ) );
                         }
                         level--;
                         break;
                     case '(':
-                        if (!inString){
+                        if ( !inString )
+                        {
                             level++;
                             nested = true;
                         }
                         break;
                     case ')':
-                        if (level - 1 == 0 && !inString){
+                        if ( level - 1 == 0 && !inString )
+                        {
                             nested = false;
                             level--;
                         }
                         break;
                     case ':':
-                        if (!nested && !inString){
+                        if ( !nested && !inString )
+                        {
                             name = text.Slice( j, w - j ).ToString();
                             j = w + 1;
                         }
                         break;
                     default:
-                        if (!inString              &&
-                            item != '_'            &&
-                            item != '-'            &&
+                        if ( !inString &&
+                            item != '_' &&
+                            item != '-' &&
                             !char.IsLetter( item ) &&
-                            !char.IsDigit ( item ) ){
+                            !char.IsDigit( item ) )
+                        {
                             throw new AdeptarException( $"Invalid character \"{item}\" outside of string at position {i} ( indentation removed )." );
                         }
                         break;

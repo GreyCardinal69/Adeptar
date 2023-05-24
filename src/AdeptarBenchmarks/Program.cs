@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
-
 using BenchmarkDotNet.Attributes;
 using Adeptar;
 using Newtonsoft.Json;
-using FastMember;
-using static AdeptarBenchmarks.MemoryBenchmarkerDemo;
 
 namespace AdeptarBenchmarks
 {
@@ -18,10 +15,6 @@ namespace AdeptarBenchmarks
 #if DEBUG
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
-
-
-            Console.WriteLine(  AdeptarConverter.Serialize( DateTime.Now )  );
-            Console.WriteLine( AdeptarConverter.Serialize( DateTime.Now, Adeptar.Formatting.NoIndentation ) );
 #else
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
             Console.ReadLine();
@@ -41,7 +34,7 @@ namespace AdeptarBenchmarks
             public Dictionary<int, string> Maps;
             public DateTime date;
         }
-
+        
         public class MyClassWithConfig
         {
             [AdeptarIgnore]
@@ -68,7 +61,7 @@ namespace AdeptarBenchmarks
             JsonConvert.SerializeObject( new MyClass() );
         }
         
-        [Benchmark]
+        [Benchmark] 
         public void ClassAdeptar()
         {
             AdeptarConverter.Serialize( new MyClass()
