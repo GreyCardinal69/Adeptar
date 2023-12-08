@@ -4,6 +4,1030 @@
         <name>Adeptar</name>
     </assembly>
     <members>
+        <member name="T:Adeptar.Unity.AdeptarConfiguration">
+            <summary>
+            A class that provides functionality for field/property serialization manipulations.
+            Such objects are to be put as a field/property only once and are not serialized by the <see cref="T:Adeptar.Unity.AdeptarWriter"/>.
+            </summary>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarConfiguration.#ctor">
+            <summary>
+            Creates a new empty instance of an <see cref="T:Adeptar.Unity.AdeptarConfiguration"/> class.
+            </summary>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarConfiguration.#ctor(System.String[])">
+            <summary>
+            Creates a new instance of an <see cref="T:Adeptar.Unity.AdeptarConfiguration"/> class with an array of fields and or properties to ignore.
+            </summary>
+            <param name="toIgnore"></param>
+        </member>
+        <member name="P:Adeptar.Unity.AdeptarConfiguration.ToIgnore">
+            <summary>
+            An array of field and or property names to ignore.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.AdeptarConfiguration.MustBeUsed">
+            <summary>
+            Indicates that a <see cref="T:Adeptar.Unity.AdeptarConfiguration"/> exists in the class or the struct to serialize.
+            </summary>
+        </member>
+        <member name="T:Adeptar.Unity.AdeptarConverter">
+            <summary>
+            Provides methods for converting between .NET and .Adeptar types
+            </summary>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarConverter.Deserialize``1(System.String)">
+            <summary>
+            Deserializes the Adeptar string from the file at the specified path to the .NET <see cref="T:System.Type"/>.
+            </summary>
+            <param name="path">The path to the object.</param>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarConverter.Deserialize(System.String,System.Type)">
+            <summary>
+            Deserializes the Adeptar string from the file at the specified path to the .NET <see cref="T:System.Type"/>.
+            </summary>
+            <param name="path">The path to the object.</param>
+            <param name="type">The <see cref="T:System.Type"/> of the .NET object.</param>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarConverter.DeserializeString``1(System.String)">
+            <summary>
+            Deserializes the Adeptar string to the specified .NET type.
+            </summary>
+            <param name="content">The Adeptar string.</param>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarConverter.DeserializeString(System.String,System.Type)">
+            <summary>
+            Deserializes the Adeptar string to the specified .NET <see cref="T:System.Type"/>.
+            </summary>
+            <param name="content">The Adeptar string.</param>
+            <param name="type">The <see cref="T:System.Type"/> of the .NET object.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarConverter.DeserializeAppended``1(System.String,System.String)">
+            <summary>
+            Deserializes an object serialized with the ID feature. Accepts a generic <see cref="!:&lt;T&gt;"/> type.
+            </summary>
+            <typeparam name="T">The generic type to deserialize to.</typeparam>
+            <param name="path">The path to the file where the object is serialized.</param>
+            <param name="id">The id used to serialize the object with.</param>
+            <returns>The deserialized .NET object.</returns>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarConverter.DeserializeAppended(System.String,System.Type,System.String)">
+            <summary>
+            Deserializes an object serialized with the ID feature. Accepts <see cref="T:System.Type"/>.
+            </summary>
+            <param name="path">The path to the file where the object is serialized.</param>
+            <param name="type">The type of the object.</param>
+            <param name="id">The id used to serialize the object with.</param>
+            <returns>The deserialized .NET object.</returns>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarConverter.SerializeWrite(System.String,System.Object,Adeptar.Unity.AdeptarSettings)">
+            <summary>
+            Serializes the object to a .Adeptar string and writes it to a file, the file is overwritten.
+            Accepts an <see cref="T:Adeptar.Unity.AdeptarSettings"/> object to set serialization rules.
+            </summary>
+            <param name="path">The path of the file.</param>
+            <param name="toSerialize">The object to serialize.</param>
+            <param name="settings">The user provided serialization settings.</param>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarConverter.Serialize(System.Object,Adeptar.Unity.AdeptarSettings)">
+            <summary>
+            Serializes the object to a .Adeptar string. Accepts an <see cref="T:Adeptar.Unity.AdeptarSettings"/> object to set serialization rules.
+            </summary>
+            <param name="toSerialize">The object to serialize.</param>
+            <param name="settings">The user provided serialization settings.</param>
+            <returns>A .Adeptar representation of the object.</returns>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarConverter.SerializeAppend(System.String,System.Object,System.String,Adeptar.Unity.AdeptarSettings)">
+            <summary>
+            Serializes the object to a .Adeptar string using specified formatting style, and appends it to a file.
+            If an object with the provided id already exists will throw an exception.
+            The id is limited to numbers and letters. Accepts an <see cref="T:Adeptar.Unity.AdeptarSettings"/> object to set serialization rules.
+            </summary>
+            <param name="path">The path to the file to append the object to.</param>
+            <param name="toSerialize">The object to serialize.</param>
+            <param name="id">The id of the object used to append it.</param>
+            <param name="settings">The user provided serialization settings.</param>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarConverter.SerializeRewriteAppended(System.String,System.Object,System.String,Adeptar.Unity.AdeptarSettings)">
+            <summary>
+            Serializes the object to a .Adeptar string using specified formatting style, and appends it to a file.
+            The current object with the provided id is rewritten in the file.
+            The id is limited to numbers and letters. Accepts an <see cref="T:Adeptar.Unity.AdeptarSettings"/> object to set serialization rules.
+            </summary>
+            <param name="path">The path of the file.</param>
+            <param name="toSerialize">The object to serialize.</param>
+            <param name="id">The id of the object used to append it.</param>
+            <param name="settings">The user provided serialization settings.</param>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarConverter.SerializeWrite(System.String,System.Object)">
+            <summary>
+            Serializes the object to a .Adeptar string and writes it to a file, the file is overwritten.
+            </summary>
+            <param name="path">The path of the file.</param>
+            <param name="toSerialize">The object to serialize.</param>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarConverter.SerializeWrite(System.String,System.Object,Adeptar.Unity.Formatting)">
+            <summary>
+            Serializes the object to a .Adeptar string using the provided formatting, and writes it to a file, the file is overwritten.
+            </summary>
+            <param name="path">The path of the file.</param>
+            <param name="toSerialize">The object to serialize.</param>
+            <param name="formatting">The formatting style.</param>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarConverter.Serialize(System.Object)">
+            <summary>
+            Serializes the object to a .Adeptar string.
+            </summary>
+            <param name="toSerialize">The object to serialize.</param>
+            <returns>A .Adeptar representation of the object.</returns>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarConverter.Serialize(System.Object,Adeptar.Unity.Formatting)">
+            <summary>
+            Serializes the object to a .Adeptar string with specified formatting.
+            </summary>
+            <param name="toSerialize">The object to serialize.</param>
+            <param name="formatting">The formatting style.</param>
+            <returns>A .Adeptar representation of the object with the provided formatting style.</returns>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarConverter.SerializeSetShared(System.String,System.Object,Adeptar.Unity.Formatting)">
+            <summary>
+            Sets or rewrites the shared data of an Index feature object collection using specified formatting style.
+            Fields or properties with null or default values are not serialized.
+            </summary>
+            <param name="path">The path to the file to append the object to.</param>
+            <param name="toSerialize">The object to serialize as the shared data.</param>
+            <param name="formatting">The formatting style.</param>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarConverter.SerializeAppend(System.String,System.Object,System.String,Adeptar.Unity.Formatting)">
+            <summary>
+            Serializes the object to a .Adeptar string using specified formatting style, and appends it to a file.
+            If an object with the provided id already exists will throw an exception.
+            The id is limited to numbers and letters.
+            </summary>
+            <param name="path">The path to the file to append the object to.</param>
+            <param name="toSerialize">The object to serialize.</param>
+            <param name="id">The id of the object used to append it.</param>
+            <param name="formatting">The formatting style.</param>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarConverter.SerializeRewriteAppended(System.String,System.Object,System.String,Adeptar.Unity.Formatting)">
+            <summary>
+            Serializes the object to a .Adeptar string using specified formatting style, and appends it to a file.
+            The current object with the provided id is rewritten in the file.
+            The id is limited to numbers and letters.
+            </summary>
+            <param name="path">The path of the file.</param>
+            <param name="toSerialize">The object to serialize.</param>
+            <param name="id">The id of the object used to append it.</param>
+            <param name="formatting">The formatting style.</param>
+        </member>
+        <member name="T:Adeptar.Unity.AdeptarDynamic">
+            <summary>
+            A class for deserializing .Adeptar objects without knowing their types at first.
+            Such as when multiple different .Adeptar objects are serialized in the the same directory.
+            Allows to deserialize them all, then later determine which object belongs to which .NET type.
+            Class is restricted for objects of type class or struct.
+            </summary>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarDynamic.#ctor">
+            <summary>
+            Creates a new instance of <see cref="T:Adeptar.Unity.AdeptarDynamic"/> with no mappings.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.AdeptarDynamic._keyMaps">
+            <summary>
+            A private field of a <see cref="T:System.Collections.Generic.Dictionary`2"/>. Keys are the
+            property/field names, and the values are their .Adeptar strings.
+            </summary>
+        </member>
+        <member name="P:Adeptar.Unity.AdeptarDynamic.KeyMaps">
+            <summary>
+            Fetches the <see cref="T:System.Collections.Generic.Dictionary`2"/> where the keys are the
+            property/field names, and the values are their .Adeptar strings.
+            </summary>
+        </member>
+        <member name="P:Adeptar.Unity.AdeptarDynamic._textLength">
+            <summary>
+            A property that gets the total string length of all the key and values of the cleaned .Adeptar string.
+            </summary>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarDynamic.Clear">
+            <summary>
+            Clears the <see cref="T:Adeptar.Unity.AdeptarDynamic"/> object's key and value maps.
+            </summary>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarDynamic.ContainsKey(System.String)">
+            <summary>
+            Checks if the <see cref="T:Adeptar.Unity.AdeptarDynamic"/> object contains the field/property with the given name.
+            </summary>
+            <param name="key">The key name to check for.</param>
+            <returns>True if the <see cref="T:Adeptar.Unity.AdeptarDynamic"/> object contains a field/property with the provided name.</returns>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarDynamic.GetValue``1(System.String)">
+            <summary>
+            Takes a key name of a field/property. If the key is not found throws an exception.
+            If the key is found deserializes its .Adeptar string to the provided type.
+            </summary>
+            <typeparam name="T">The type to deserialize to.</typeparam>
+            <param name="key">The key to deserialize for.</param>
+            <returns>
+            The deserialized .NET object.
+            </returns>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarDynamic.Deserialize``1">
+            <summary>
+            Deserializes the <see cref="T:Adeptar.Unity.AdeptarDynamic"/> object to a .Net object.
+            The type constraint is a class.
+            </summary>
+            <typeparam name="T">The type of the class to deserialize to.</typeparam>
+            <returns>
+            The deserialized .Net object.
+            </returns>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarDynamic.Deserialize``1(System.Object)">
+            <summary>
+            Deserializes the <see cref="T:Adeptar.Unity.AdeptarDynamic"/> object to a .Net object.
+            The type constraint is a struct.
+            </summary>
+            <typeparam name="T">The type of the struct to deserialize to.</typeparam>
+            <returns>
+            The deserialized .Net object.
+            </returns>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarDynamic.DeserializeWithMap``1(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Deserializes the <see cref="T:Adeptar.Unity.AdeptarDynamic"/> object to a .Net object.
+            Accepts a <see cref="T:System.Collections.Generic.Dictionary`2"/> map for field/property mapping.
+            </summary>
+            <typeparam name="T">The type of the struct to deserialize to.</typeparam>
+            <returns>
+            The deserialized .Net object.
+            </returns>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarDynamic.FromFile(System.String)">
+            <summary>
+            Creates a <see cref="T:Adeptar.Unity.AdeptarDynamic"/> object from a file that contains
+            a .Adeptar object.
+            </summary>
+            <param name="path">The path of the file.</param>
+            <returns>
+            A <see cref="T:Adeptar.Unity.AdeptarDynamic"/> object that contains the data of the given .Adeptar string.
+            </returns>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarDynamic.FromString(System.String)">
+            <summary>
+            Creates a <see cref="T:Adeptar.Unity.AdeptarDynamic"/> object from the .Adeptar string.
+            </summary>
+            <param name="str">The .Adeptar string to convert to a <see cref="T:Adeptar.Unity.AdeptarDynamic"/> object.</param>
+            <returns>
+            A <see cref="T:Adeptar.Unity.AdeptarDynamic"/> object that contains the data of the given .Adeptar string.
+            </returns>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarDynamic.PopulateMaps(System.ReadOnlySpan{System.Char},Adeptar.Unity.AdeptarDynamic@)">
+            <summary>
+            Handles the process of populating the <see cref="P:Adeptar.Unity.AdeptarDynamic.KeyMaps"/>.
+            </summary>
+            <param name="str">The <see cref="T:System.ReadOnlySpan`1"/> text.</param>
+            <param name="result">The <see cref="T:Adeptar.Unity.AdeptarDynamic"/> to populate.</param>
+        </member>
+        <member name="T:Adeptar.Unity.AdeptarDynamicExtensions">
+            <summary>
+            Provides extension methods for <see cref="T:Adeptar.Unity.AdeptarDynamic"/> objects.
+            </summary>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarDynamicExtensions.FromFile(Adeptar.Unity.AdeptarDynamic,System.String)">
+            <summary>
+            Creates a <see cref="T:Adeptar.Unity.AdeptarDynamic"/> object from a file that contains
+            a .Adeptar object.
+            </summary>
+            <param name="dynm"></param>
+            <param name="path"></param>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarDynamicExtensions.FromString(Adeptar.Unity.AdeptarDynamic,System.String)">
+            <summary>
+            Creates a <see cref="T:Adeptar.Unity.AdeptarDynamic"/> object from the .Adeptar string.
+            </summary>
+            <param name="dynm"></param>
+            <param name="str"></param>
+        </member>
+        <member name="T:Adeptar.Unity.AdeptarException">
+            <summary>
+            An exception that is thrown when an error occurs during Adeptar serialization or deserialization.
+            </summary>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Adeptar.Unity.AdeptarException"/> class.
+            </summary>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Adeptar.Unity.AdeptarException"/> class
+            with a specified error message.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+        </member>
+        <member name="T:Adeptar.Unity.AdeptarHelpers">
+            <summary>
+            A class containing helper methods for different uses.
+            </summary>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarHelpers.ContainsId(System.String,System.String)">
+            <summary>
+            Checks if the provided file already has an object appended using the Id feature with the specified id.
+            The id is limited to numbers and letters.
+            </summary>
+            <param name="path">The path of the file.</param>
+            <param name="id">The id of the object to check for.</param>
+            <returns>True if the already exists in the file.</returns>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarHelpers.ContainsIdInternal(System.String,System.String)">
+            <summary>
+            Checks if the provided file already has an object appended using the Id feature with the specified id.
+            The id is limited to numbers and letters.
+            </summary>
+            <param name="path">The path of the file.</param>
+            <param name="id">The id of the object to check for.</param>
+            <returns>True if the already exists in the file.</returns>
+        </member>
+        <member name="T:Adeptar.Unity.AdeptarIgnore">
+            <summary>
+            Instructs the <see cref="T:Adeptar.Unity.AdeptarWriter"/> to not serialize the property or the field.
+            </summary>
+        </member>
+        <member name="T:Adeptar.Unity.AdeptarReader">
+            <summary>
+            A class that contains method(s) for deserializing .Adeptar objects.
+            </summary>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarReader.DeserializeObject(System.Type,System.ReadOnlySpan{System.Char})">
+            <summary>
+            Serves as a "main" node that coordinates deserialization of elements.
+            </summary>
+            <param name="type">The type of the object.</param>
+            <param name="text">The .Adeptar string representation of the object.</param>
+            <returns>The deserialized .NET object.</returns>
+        </member>
+        <member name="T:Adeptar.Unity.AdeptarSettings">
+            <summary>
+            A class that controls object serialization rules.
+            </summary>
+        </member>
+        <member name="P:Adeptar.Unity.AdeptarSettings.CheckClassAttributes">
+            <summary>
+            Tells the <see cref="T:Adeptar.Unity.AdeptarWriter"/> whether to check for .Adeptar attributes on fields or properties.
+            </summary>
+        </member>
+        <member name="P:Adeptar.Unity.AdeptarSettings.UseIndentation">
+            <summary>
+            Tells the <see cref="T:Adeptar.Unity.AdeptarWriter"/> whether to apply indentation when serializing objects.
+            </summary>
+        </member>
+        <member name="P:Adeptar.Unity.AdeptarSettings.IgnoreDefaultValues">
+            <summary>
+            Tells the <see cref="T:Adeptar.Unity.AdeptarWriter"/> to not serialize fields or properties whos value is the default of their type.
+            </summary>
+        </member>
+        <member name="P:Adeptar.Unity.AdeptarSettings.IgnoreNullValues">
+            <summary>
+            Tells the <see cref="T:Adeptar.Unity.AdeptarWriter"/> to not serialize fields or properties that are null.
+            </summary>
+        </member>
+        <member name="T:Adeptar.Unity.AdeptarWriter">
+            <summary>
+            Core class that coordinates serialization via recursion.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.AdeptarWriter._result">
+            <summary>
+            The main instance of a <see cref="T:System.Text.StringBuilder"/> the text is appended to.
+            </summary>
+        </member>
+        <member name="P:Adeptar.Unity.AdeptarWriter.CurrentSettings">
+            <summary>
+            A static instance of an <see cref="T:Adeptar.Unity.AdeptarSettings"/> class that dictates serialization rules.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.AdeptarWriter.DefaultSettings">
+            <summary>
+            Default <see cref="T:Adeptar.Unity.AdeptarSettings"/> configuration used when the user does not provide a custom <see cref="T:Adeptar.Unity.AdeptarSettings"/> object.
+            </summary>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarWriter.AssignSettings(Adeptar.Unity.AdeptarSettings)">
+            <summary>
+            Assigns the <see cref="T:Adeptar.Unity.AdeptarSettings"/> for the current serialization task.
+            </summary>
+            <param name="settings">The user provided serialization settings.</param>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarWriter.SerializeWrite(System.String,System.Object,Adeptar.Unity.SerializableType,Adeptar.Unity.SerializationMode,System.String)">
+            <summary>
+            Serializes the object to a .Adeptar string representation and writes it to a file. Used in the ID feature.
+            </summary>
+            <param name="path">The path of the file.</param>
+            <param name="target">The object to serialize.</param>
+            <param name="type">The <see cref="T:Adeptar.Unity.SerializableType"/> of the object.</param>
+            <param name="mode">The serialization mode.</param>
+            <param name="id">The optional id provided used in the id feature.</param>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarWriter.Serialize(System.Object,Adeptar.Unity.SerializableType)">
+            <summary>
+            Serializes the object to a .Adeptar string representation.
+            </summary>
+            <param name="target">The object to serialize.</param>
+            <param name="type">The <see cref="T:Adeptar.Unity.SerializableType"/> of the object.</param>
+            <returns>The serialized Adeptar string.</returns>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarWriter.Write(System.Object,Adeptar.Unity.SerializableType,System.Text.StringBuilder,System.Int32,System.Boolean,System.Boolean)">
+            <summary>
+            The core function that handles serialization of object via recursion.
+            </summary>
+            <param name="toSerialize">The object to serialize.</param>
+            <param name="type">The <see cref="T:Adeptar.Unity.SerializableType"/> of the object.</param>
+            <param name="mainBuilder">The <see cref="T:System.Text.StringBuilder"/> instance text is appended to.</param>
+            <param name="indent">The amount of indentation.</param>
+            <param name="last">If true tells the writer to not append a comma.</param>
+            <param name="addAtSign">True if the object is a complex key of a dictionary.</param>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarWriter.WriteNoIndentation(System.Object,Adeptar.Unity.SerializableType,System.Text.StringBuilder,System.Boolean,System.Boolean)">
+            <summary>
+            Alternative of <see cref="M:Adeptar.Unity.AdeptarWriter.Write(System.Object,Adeptar.Unity.SerializableType,System.Text.StringBuilder,System.Int32,System.Boolean,System.Boolean)"/>
+            that doesnt write indentation.
+            </summary>
+            <param name="toSerialize">The object to serialize.</param>
+            <param name="type">The <see cref="T:Adeptar.Unity.SerializableType"/> of the object.</param>
+            <param name="mainBuilder">The <see cref="T:System.Text.StringBuilder"/> instance text is appended to.</param>
+            <param name="last">If true tells the writer to not append a comma.</param>
+            <param name="addAtSign">True if the object is a complex key of a dictionary.</param>
+        </member>
+        <member name="M:Adeptar.Unity.AdeptarWriter.WriteRaw(System.Object,Adeptar.Unity.SerializableType,System.Text.StringBuilder,System.Int32,System.Boolean)">
+            <summary>
+            Called by <see cref="T:Adeptar.Unity.ClassWriter"/> to write null objects.
+            </summary>
+            <param name="toSerialize">The object to serialize.</param>
+            <param name="type">The <see cref="T:Adeptar.Unity.SerializableType"/> of the object.</param>
+            <param name="mainBuilder">The <see cref="T:System.Text.StringBuilder"/> instance text is appended to.</param>
+            <param name="indent">The amount of indentation.</param>
+            <param name="last">If true tells the writer to not append a comma.</param>
+        </member>
+        <member name="T:Adeptar.Unity.ArrayReader">
+            <summary>
+            Internal class containing method(s) for deserialization of <see cref="T:System.Collections.Generic.List`1"/>, <see cref="T:System.Array"/>
+            and two or more dimensional arrays.
+            </summary>
+        </member>
+        <member name="M:Adeptar.Unity.ArrayReader.DeserializeArray(System.ReadOnlySpan{System.Char},System.Type)">
+            <summary>
+            Deserializes the Adeptar string of type <see cref="T:System.Array"/> to a .NET object.
+            </summary>
+            <param name="text">The Adeptar string representation of the object.</param>
+            <param name="type">The type of the <see cref="T:System.Array"/>.</param>
+            <returns>The .NET version of the <see cref="T:System.Array"/>.</returns>
+        </member>
+        <member name="M:Adeptar.Unity.ArrayReader.DeserializeList(System.ReadOnlySpan{System.Char},System.Type)">
+            <summary>
+            Deserializes the Adeptar string of type <see cref="T:System.Collections.Generic.List`1"/> to a .NET object.
+            </summary>
+            <param name="text">The Adeptar string representation of the object.</param>
+            <param name="type">The type of the <see cref="T:System.Collections.Generic.List`1"/>.</param>
+            <returns>The .NET version of the <see cref="T:System.Collections.Generic.List`1"/>.</returns>
+        </member>
+        <member name="M:Adeptar.Unity.ArrayReader.DeserializeDimensionalArray(System.ReadOnlySpan{System.Char},System.Type)">
+            <summary>
+            Deserializes the Adeptar string of two or more dimensional arrays to a .NET object.
+            </summary>
+            <param name="text">The Adeptar string representation of the object.</param>
+            <param name="type">The type of the dimensional array.</param>
+            <returns>The .NET version of the dimensional array.</returns>
+        </member>
+        <member name="T:Adeptar.Unity.ArrayWriter">
+            <summary>
+            Contains methods for serializing arrays, lists and 2 or more dimensional arrays into .Adeptar strings.
+            </summary>
+        </member>
+        <member name="M:Adeptar.Unity.ArrayWriter.WriteArray(System.Object,System.Int32,System.Text.StringBuilder)">
+            <summary>
+            Writes arrays and lists into a .Adeptar string, appends to the builder instance.
+            </summary>
+            <param name="target">The array of list to serialize.</param>
+            <param name="indent">The amount of indentation.</param>
+            <param name="builder">The <see cref="T:System.Text.StringBuilder"/> instance to append to.</param>
+        </member>
+        <member name="M:Adeptar.Unity.ArrayWriter.WriteDimensionalArray(System.Object,System.Int32,System.Text.StringBuilder)">
+            <summary>
+            Serializes 2 or more dimensional arrays by flattening them into a one dimensional array.
+            </summary>
+            <param name="target">The object to serialize.</param>
+            <param name="indent">The amount of indentation.</param>
+            <param name="builder">The <see cref="T:System.Text.StringBuilder"/> to append to.</param>
+        </member>
+        <member name="T:Adeptar.Unity.ClassReader">
+            <summary>
+            Internal class containing method(s) for deserialization of class or struct objects.
+            and two or more dimensional arrays.
+            </summary>
+        </member>
+        <member name="M:Adeptar.Unity.ClassReader.DeserializeClassStruct(System.ReadOnlySpan{System.Char},System.Type)">
+            <summary>
+            Deserializes the Adeptar string of a class or a struct to a .NET object.
+            </summary>
+            <param name="text">The Adeptar string representation of the object.</param>
+            <param name="type">The type of the class or struct.</param>
+            <returns>The .NET version of the class or struct.</returns>
+        </member>
+        <member name="M:Adeptar.Unity.ClassReader.DeserializeClassStructWithMap(System.ReadOnlySpan{System.Char},System.Type,System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Deserializes the Adeptar string of a class or a struct to a .NET object. Accepts a <see cref="T:System.Collections.Generic.Dictionary`2"/> map
+            that is used for name mapping.
+            </summary>
+            <param name="text">The Adeptar string representation of the object.</param>
+            <param name="type">The type of the class or struct.</param>
+            <param name="map">The map to use for names.</param>
+            <returns>The .NET version of the class or struct.</returns>
+        </member>
+        <member name="T:Adeptar.Unity.ClassWriter">
+            <summary>
+            Class that handles serialization of class and struct objects.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.ClassWriter._adeptarConfiguration">
+            <summary>
+            Cached <see cref="T:System.Type"/> for <see cref="T:Adeptar.Unity.AdeptarConfiguration"/> class.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.ClassWriter._defaultConfig">
+            <summary>
+            Default empty instance of an <see cref="T:Adeptar.Unity.AdeptarConfiguration"/> class.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.ClassWriter._ignoreAttribute">
+            <summary>
+            Cached type for <see cref="T:Adeptar.Unity.AdeptarIgnore"/>.
+            </summary>
+        </member>
+        <member name="M:Adeptar.Unity.ClassWriter.WriteClassStruct(System.Object,System.Int32,System.Text.StringBuilder)">
+            <summary>
+            Serializes the class or struct object to a .Adeptar string.
+            </summary>
+            <param name="target">The object to serialize.</param>
+            <param name="indent">Indentation amount.</param>
+            <param name="builder"><see cref="T:System.Text.StringBuilder"/> instance to append text to.</param>
+        </member>
+        <member name="M:Adeptar.Unity.ClassWriter.WriteTuple(System.Object,System.Int32,System.Text.StringBuilder)">
+            <summary>
+            Serializes the value tuple to a .Adeptar string.
+            </summary>
+            <param name="target">The object to serialize.</param>
+            <param name="indent">Indentation amount.</param>
+            <param name="builder"><see cref="T:System.Text.StringBuilder"/> instance to append text to.</param>
+        </member>
+        <member name="T:Adeptar.Unity.DeserializationHelpers">
+            <summary>
+            A class that contains methods for deserialization of .Adeptar objects.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.DeserializationHelpers._sbyteType">
+            <summary>
+            Cached type for <see cref="T:System.SByte"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.DeserializationHelpers._byteType">
+            <summary>
+            Cached type for <see cref="T:System.Byte"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.DeserializationHelpers._shortType">
+            <summary>
+            Cached type for <see cref="T:System.Int16"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.DeserializationHelpers._ushortType">
+            <summary>
+            Cached type for <see cref="T:System.UInt16"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.DeserializationHelpers.IntType">
+            <summary>
+            Cached type for <see cref="T:System.Int32"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.DeserializationHelpers._uintType">
+            <summary>
+            Cached type for <see cref="T:System.UInt32"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.DeserializationHelpers._longType">
+            <summary>
+            Cached type for <see cref="T:System.Int64"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.DeserializationHelpers._ulongType">
+            <summary>
+            Cached type for <see cref="T:System.UInt64"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.DeserializationHelpers._floatType">
+            <summary>
+            Cached type for <see cref="T:System.Single"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.DeserializationHelpers._decimalType">
+            <summary>
+            Cached type for <see cref="T:System.Decimal"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.DeserializationHelpers._doubleType">
+            <summary>
+            Cached type for <see cref="T:System.Double"/>.
+            </summary>
+        </member>
+        <member name="T:Adeptar.Unity.DeserializationHelpers.NumericType">
+            <summary>
+            Private enumeration for determining the type of a number.
+            </summary>
+        </member>
+        <member name="M:Adeptar.Unity.DeserializationHelpers.CleanText(System.ReadOnlySpan{System.Char})">
+            <summary>
+            Removes all indentation from a .Adeptar string.
+            </summary>
+            <param name="str">The .Adeptar string to clean.</param>
+            <returns>The .Adeptar string with all the indentation removed.</returns>
+        </member>
+        <member name="M:Adeptar.Unity.DeserializationHelpers.NumericResolver(System.Type,System.String)">
+            <summary>
+            Resolves objects considered numeric, such as: <see cref="T:System.Int32"/>, <see cref="T:System.Int64"/>,
+            <see cref="T:System.Int16"/>, <see cref="T:System.Byte"/> and others..
+            </summary>
+            <param name="typeOf">The type to convert to.</param>
+            <param name="value">The string representation of the number.</param>
+            <returns>The adeptar string converted to a .NET object.</returns>
+        </member>
+        <member name="M:Adeptar.Unity.DeserializationHelpers.GetNumericType(System.Type)">
+            <summary>
+            Gets the <see cref="T:Adeptar.Unity.DeserializationHelpers.NumericType"/> of the specified <see cref="T:System.Type"/>
+            which is presumably a numeric one.
+            </summary>
+            <param name="type">The type to check.</param>
+            <returns>The <see cref="T:Adeptar.Unity.DeserializationHelpers.NumericType"/> of the provided <see cref="T:System.Type"/>.</returns>
+        </member>
+        <member name="M:Adeptar.Unity.DeserializationHelpers.FetchAppendedSegment(System.ReadOnlySpan{System.Char},System.String,System.Int32)">
+            <summary>
+            Extracts the string data of an object with the provided id from the ID feature object collection.
+            </summary>
+            <param name="text">The object collection string to extract from.</param>
+            <param name="id">The id of the object to extract.</param>
+            <param name="additionalTakeAway">Amount of additional characters taken away from the end of the extracted string.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Adeptar.Unity.DeserializationHelpers.StringResolver(System.ReadOnlySpan{System.Char})">
+            <summary>
+            Removes first and last quatation marks of the string as well as
+            removes extra backslashes.
+            </summary>
+            <param name="text">The string to resolve.</param>
+            <returns>The string with first and last quotation marks as well as extra backslashes removed.</returns>
+        </member>
+        <member name="M:Adeptar.Unity.DeserializationHelpers.BinaryStyleIndexArrayByRefIncrement(System.Collections.Generic.List{System.Int32}@,System.Int32[]@)">
+            <summary>
+            Increments an array with a binary style.
+            Starting from the end and traversing towards the start.
+            The array serves as an index for a dimensional array.
+            Accepts a <see cref="T:System.Collections.Generic.List`1"/> of ints that serves as an upper bound.
+            </summary>
+            <param name="sizes">The sizes of the dimensional array.</param>
+            <param name="index">The current index of the dimensional array to use.</param>
+            <returns>The index array incremented with binary style.</returns>
+        </member>
+        <member name="T:Adeptar.Unity.DictionaryReader">
+            <summary>
+            Internal class containing method(s) for deserialization of <see cref="T:System.Collections.Generic.Dictionary`2"/>
+            </summary>
+        </member>
+        <member name="M:Adeptar.Unity.DictionaryReader.DeserializeDictionary(System.ReadOnlySpan{System.Char},System.Type)">
+            <summary>
+            Deserializes the Adeptar string of type <see cref="T:System.Collections.Generic.Dictionary`2"/> to a .NET object.
+            </summary>
+            <param name="text">The Adeptar string representation of the object.</param>
+            <param name="type">The type of the <see cref="T:System.Collections.Generic.Dictionary`2"/>.</param>
+            <returns>The .NET version of the <see cref="T:System.Collections.Generic.Dictionary`2"/>.</returns>
+        </member>
+        <member name="M:Adeptar.Unity.DictionaryWriter.WriteDictionary(System.Object,System.Int32,System.Text.StringBuilder)">
+            <summary>
+            Serializes <see cref="T:System.Collections.Generic.Dictionary`2"/>s to.Adeptar strings.
+            </summary>
+            <param name="data">The <see cref="T:System.Collections.Generic.Dictionary`2"/> to serialize.</param>
+            <param name="Indent">The indentation amount.</param>
+            <param name="Builder">Main instance of <see cref="T:System.Text.StringBuilder"/> to append to.</param>
+        </member>
+        <member name="T:Adeptar.Unity.DeserializableType">
+            <summary>
+            Keeps track of object types, used in deserialization code.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.DeserializableType.Numeric">
+            <summary>
+            True for numerical objects.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.DeserializableType.String">
+            <summary>
+            True for objects of type <see cref="T:System.String"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.DeserializableType.Boolean">
+            <summary>
+            True for objects of type <see cref="T:System.Boolean"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.DeserializableType.Char">
+            <summary>
+            True for objects of type <see cref="T:System.Char"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.DeserializableType.Class">
+            <summary>
+            True for objects of type class and struct.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.DeserializableType.Array">
+            <summary>
+            True for objects of type<see cref="T:System.Array"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.DeserializableType.List">
+            <summary>
+            True for objects of type <see cref="T:System.Collections.Generic.List`1"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.DeserializableType.Dictionary">
+            <summary>
+            True for objects of type <see cref="T:System.Collections.Generic.Dictionary`2"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.DeserializableType.Tuple">
+            <summary>
+            True for objects of type <see cref="T:System.ValueTuple"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.DeserializableType.Enum">
+            <summary>
+            True for <see cref="T:System.Enum"/>s.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.DeserializableType.NULL">
+            <summary>
+            Represents an unknown type.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.DeserializableType.DimensionalArray">
+            <summary>
+            True for two or more dimensional arrays.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.DeserializableType.DateTime">
+            <summary>
+            True for objects of type <see cref="T:System.DateTime"/>.
+            </summary>
+        </member>
+        <member name="T:Adeptar.Unity.Formatting">
+            <summary>
+            Enum to define whether an object should be serialized with indentation.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.Formatting.Indented">
+            <summary>
+            The Adeptar writer will use indentation.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.Formatting.NoIndentation">
+            <summary>
+            The Adeptar writer will not use indentation.
+            </summary>
+        </member>
+        <member name="T:Adeptar.Unity.SerializableType">
+            <summary>
+            Keeps track of object types, used in serialization code.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.SerializableType.Simple">
+            <summary>
+            True for objects considered primitive, such as numbers, enums, booleans and characters.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.SerializableType.String">
+            <summary>
+            True for objects of type <see cref="T:System.String"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.SerializableType.Boolean">
+            <summary>
+            True for objects of type <see cref="T:System.Boolean"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.SerializableType.Char">
+            <summary>
+            True for objects of type <see cref="T:System.Char"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.SerializableType.Class">
+            <summary>
+            True for objects of types class and struct.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.SerializableType.Array">
+            <summary>
+            True for objects of type <see cref="T:System.Array"/>. and <see cref="T:System.Collections.Generic.List`1"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.SerializableType.Dictionary">
+            <summary>
+            True for objects of type <see cref="T:System.Collections.Generic.Dictionary`2"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.SerializableType.Tuple">
+            <summary>
+            True for objects of type <see cref="T:System.ValueTuple"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.SerializableType.DateTime">
+            <summary>
+            True for objects of type <see cref="T:System.DateTime"/>.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.SerializableType.DimensionalArray">
+            <summary>
+            True for two or more dimensional arrays.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.SerializableType.Ignore">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="T:Adeptar.Unity.SerializationMode">
+            <summary>
+            Defines how the object should be serialized.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.SerializationMode.Default">
+            <summary>
+            Default serialization mode serializes the provided object to a .Adeptar string, overwrites the file at the given path.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.SerializationMode.Append">
+            <summary>
+            Append mode serializes the provided object to a .Adeptar string and appends it to the file in the given path. Also known as the ID feature.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.SerializationMode.ChangeAppended">
+            <summary>
+            ChangeAppended serializes the provided object to a .Adeptar string,
+            reads the file at the given path, overwrites the old version of the object with the new one and rewrites the file,
+            leaving other objects untouched.
+            </summary>
+        </member>
+        <member name="F:Adeptar.Unity.SerializationMode.SetShared">
+            <summary>
+            Sets or changes the shared data section of an Index feature object collection.
+            </summary>
+        </member>
+        <member name="T:Adeptar.Unity.TupleReader">
+            <summary>
+            Internal class containing method(s) for deserialization of tuples
+            </summary>
+        </member>
+        <member name="M:Adeptar.Unity.TupleReader.DeserializeTuple(System.ReadOnlySpan{System.Char},System.Type)">
+            <summary>
+            Deserializes the Adeptar string of a tuple to a .NET object.
+            </summary>
+            <param name="text">The Adeptar string representation of the object.</param>
+            <param name="type">The type of the tuple.</param>
+            <returns>The .NET version of the tuple.</returns>
+        </member>
+        <member name="T:Adeptar.Unity.TypeGetters">
+            <summary>
+            A class providing methods for determining object types.
+            </summary>
+        </member>
+        <member name="M:Adeptar.Unity.TypeGetters.IsList(System.Object)">
+            <summary>
+            Checks if the provided object is a <see cref="T:System.Collections.Generic.List`1"/>.
+            </summary>
+            <param name="obj">The object to check.</param>
+            <returns>
+            True if the object is a <see cref="T:System.Collections.Generic.List`1"/>.
+            </returns>
+        </member>
+        <member name="M:Adeptar.Unity.TypeGetters.IsTuple(System.Type)">
+            <summary>
+            Checks if an object is of type <see cref="T:System.ValueTuple"/>, such as (<see cref="T:System.Int32"/>, <see cref="T:System.Int32"/>).
+            </summary>
+            <param name="tuple">The type to check for.</param>
+            <returns>True if the object is a <see cref="T:System.ValueTuple"/>.</returns>
+        </member>
+        <member name="F:Adeptar.Unity.TypeGetters._cachedTypes">
+            <summary>
+            Cached types for <see cref="T:Adeptar.Unity.TypeGetters"/> methods.
+            </summary>
+        </member>
+        <member name="M:Adeptar.Unity.TypeGetters.GetSerializableType(System.Type)">
+            <summary>
+            Gets the <see cref="T:Adeptar.Unity.SerializableType"/> of the provided <see cref="T:System.Type"/>.
+            </summary>
+            <param name="fInfo">The <see cref="T:System.Type"/> to check.</param>
+            <returns>The <see cref="T:Adeptar.Unity.SerializableType"/> of the provided <see cref="T:System.Type"/>.</returns>
+        </member>
+        <member name="M:Adeptar.Unity.TypeGetters.GetDeserializableType(System.Type)">
+            <summary>
+            Gets the Type's <see cref="T:Adeptar.Unity.DeserializableType"/>.
+            </summary>
+            <param name="fInfo">The Type's field type.</param>
+            <returns>
+            The object's <see cref="T:Adeptar.Unity.DeserializableType"/>. Returns <see cref="F:Adeptar.Unity.DeserializableType.Class"/> if the type
+            cant be determined.
+            </returns>
+        </member>
+        <member name="M:Adeptar.Unity.TypeGetters.IsDictionary(System.Object)">
+            <summary>
+            Checks if the provided object is a <see cref="T:System.Collections.Generic.Dictionary`2"/>.
+            </summary>
+            <param name="obj">The object to check.</param>
+            <returns>
+            True/False if the object is of type <see cref="T:System.Collections.Generic.Dictionary`2"/>.
+            </returns>
+        </member>
+        <member name="M:Adeptar.Unity.TypeGetters.IsDictionary(System.Type)">
+            <summary>
+            Checks if the provided object is a <see cref="T:System.Collections.Generic.Dictionary`2"/>, uses a <see cref="T:System.Type"/>.
+            </summary>
+            <param name="type">The type to check for.</param>
+            <returns>
+            True if the type is a <see cref="T:System.Collections.Generic.Dictionary`2"/>.
+            </returns>
+        </member>
+        <member name="M:Adeptar.Unity.TypeGetters.IsTupleGenericKnown(System.Type)">
+            <summary>
+            Checks if an object is of type <see cref="T:System.ValueTuple"/>, such as (<see cref="T:System.Int32"/>, <see cref="T:System.Int32"/>). Omits the .IsGeneric check.
+            </summary>
+            <param name="tuple">The type to check for.</param>
+            <returns>True if the object is a <see cref="T:System.ValueTuple"/>.</returns>
+        </member>
+        <member name="M:Adeptar.Unity.TypeGetters.HasDefaultConstructor(System.Type)">
+            <summary>
+            Checks if the provided object has an empty constructor defined.
+            </summary>
+            <param name="type">The type to check</param>
+        </member>
+        <member name="M:Adeptar.Unity.TypeGetters.IsMultiDimensionalArray(System.Object)">
+            <summary>
+            Checks if the object is an array with two or more dimensions.
+            </summary>
+            <param name="received">The object to check.</param>
+            <returns>True if the object has two or three dimensions.</returns>
+        </member>
+        <member name="M:Adeptar.Unity.TypeGetters.FetchType(System.Object)">
+            <summary>
+            Gets the object's <see cref="T:Adeptar.Unity.SerializableType"/>.
+            </summary>
+            <param name="received">The received object.</param>
+            <returns>
+            The provided object's <see cref="T:Adeptar.Unity.SerializableType"/>. Returns <see cref="F:Adeptar.Unity.SerializableType.Class"/> if the
+            provided object is null or if its type can't be determined.
+            </returns>
+        </member>
+        <member name="M:Adeptar.Unity.TypeGetters.IsNumber(System.Object)">
+            <summary>
+            Checks if the provided object is a numeric value of types: <see cref="T:System.SByte"/>, <see cref="T:System.Int16"/>,
+            <see cref="T:System.UInt16"/>, <see cref="T:System.Int32"/>, <see cref="T:System.UInt32"/>, <see cref="T:System.Int64"/>,
+            <see cref="T:System.UInt64"/>, <see cref="T:System.Single"/>, <see cref="T:System.Double"/> or <see cref="T:System.Decimal"/>.
+            </summary>
+            <param name="value">The object to check.</param>
+            <returns>True if an object is a number.</returns>
+        </member>
+        <member name="M:Adeptar.Unity.TypeGetters.IsNumericType(System.Type)">
+            <summary>
+            Checks if the provided object is a numeric value of types: <see cref="T:System.SByte"/>, <see cref="T:System.Int16"/>,
+            <see cref="T:System.UInt16"/>, <see cref="T:System.Int32"/>, <see cref="T:System.UInt32"/>, <see cref="T:System.Int64"/>,
+            <see cref="T:System.UInt64"/>, <see cref="T:System.Single"/>, <see cref="T:System.Double"/> or <see cref="T:System.Decimal"/> using <see cref="T:System.Type"/>
+            </summary>
+            <param name="type">The Type to check.</param>
+            <returns>True if an object is a number.</returns>
+        </member>
+        <member name="M:Adeptar.Unity.TypeGetters.ParseToEnum``1(System.Object)">
+            <summary>
+            Parses an object into an enum using a generic T type.
+            </summary>
+            <typeparam name="T">The type to parse to.</typeparam>
+            <param name="obj">The object to parse.</param>
+            <returns>The converted enum.</returns>
+        </member>
+        <member name="M:Adeptar.Unity.TypeGetters.ParseToEnumNonGeneric(System.ReadOnlySpan{System.Char},System.Type)">
+            <summary>
+            Parses an object into an enum without a generic T type.
+            </summary>
+            <param name="obj">The object that is the enum.</param>
+            <param name="enumType">The type of the enum to parse to.</param>
+            <returns>Returns an object casted to the provided enum type.</returns>
+        </member>
         <member name="T:Adeptar.AdeptarConfiguration">
             <summary>
             A class that provides functionality for field/property serialization manipulations.
