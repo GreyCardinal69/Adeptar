@@ -159,6 +159,22 @@ When reading from a file order of properties or fields doesn't matter.
 When deserializing Adeptar ignores what would be a field or a property if it doesn't belong to the class or struct.
 
 ----------------------------------------------------------------
+<h1>Adeptar Unity</h1>
+A port of Adeptar for Unity, be default such libraries like this are not compatible with Unity.
+
+When using with Unity, the library is not to be used with any class that inherits a Unity class ( like Monobehaviour ).
+Instead you serialize and deserialize a class like this.
+```cs
+    [System.Serializable]
+    public class UnitBuild
+    {
+        public DroneData[] Drones;
+        public BarrelEntry[] Weapons;
+        public Quality Quality;
+    }
+```
+To port drag the "Adeptar Unity" folder into the Unity project's folder.
+----------------------------------------------------------------
 <h1>AdeptarConverter</h1>
  
 This class provides methods for the conversion of objects into .Adeptar and vise versa. Such as:
