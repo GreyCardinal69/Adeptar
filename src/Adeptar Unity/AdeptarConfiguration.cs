@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Adeptar.Unity
+﻿namespace Adeptar.Unity
 {
     /// <summary>
     /// A class that provides functionality for field/property serialization manipulations.

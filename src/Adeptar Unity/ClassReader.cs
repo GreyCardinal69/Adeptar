@@ -1,11 +1,8 @@
-﻿using System;
+﻿using FastMember;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-
-using FastMember;
-
 using static Adeptar.Unity.AdeptarReader;
 
 namespace Adeptar.Unity

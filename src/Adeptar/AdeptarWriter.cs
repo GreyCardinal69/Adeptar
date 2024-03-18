@@ -3,9 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-
-using static Adeptar.ClassWriter;
 using static Adeptar.ArrayWriter;
+using static Adeptar.ClassWriter;
 using static Adeptar.DictionaryWriter;
 using static Adeptar.TypeGetters;
 

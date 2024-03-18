@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections;
-using System.Text;
 using System.Collections.Generic;
-
-using static Adeptar.TypeGetters;
+using System.Text;
 using static Adeptar.AdeptarWriter;
+using static Adeptar.TypeGetters;
 
 namespace Adeptar
 {

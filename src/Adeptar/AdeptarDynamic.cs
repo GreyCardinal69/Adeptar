@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-
 using static Adeptar.AdeptarReader;
-using static Adeptar.DeserializationHelpers;
 using static Adeptar.ClassReader;
+using static Adeptar.DeserializationHelpers;
 
 namespace Adeptar
 {

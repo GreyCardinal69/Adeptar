@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Text;
 using System.Reflection;
-
-using FastMember;
-
-using static Adeptar.Unity.TypeGetters;
+using System.Text;
 using static Adeptar.Unity.AdeptarWriter;
+using static Adeptar.Unity.TypeGetters;
 
 namespace Adeptar.Unity
 {

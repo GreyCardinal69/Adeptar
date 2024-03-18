@@ -1,11 +1,8 @@
 ﻿using System;
 using System.IO;
-using System.Text;
-
-using static Adeptar.Unity.AdeptarWriter;
-using static Adeptar.Unity.TypeGetters;
 using static Adeptar.Unity.AdeptarReader;
 using static Adeptar.Unity.DeserializationHelpers;
+using static Adeptar.Unity.TypeGetters;
 
 namespace Adeptar.Unity
 {

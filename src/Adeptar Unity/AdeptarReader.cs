@@ -1,11 +1,10 @@
 ﻿using System;
-
-using static Adeptar.Unity.TypeGetters;
+using static Adeptar.Unity.ArrayReader;
+using static Adeptar.Unity.ClassReader;
 using static Adeptar.Unity.DeserializationHelpers;
 using static Adeptar.Unity.DictionaryReader;
 using static Adeptar.Unity.TupleReader;
-using static Adeptar.Unity.ClassReader;
-using static Adeptar.Unity.ArrayReader;
+using static Adeptar.Unity.TypeGetters;
 
 namespace Adeptar.Unity
 {

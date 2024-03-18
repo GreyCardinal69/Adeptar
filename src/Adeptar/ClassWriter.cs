@@ -1,11 +1,9 @@
-﻿using System;
-using System.Text;
+﻿using FastMember;
+using System;
 using System.Reflection;
-
-using FastMember;
-
-using static Adeptar.TypeGetters;
+using System.Text;
 using static Adeptar.AdeptarWriter;
+using static Adeptar.TypeGetters;
 
 namespace Adeptar
 {

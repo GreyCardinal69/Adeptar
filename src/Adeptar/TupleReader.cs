@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using System.Text;
 
 using static Adeptar.AdeptarReader;
 

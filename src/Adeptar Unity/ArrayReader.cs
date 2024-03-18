@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
-
-using static Adeptar.Unity.TypeGetters;
-using static Adeptar.Unity.DeserializationHelpers;
 using static Adeptar.Unity.AdeptarReader;
+using static Adeptar.Unity.DeserializationHelpers;
 
 namespace Adeptar.Unity
 {
