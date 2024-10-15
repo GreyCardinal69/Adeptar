@@ -1958,15 +1958,6 @@
             A class providing methods for determining object types.
             </summary>
         </member>
-        <member name="M:Adeptar.TypeGetters.IsList(System.Object)">
-            <summary>
-            Checks if the provided object is a <see cref="T:System.Collections.Generic.List`1"/>.
-            </summary>
-            <param name="obj">The object to check.</param>
-            <returns>
-            True if the object is a <see cref="T:System.Collections.Generic.List`1"/>.
-            </returns>
-        </member>
         <member name="M:Adeptar.TypeGetters.IsTuple(System.Type)">
             <summary>
             Checks if an object is of type <see cref="T:System.ValueTuple"/>, such as (<see cref="T:System.Int32"/>, <see cref="T:System.Int32"/>).
@@ -2005,27 +1996,12 @@
             True/False if the object is of type <see cref="T:System.Collections.Generic.Dictionary`2"/>.
             </returns>
         </member>
-        <member name="M:Adeptar.TypeGetters.IsDictionary(System.Type)">
-            <summary>
-            Checks if the provided object is a <see cref="T:System.Collections.Generic.Dictionary`2"/>, uses a <see cref="T:System.Type"/>.
-            </summary>
-            <param name="type">The type to check for.</param>
-            <returns>
-            True if the type is a <see cref="T:System.Collections.Generic.Dictionary`2"/>.
-            </returns>
-        </member>
         <member name="M:Adeptar.TypeGetters.IsTupleGenericKnown(System.Type)">
             <summary>
             Checks if an object is of type <see cref="T:System.ValueTuple"/>, such as (<see cref="T:System.Int32"/>, <see cref="T:System.Int32"/>). Omits the .IsGeneric check.
             </summary>
             <param name="tuple">The type to check for.</param>
             <returns>True if the object is a <see cref="T:System.ValueTuple"/>.</returns>
-        </member>
-        <member name="M:Adeptar.TypeGetters.HasDefaultConstructor(System.Type)">
-            <summary>
-            Checks if the provided object has an empty constructor defined.
-            </summary>
-            <param name="type">The type to check</param>
         </member>
         <member name="M:Adeptar.TypeGetters.IsMultiDimensionalArray(System.Object)">
             <summary>

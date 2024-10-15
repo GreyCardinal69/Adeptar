@@ -4,6 +4,7 @@ using System.Collections;
 using BenchmarkDotNet.Attributes;
 using Adeptar;
 using Newtonsoft.Json;
+using System.Reflection;
 
 namespace AdeptarBenchmarks
 {
@@ -49,7 +50,20 @@ namespace AdeptarBenchmarks
             public Dictionary<int, string> Maps;
             public DateTime date;
         }
-        
+
+        [Benchmark]
+        public void TupleDef()
+        {
+            Adeptar.TypeGetters.IsTuple( typeof(MyClass) );
+        }
+
+        [Benchmark]
+        public void Tuple2()
+        {
+            Adeptar.TypeGetters.IsTuple2( typeof( MyClass ) );
+        }
+        /*
+        [Benchmark]
         public void ClassAdeptarEmpty()
         {
             AdeptarConverter.Serialize( new MyClass() );
@@ -116,7 +130,7 @@ namespace AdeptarBenchmarks
                 type = SerializableType.Dictionary
             }, Newtonsoft.Json.Formatting.None );
         }
-        
+        /*
         [Benchmark]
         public void TupleAdeptar ()
         {
@@ -415,6 +429,6 @@ namespace AdeptarBenchmarks
         public void ListJsonDeserialize ()
         {
             JsonConvert.DeserializeObject<List<string>>( @"[""Some"",""Random"",""Words"",""Words""]" );
-        }
+        }*/
     }
 }

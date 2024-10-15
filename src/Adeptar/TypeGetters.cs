@@ -11,20 +11,6 @@ namespace Adeptar
     public static class TypeGetters
     {
         /// <summary>
-        /// Checks if the provided object is a <see cref="List{T}"/>.
-        /// </summary>
-        /// <param name="obj">The object to check.</param>
-        /// <returns>
-        /// True if the object is a <see cref="List{T}"/>.
-        /// </returns>
-        public static bool IsList( object obj )
-        {
-            return obj is IList &&
-                   obj.GetType().IsGenericType &&
-                   obj.GetType().GetGenericTypeDefinition().IsAssignableFrom( typeof( List<> ) );
-        }
-
-        /// <summary>
         /// Checks if an object is of type <see cref="ValueTuple"/>, such as (<see cref="int"/>, <see cref="int"/>).
         /// </summary>
         /// <param name="tuple">The type to check for.</param>
@@ -45,6 +31,38 @@ namespace Adeptar
                 || openType == typeof( ValueTuple<,,,,,,> )
                 || openType == typeof( ValueTuple<,,,,,,,> ) && IsTuple( tuple.GetGenericArguments()[7] );
         }
+
+        public static bool IsTuple2( Type tuple )
+        {
+            if ( !tuple.IsGenericType )
+                return false;
+
+            // Get the open generic type definition
+            Type openType = tuple.GetGenericTypeDefinition();
+
+            // Check if it's a known ValueTuple type from the cached types
+            if ( openType == _cachedTypes[3]  // ValueTuple<>
+                || openType == _cachedTypes[4]  // ValueTuple<,>
+                || openType == _cachedTypes[5]  // ValueTuple<,,>
+                || openType == _cachedTypes[6]  // ValueTuple<,,,>
+                || openType == _cachedTypes[7]  // ValueTuple<,,,,>
+                || openType == _cachedTypes[8]  // ValueTuple<,,,,,>
+                || openType == _cachedTypes[9]  // ValueTuple<,,,,,,>
+                || openType == _cachedTypes[10] ) // ValueTuple<,,,,,,,>
+            {
+                // Check for nested ValueTuples in the 8th generic argument
+                if ( openType == _cachedTypes[10] )  // ValueTuple<,,,,,,,>
+                {
+                    Type[] genericArgs = tuple.GetGenericArguments();
+                    return IsTuple2( genericArgs[7] );
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
 
         /// <summary>
         /// Cached types for <see cref="TypeGetters"/> methods.
@@ -76,16 +94,13 @@ namespace Adeptar
         /// <returns>The <see cref="SerializableType"/> of the provided <see cref="Type"/>.</returns>
         public static SerializableType GetSerializableType( Type fInfo )
         {
-            if ( fInfo == _cachedTypes[12] )
-                return SerializableType.String;
-            if ( fInfo == _cachedTypes[11] )
-                return SerializableType.Char;
-            if ( fInfo == _cachedTypes[13] )
-                return SerializableType.DateTime;
-            if ( fInfo == _cachedTypes[2] )
-                return SerializableType.Array;
-            if ( fInfo.IsPrimitive )
-                return SerializableType.Simple;
+            if ( fInfo == _cachedTypes[12] ) return SerializableType.String;
+            if ( fInfo == _cachedTypes[11] ) return SerializableType.Char;
+            if ( fInfo == _cachedTypes[13] ) return SerializableType.DateTime;
+            if ( fInfo == _cachedTypes[2] ) return SerializableType.Array;
+
+            if ( fInfo.IsPrimitive ) return SerializableType.Simple;
+
             if ( fInfo.IsGenericType )
             {
                 Type genericTypeDef = fInfo.GetGenericTypeDefinition();
@@ -94,8 +109,8 @@ namespace Adeptar
                 if ( genericTypeDef == _cachedTypes[0] )
                     return SerializableType.Dictionary;
             }
-            if ( fInfo.IsArray )
-                return SerializableType.DimensionalArray;
+
+            if ( fInfo.IsArray ) return SerializableType.DimensionalArray;
 
             return SerializableType.Class;
         }
@@ -148,15 +163,6 @@ namespace Adeptar
         public static bool IsDictionary( object obj ) => obj is IDictionary;
 
         /// <summary>
-        /// Checks if the provided object is a <see cref="Dictionary{TKey, TValue}"/>, uses a <see cref="Type"/>.
-        /// </summary>
-        /// <param name="type">The type to check for.</param>
-        /// <returns>
-        /// True if the type is a <see cref="Dictionary{TKey, TValue}"/>.
-        /// </returns>
-        public static bool IsDictionary( Type type ) => type.IsGenericType && type.GetGenericTypeDefinition() == typeof( Dictionary<,> );
-
-        /// <summary>
         /// Checks if an object is of type <see cref="ValueTuple"/>, such as (<see cref="int"/>, <see cref="int"/>). Omits the .IsGeneric check.
         /// </summary>
         /// <param name="tuple">The type to check for.</param>
@@ -172,12 +178,6 @@ namespace Adeptar
                 || tuple == _cachedTypes[9]
                 || tuple == _cachedTypes[10];
         }
-
-        /// <summary>
-        /// Checks if the provided object has an empty constructor defined.
-        /// </summary>
-        /// <param name="type">The type to check</param>
-        public static bool HasDefaultConstructor( Type type ) => type.IsValueType || type.GetConstructor( Type.EmptyTypes ) != null;
 
         /// <summary>
         /// Checks if the object is an array with two or more dimensions.
@@ -196,30 +196,31 @@ namespace Adeptar
         /// </returns>
         public static SerializableType FetchType( object received )
         {
-            switch ( received )
-            {
-                case string _:
-                    return SerializableType.String;
-                case DateTime _:
-                case DateTimeOffset _:
-                    return SerializableType.DateTime;
-                case char _:
-                    return SerializableType.Char;
-                case Enum _:
-                case bool _:
-                case IConvertible _:
-                    return SerializableType.Simple;
-                case Array array:
-                    return IsMultiDimensionalArray( array ) ? SerializableType.DimensionalArray : SerializableType.Array;
-                case ITuple _:
-                    return SerializableType.Tuple;
-                case IDictionary _:
-                    return SerializableType.Dictionary;
-                case IList _:
-                    return SerializableType.Array;
-                default:
-                    return SerializableType.Class;
-            }
+            if ( received is string )
+                return SerializableType.String;
+
+            if ( received is DateTime || received is DateTimeOffset )
+                return SerializableType.DateTime;
+
+            if ( received is char )
+                return SerializableType.Char;
+
+            if ( received is Enum || received is bool || received is IConvertible )
+                return SerializableType.Simple;
+
+            if ( received is Array array )
+                return IsMultiDimensionalArray( array ) ? SerializableType.DimensionalArray : SerializableType.Array;
+
+            if ( received is ITuple )
+                return SerializableType.Tuple;
+
+            if ( received is IDictionary )
+                return SerializableType.Dictionary;
+
+            if ( received is IList )
+                return SerializableType.Array;
+
+            return SerializableType.Class;
         }
 
         /// <summary>

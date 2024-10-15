@@ -41,6 +41,8 @@ namespace Adeptar
             MemberSet vals = accessor.GetMembers();
 
             int arrayLen = vals.Count;
+            bool ignoreDefaultValues = CurrentSettings.IgnoreDefaultValues;
+            bool ignoreNull = CurrentSettings.IgnoreNullValues;
 
             if ( CurrentSettings.CheckClassAttributes )
             {
@@ -60,13 +62,13 @@ namespace Adeptar
                     string name = item.Name;
                     object value = accessor[target, name];
 
-                    if ( CurrentSettings.IgnoreNullValues && value is null )
+                    if ( ignoreNull && value is null )
                     {
                         count++;
                         continue;
                     }
 
-                    if ( CurrentSettings.IgnoreDefaultValues )
+                    if ( ignoreDefaultValues )
                     {
                         if ( value is string )
                         {
@@ -156,27 +158,27 @@ namespace Adeptar
 
                     object value = accessor[target, name];
 
-                    if ( CurrentSettings.IgnoreNullValues && value is null )
+                    if ( ignoreNull && value is null )
                     {
                         count++;
                         continue;
                     }
 
-                    if ( CurrentSettings.IgnoreDefaultValues )
+                    if ( ignoreDefaultValues )
                     {
-                        if ( value is string )
+                        if ( value is string strValue && string.IsNullOrEmpty( strValue ) )
                         {
-                            if ( value as string == "" )
-                            {
-                                count++;
-                                continue;
-                            }
                             count++;
+                            continue;
                         }
                         else if ( Activator.CreateInstance( itemType ).Equals( value ) )
                         {
                             count++;
                             continue;
+                        }
+                        else
+                        {
+                            count++;
                         }
                     }
 
