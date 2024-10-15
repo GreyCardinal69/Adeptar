@@ -22,14 +22,14 @@ namespace Adeptar
                 return false;
             }
             Type openType = tuple.GetGenericTypeDefinition();
-            return openType == typeof( ValueTuple<> )
-                || openType == typeof( ValueTuple<,> )
-                || openType == typeof( ValueTuple<,,> )
-                || openType == typeof( ValueTuple<,,,> )
-                || openType == typeof( ValueTuple<,,,,> )
-                || openType == typeof( ValueTuple<,,,,,> )
-                || openType == typeof( ValueTuple<,,,,,,> )
-                || openType == typeof( ValueTuple<,,,,,,,> ) && IsTuple( tuple.GetGenericArguments()[7] );
+            return openType == _cachedTypes[3]
+                || openType == _cachedTypes[4]
+                || openType == _cachedTypes[5]
+                || openType == _cachedTypes[6]
+                || openType == _cachedTypes[7]
+                || openType == _cachedTypes[8]
+                || openType == _cachedTypes[9]
+                || openType == _cachedTypes[10] && IsTuple( tuple.GetGenericArguments()[7] );
         }
 
         /// <summary>
