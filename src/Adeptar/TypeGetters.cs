@@ -32,38 +32,6 @@ namespace Adeptar
                 || openType == typeof( ValueTuple<,,,,,,,> ) && IsTuple( tuple.GetGenericArguments()[7] );
         }
 
-        public static bool IsTuple2( Type tuple )
-        {
-            if ( !tuple.IsGenericType )
-                return false;
-
-            // Get the open generic type definition
-            Type openType = tuple.GetGenericTypeDefinition();
-
-            // Check if it's a known ValueTuple type from the cached types
-            if ( openType == _cachedTypes[3]  // ValueTuple<>
-                || openType == _cachedTypes[4]  // ValueTuple<,>
-                || openType == _cachedTypes[5]  // ValueTuple<,,>
-                || openType == _cachedTypes[6]  // ValueTuple<,,,>
-                || openType == _cachedTypes[7]  // ValueTuple<,,,,>
-                || openType == _cachedTypes[8]  // ValueTuple<,,,,,>
-                || openType == _cachedTypes[9]  // ValueTuple<,,,,,,>
-                || openType == _cachedTypes[10] ) // ValueTuple<,,,,,,,>
-            {
-                // Check for nested ValueTuples in the 8th generic argument
-                if ( openType == _cachedTypes[10] )  // ValueTuple<,,,,,,,>
-                {
-                    Type[] genericArgs = tuple.GetGenericArguments();
-                    return IsTuple2( genericArgs[7] );
-                }
-
-                return true;
-            }
-
-            return false;
-        }
-
-
         /// <summary>
         /// Cached types for <see cref="TypeGetters"/> methods.
         /// </summary>
@@ -125,30 +93,27 @@ namespace Adeptar
         /// </returns>
         internal static DeserializableType GetDeserializableType( Type fInfo )
         {
-            if ( fInfo == _cachedTypes[12] )
-                return DeserializableType.String;
-            if ( fInfo == _cachedTypes[11] )
-                return DeserializableType.Char;
-            if ( fInfo == _cachedTypes[13] )
-                return DeserializableType.DateTime;
-            if ( fInfo == _cachedTypes[14] )
-                return DeserializableType.Boolean;
-            if ( fInfo.IsPrimitive || fInfo == _cachedTypes[15] )
-                return DeserializableType.Numeric;
+            if ( fInfo == _cachedTypes[12] ) return DeserializableType.String;
+            if ( fInfo == _cachedTypes[11] ) return DeserializableType.Char;
+            if ( fInfo == _cachedTypes[13] ) return DeserializableType.DateTime;
+            if ( fInfo == _cachedTypes[14] ) return DeserializableType.Boolean;
+
+            if ( fInfo.IsPrimitive || fInfo == _cachedTypes[15] ) return DeserializableType.Numeric;
+
             if ( fInfo.IsGenericType )
             {
                 Type genericTypeDef = fInfo.GetGenericTypeDefinition();
+
                 if ( IsTupleGenericKnown( genericTypeDef ) )
                     return DeserializableType.Tuple;
-                if ( genericTypeDef == _cachedTypes[0] )
-                    return DeserializableType.Dictionary;
-                if ( genericTypeDef == _cachedTypes[1] || genericTypeDef == _cachedTypes[2] )
-                    return DeserializableType.List;
+
+                if ( genericTypeDef == _cachedTypes[0] ) return DeserializableType.Dictionary;
+                if ( genericTypeDef == _cachedTypes[1] || genericTypeDef == _cachedTypes[2] ) return DeserializableType.List;
             }
             if ( fInfo.IsArray )
                 return fInfo.GetArrayRank() > 1 ? DeserializableType.DimensionalArray : DeserializableType.Array;
-            if ( fInfo.IsEnum )
-                return DeserializableType.Enum;
+
+            if ( fInfo.IsEnum ) return DeserializableType.Enum;
 
             return DeserializableType.Class;
         }
@@ -224,65 +189,12 @@ namespace Adeptar
         }
 
         /// <summary>
-        /// Checks if the provided object is a numeric value of types: <see cref="sbyte"/>, <see cref="short"/>,
-        /// <see cref="ushort"/>, <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>,
-        /// <see cref="ulong"/>, <see cref="float"/>, <see cref="double"/> or <see cref="decimal"/>.
-        /// </summary>
-        /// <param name="value">The object to check.</param>
-        /// <returns>True if an object is a number.</returns>
-        public static bool IsNumber( object value )
-        {
-            return value is sbyte
-                    || value is byte
-                    || value is short
-                    || value is ushort
-                    || value is int
-                    || value is uint
-                    || value is long
-                    || value is ulong
-                    || value is float
-                    || value is double
-                    || value is decimal;
-        }
-
-        /// <summary>
-        /// Checks if the provided object is a numeric value of types: <see cref="sbyte"/>, <see cref="short"/>,
-        /// <see cref="ushort"/>, <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>,
-        /// <see cref="ulong"/>, <see cref="float"/>, <see cref="double"/> or <see cref="decimal"/> using <see cref="Type"/>
-        /// </summary>
-        /// <param name="type">The Type to check.</param>
-        /// <returns>True if an object is a number.</returns>
-        public static bool IsNumericType( Type type ) => Type.GetTypeCode( type ) switch
-        {
-            TypeCode.Byte => true,
-            TypeCode.SByte => true,
-            TypeCode.UInt16 => true,
-            TypeCode.UInt32 => true,
-            TypeCode.UInt64 => true,
-            TypeCode.Int16 => true,
-            TypeCode.Int32 => true,
-            TypeCode.Int64 => true,
-            TypeCode.Decimal => true,
-            TypeCode.Double => true,
-            TypeCode.Single => true,
-            _ => false
-        };
-
-        /// <summary>
-        /// Parses an object into an enum using a generic T type.
-        /// </summary>
-        /// <typeparam name="T">The type to parse to.</typeparam>
-        /// <param name="obj">The object to parse.</param>
-        /// <returns>The converted enum.</returns>
-        public static T ParseToEnum<T>( object obj ) => ( T ) Enum.Parse( typeof( T ), obj.ToString() );
-
-        /// <summary>
         /// Parses an object into an enum without a generic T type.
         /// </summary>
         /// <param name="obj">The object that is the enum.</param>
         /// <param name="enumType">The type of the enum to parse to.</param>
         /// <returns>Returns an object casted to the provided enum type.</returns>
-        public static object ParseToEnumNonGeneric( ReadOnlySpan<char> obj, Type enumType ) => Enum.Parse( enumType, obj.ToString() );
+        public static object ParseToEnumNonGeneric( ReadOnlySpan<char> obj, Type enumType ) => Enum.Parse( enumType, obj );
     }
 }
 
