@@ -908,15 +908,6 @@
             A class providing methods for determining object types.
             </summary>
         </member>
-        <member name="M:Adeptar.Unity.TypeGetters.IsList(System.Object)">
-            <summary>
-            Checks if the provided object is a <see cref="T:System.Collections.Generic.List`1"/>.
-            </summary>
-            <param name="obj">The object to check.</param>
-            <returns>
-            True if the object is a <see cref="T:System.Collections.Generic.List`1"/>.
-            </returns>
-        </member>
         <member name="M:Adeptar.Unity.TypeGetters.IsTuple(System.Type)">
             <summary>
             Checks if an object is of type <see cref="T:System.ValueTuple"/>, such as (<see cref="T:System.Int32"/>, <see cref="T:System.Int32"/>).
@@ -955,27 +946,12 @@
             True/False if the object is of type <see cref="T:System.Collections.Generic.Dictionary`2"/>.
             </returns>
         </member>
-        <member name="M:Adeptar.Unity.TypeGetters.IsDictionary(System.Type)">
-            <summary>
-            Checks if the provided object is a <see cref="T:System.Collections.Generic.Dictionary`2"/>, uses a <see cref="T:System.Type"/>.
-            </summary>
-            <param name="type">The type to check for.</param>
-            <returns>
-            True if the type is a <see cref="T:System.Collections.Generic.Dictionary`2"/>.
-            </returns>
-        </member>
         <member name="M:Adeptar.Unity.TypeGetters.IsTupleGenericKnown(System.Type)">
             <summary>
             Checks if an object is of type <see cref="T:System.ValueTuple"/>, such as (<see cref="T:System.Int32"/>, <see cref="T:System.Int32"/>). Omits the .IsGeneric check.
             </summary>
             <param name="tuple">The type to check for.</param>
             <returns>True if the object is a <see cref="T:System.ValueTuple"/>.</returns>
-        </member>
-        <member name="M:Adeptar.Unity.TypeGetters.HasDefaultConstructor(System.Type)">
-            <summary>
-            Checks if the provided object has an empty constructor defined.
-            </summary>
-            <param name="type">The type to check</param>
         </member>
         <member name="M:Adeptar.Unity.TypeGetters.IsMultiDimensionalArray(System.Object)">
             <summary>
@@ -993,32 +969,6 @@
             The provided object's <see cref="T:Adeptar.Unity.SerializableType"/>. Returns <see cref="F:Adeptar.Unity.SerializableType.Class"/> if the
             provided object is null or if its type can't be determined.
             </returns>
-        </member>
-        <member name="M:Adeptar.Unity.TypeGetters.IsNumber(System.Object)">
-            <summary>
-            Checks if the provided object is a numeric value of types: <see cref="T:System.SByte"/>, <see cref="T:System.Int16"/>,
-            <see cref="T:System.UInt16"/>, <see cref="T:System.Int32"/>, <see cref="T:System.UInt32"/>, <see cref="T:System.Int64"/>,
-            <see cref="T:System.UInt64"/>, <see cref="T:System.Single"/>, <see cref="T:System.Double"/> or <see cref="T:System.Decimal"/>.
-            </summary>
-            <param name="value">The object to check.</param>
-            <returns>True if an object is a number.</returns>
-        </member>
-        <member name="M:Adeptar.Unity.TypeGetters.IsNumericType(System.Type)">
-            <summary>
-            Checks if the provided object is a numeric value of types: <see cref="T:System.SByte"/>, <see cref="T:System.Int16"/>,
-            <see cref="T:System.UInt16"/>, <see cref="T:System.Int32"/>, <see cref="T:System.UInt32"/>, <see cref="T:System.Int64"/>,
-            <see cref="T:System.UInt64"/>, <see cref="T:System.Single"/>, <see cref="T:System.Double"/> or <see cref="T:System.Decimal"/> using <see cref="T:System.Type"/>
-            </summary>
-            <param name="type">The Type to check.</param>
-            <returns>True if an object is a number.</returns>
-        </member>
-        <member name="M:Adeptar.Unity.TypeGetters.ParseToEnum``1(System.Object)">
-            <summary>
-            Parses an object into an enum using a generic T type.
-            </summary>
-            <typeparam name="T">The type to parse to.</typeparam>
-            <param name="obj">The object to parse.</param>
-            <returns>The converted enum.</returns>
         </member>
         <member name="M:Adeptar.Unity.TypeGetters.ParseToEnumNonGeneric(System.ReadOnlySpan{System.Char},System.Type)">
             <summary>

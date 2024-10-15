@@ -9,9 +9,10 @@
     <Company>CardinalSoft</Company>
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     <Product>Adeptar .NET</Product>
-    <Copyright>Copyright ©Michael Kananov 2021</Copyright>
+    <Copyright>Copyright ©Michael Kananov 2024</Copyright>
     <NeutralLanguage>en-GB</NeutralLanguage>
     <Description>A small .NET file extension targeted for modding, aimed to be fast and easy to work with, especially manually.</Description>
+    <Version>1.1.0.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
