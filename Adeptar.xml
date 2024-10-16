@@ -997,6 +997,16 @@
             <param name="obj">The object itself must be passed, even if just empty new().</param>
             <returns></returns>
         </member>
+        <member name="M:Adeptar.AdeptarBaker.IntBakeClassStruct(System.Type,System.Object)">
+            <summary>
+            Bakes an <see cref="T:Adeptar.AdeptarPreBake"/> object for the given class/struct <see cref="T:System.Type"/>
+            and its child class/struct <see cref="T:System.Type"/>s. Must be called before serialization. This
+            function is used for testing purposes.
+            </summary>
+            <param name="type">The <see cref="T:System.Type"/> of the object.</param>
+            <param name="obj">The object itself must be passed, even if just empty new().</param>
+            <returns>An integer of 1.</returns>
+        </member>
         <member name="T:Adeptar.AdeptarConfiguration">
             <summary>
             A class that provides functionality for field/property serialization manipulations.
