@@ -76,6 +76,7 @@ namespace Adeptar
                     return SerializableType.Tuple;
                 if ( genericTypeDef == _cachedTypes[0] )
                     return SerializableType.Dictionary;
+                if ( genericTypeDef == _cachedTypes[1] || genericTypeDef == _cachedTypes[2] ) return SerializableType.Array;
             }
 
             if ( fInfo.IsArray ) return SerializableType.DimensionalArray;
