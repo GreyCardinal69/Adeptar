@@ -35,11 +35,11 @@ namespace Adeptar
         /// <param name="builder"><see cref="StringBuilder"/> instance to append text to.</param>
         internal static void WriteClassStruct( object target, int indent, StringBuilder builder )
         {
-            TypeAccessor accessor = TypeAccessor.Create( target.GetType() );
+            AdeptarPreBake bake = AdeptarWriter.BakedTypes[AdeptarWriter.BakeType];
+            TypeAccessor accessor = bake.Accessor;
+            MemberSet vals = bake.Set;
 
             int count = 0;
-            MemberSet vals = accessor.GetMembers();
-
             int arrayLen = vals.Count;
             bool ignoreDefaultValues = CurrentSettings.IgnoreDefaultValues;
             bool ignoreNull = CurrentSettings.IgnoreNullValues;
@@ -107,18 +107,7 @@ namespace Adeptar
             }
             else
             {
-                AdeptarConfiguration config = _defaultConfig;
-
-                for ( int i = 0; i < arrayLen; i++ )
-                {
-                    if ( vals[i].Type == _adeptarConfiguration )
-                    {
-                        object value = accessor[target, vals[i].Name];
-                        config = value is null ? config : ( AdeptarConfiguration ) value;
-                        config.MustBeUsed = true;
-                        break;
-                    }
-                }
+                AdeptarConfiguration config = bake.Configuration;
 
                 int last = config.ToIgnore.Length > 0 ? vals.Count - 1 + config.ToIgnore.Length : vals.Count - 1;
 
@@ -126,7 +115,7 @@ namespace Adeptar
                 {
                     Member item = vals[i];
 
-                    Type itemType = item.Type;
+                    Type itemType = bake.DefaultMemberTypes[i];
                     string name = item.Name;
 
                     if ( config.MustBeUsed )
@@ -184,18 +173,23 @@ namespace Adeptar
 
                     FieldPropertyName = name;
 
+                    if ( bake.MemberSerializableTypes[i] == SerializableType.Class )
+                    {
+                        AdeptarWriter.BakeType = bake.DefaultMemberTypes[i];
+                    }
+
                     if ( value is null )
                     {
-                        WriteRaw( value, GetSerializableType( itemType ), builder, indent, count == last );
+                        WriteRaw( value, bake.MemberSerializableTypes[i], builder, indent, count == last );
                     }
                     else if ( CurrentSettings.UseIndentation )
                     {
-                        Write( value, FetchType( value ), builder, indent, count == last, false );
+                        Write( value, bake.MemberSerializableTypes[i], builder, indent, count == last, false );
                         builder.Append( '\n' );
                     }
                     else
                     {
-                        WriteNoIndentation( value, FetchType( value ), builder, count == last, false );
+                        WriteNoIndentation( value, bake.MemberSerializableTypes[i], builder, count == last, false );
                     }
 
                     count++;

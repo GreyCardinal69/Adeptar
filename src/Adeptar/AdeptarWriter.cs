@@ -37,9 +37,19 @@ namespace Adeptar
         };
 
         /// <summary>
+        /// A dictionary that stores the <see cref="AdeptarPreBake"/>s created by the <see cref="AdeptarBaker"/>.
+        /// </summary>
+        internal static Dictionary<Type, AdeptarPreBake> BakedTypes = new Dictionary<Type, AdeptarPreBake>();
+
+        /// <summary>
         /// A class' field or property name passed by the <see cref="ClassWriter"/> to append to the main <see cref="StringBuilder"/>.
         /// </summary>
         internal static string FieldPropertyName;
+
+        /// <summary>
+        /// The cached <see cref="Type"/> of the class/struct in the serialization queue.
+        /// </summary>
+        internal static Type BakeType;
 
         /// <summary>
         /// Assigns the <see cref="AdeptarSettings"/> for the current serialization task.
