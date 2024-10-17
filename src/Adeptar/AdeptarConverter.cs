@@ -126,11 +126,9 @@ namespace Adeptar
         /// </summary>
         /// <param name="path">The path of the file.</param>
         /// <param name="toSerialize">The object to serialize.</param>
-        /// <param name="type">The <see cref="Type"/> of the object to serialize.</param>
         /// <param name="settings">The user provided serialization settings.</param>
-        public static void SerializeWrite( string path, object toSerialize, Type type, AdeptarSettings settings )
+        public static void SerializeWrite( string path, object toSerialize, AdeptarSettings settings )
         {
-            AdeptarWriter.BakeType = type;
             AdeptarWriter.AssignSettings( settings );
             AdeptarWriter.SerializeWrite( path, toSerialize, FetchType( toSerialize ), SerializationMode.Default );
         }
@@ -140,11 +138,9 @@ namespace Adeptar
         /// </summary>
         /// <param name="toSerialize">The object to serialize.</param>
         /// <param name="settings">The user provided serialization settings.</param>
-        /// <param name="type">The <see cref="Type"/> of the object to serialize.</param>
         /// <returns>A .Adeptar representation of the object.</returns>
-        public static string Serialize( object toSerialize, Type type, AdeptarSettings settings )
+        public static string Serialize( object toSerialize, AdeptarSettings settings )
         {
-            AdeptarWriter.BakeType = type;
             AdeptarWriter.AssignSettings( settings );
             return AdeptarWriter.Serialize( toSerialize, FetchType( toSerialize ) );
         }
@@ -158,10 +154,8 @@ namespace Adeptar
         /// <param name="toSerialize">The object to serialize.</param>
         /// <param name="id">The id of the object used to append it.</param>
         /// <param name="settings">The user provided serialization settings.</param>
-        /// <param name="type">The <see cref="Type"/> of the object to serialize.</param>
-        public static void SerializeAppend( string path, object toSerialize, Type type, string id, AdeptarSettings settings )
+        public static void SerializeAppend( string path, object toSerialize, string id, AdeptarSettings settings )
         {
-            AdeptarWriter.BakeType = type;
             AdeptarWriter.AssignSettings( settings );
             AdeptarWriter.SerializeWrite( path, toSerialize, FetchType( toSerialize ), SerializationMode.Append, id );
         }
@@ -175,10 +169,8 @@ namespace Adeptar
         /// <param name="toSerialize">The object to serialize.</param>
         /// <param name="id">The id of the object used to append it.</param>
         /// <param name="settings">The user provided serialization settings.</param>
-        /// <param name="type">The <see cref="Type"/> of the object to serialize.</param>
-        public static void SerializeRewriteAppended( string path, object toSerialize, Type type, string id, AdeptarSettings settings )
+        public static void SerializeRewriteAppended( string path, object toSerialize, string id, AdeptarSettings settings )
         {
-            AdeptarWriter.BakeType = type;
             AdeptarWriter.AssignSettings( settings );
             AdeptarWriter.SerializeWrite( path, toSerialize, FetchType( toSerialize ), SerializationMode.ChangeAppended, id );
         }
@@ -188,10 +180,8 @@ namespace Adeptar
         /// </summary>
         /// <param name="path">The path of the file.</param>
         /// <param name="toSerialize">The object to serialize.</param>
-        /// <param name="type">The <see cref="Type"/> of the object to serialize.</param>
-        public static void SerializeWrite( string path, object toSerialize, Type type )
+        public static void SerializeWrite( string path, object toSerialize )
         {
-            AdeptarWriter.BakeType = type;
             AdeptarWriter.AssignSettings( AdeptarWriter.DefaultSettings );
             AdeptarWriter.SerializeWrite( path, toSerialize, FetchType( toSerialize ), SerializationMode.Default );
         }
@@ -202,10 +192,8 @@ namespace Adeptar
         /// <param name="path">The path of the file.</param>
         /// <param name="toSerialize">The object to serialize.</param>
         /// <param name="formatting">The formatting style.</param>
-        /// <param name="type">The <see cref="Type"/> of the object to serialize.</param>
-        public static void SerializeWrite( string path, object toSerialize, Type type, Formatting formatting = Formatting.Indented )
+        public static void SerializeWrite( string path, object toSerialize, Formatting formatting = Formatting.Indented )
         {
-            AdeptarWriter.BakeType = type;
             AdeptarSettings settings = new()
             {
                 CheckClassAttributes = false,
@@ -219,11 +207,9 @@ namespace Adeptar
         /// Serializes the object to a .Adeptar string.
         /// </summary>
         /// <param name="toSerialize">The object to serialize.</param>
-        /// <param name="type">The <see cref="Type"/> of the object to serialize.</param>
         /// <returns>A .Adeptar representation of the object.</returns>
-        public static string Serialize( object toSerialize, Type type )
+        public static string Serialize( object toSerialize )
         {
-            AdeptarWriter.BakeType = type;
             AdeptarWriter.AssignSettings( AdeptarWriter.DefaultSettings );
             return AdeptarWriter.Serialize( toSerialize, FetchType( toSerialize ) );
         }
@@ -233,11 +219,9 @@ namespace Adeptar
         /// </summary>
         /// <param name="toSerialize">The object to serialize.</param>
         /// <param name="formatting">The formatting style.</param>
-        /// <param name="type">The <see cref="Type"/> of the object to serialize.</param>
         /// <returns>A .Adeptar representation of the object with the provided formatting style.</returns>
-        public static string Serialize( object toSerialize, Type type, Formatting formatting = Formatting.Indented )
+        public static string Serialize( object toSerialize, Formatting formatting = Formatting.Indented )
         {
-            AdeptarWriter.BakeType = type;
             AdeptarSettings settings = new()
             {
                 CheckClassAttributes = false,
@@ -253,11 +237,9 @@ namespace Adeptar
         /// </summary>
         /// <param name="path">The path to the file to append the object to.</param>
         /// <param name="toSerialize">The object to serialize as the shared data.</param>
-        /// <param name="type">The <see cref="Type"/> of the object to serialize.</param>
         /// <param name="formatting">The formatting style.</param>
-        public static void SerializeSetShared( string path, object toSerialize, Type type, Formatting formatting = Formatting.Indented )
+        public static void SerializeSetShared( string path, object toSerialize, Formatting formatting = Formatting.Indented )
         {
-            AdeptarWriter.BakeType = type;
             AdeptarSettings settings = new()
             {
                 CheckClassAttributes = false,
@@ -277,11 +259,9 @@ namespace Adeptar
         /// <param name="path">The path to the file to append the object to.</param>
         /// <param name="toSerialize">The object to serialize.</param>
         /// <param name="id">The id of the object used to append it.</param>
-        /// <param name="type">The <see cref="Type"/> of the object to serialize.</param>
         /// <param name="formatting">The formatting style.</param>
-        public static void SerializeAppend( string path, object toSerialize, Type type, string id, Formatting formatting = Formatting.Indented )
+        public static void SerializeAppend( string path, object toSerialize, string id, Formatting formatting = Formatting.Indented )
         {
-            AdeptarWriter.BakeType = type;
             AdeptarSettings settings = new()
             {
                 CheckClassAttributes = false,
@@ -300,10 +280,8 @@ namespace Adeptar
         /// <param name="toSerialize">The object to serialize.</param>
         /// <param name="id">The id of the object used to append it.</param>
         /// <param name="formatting">The formatting style.</param>
-        /// <param name="type">The <see cref="Type"/> of the object to serialize.</param>
-        public static void SerializeRewriteAppended( string path, object toSerialize, Type type, string id, Formatting formatting = Formatting.Indented )
+        public static void SerializeRewriteAppended( string path, object toSerialize, string id, Formatting formatting = Formatting.Indented )
         {
-            AdeptarWriter.BakeType = type;
             AdeptarSettings settings = new()
             {
                 CheckClassAttributes = false,

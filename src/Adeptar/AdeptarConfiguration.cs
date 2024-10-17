@@ -12,11 +12,6 @@
         public AdeptarConfiguration() { }
 
         /// <summary>
-        /// Represents the default state of the <see cref="AdeptarConfiguration"/>, usually assigned when an object to bake doesn't have one defined.
-        /// </summary>
-        public static AdeptarConfiguration DefaultConfiguration => new AdeptarConfiguration() { ToIgnore = new string[] { }, MustBeUsed = false };
-
-        /// <summary>
         /// Creates a new instance of an <see cref="AdeptarConfiguration"/> class with an array of fields and or properties to ignore.
         /// </summary>
         /// <param name="toIgnore"></param>

@@ -5,7 +5,7 @@ namespace Adeptar
     /// <summary>
     /// Keeps track of object types, used in deserialization code.
     /// </summary>
-    internal enum DeserializableType
+    public enum DeserializableType
     {
         /// <summary>
         /// True for numerical objects.
