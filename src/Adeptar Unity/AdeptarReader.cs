@@ -29,7 +29,7 @@ namespace Adeptar.Unity
                 DeserializableType.String => StringResolver( text ),
                 DeserializableType.Boolean => Convert.ToBoolean( text.ToString() ),
                 DeserializableType.Char => Convert.ToChar( text.Slice( 1, 1 ).ToString() ),
-                DeserializableType.Enum => ParseToEnumNonGeneric( text, type ),
+                DeserializableType.Enum => ParseEnum( type, text ),
                 DeserializableType.NULL => null,
                 DeserializableType.DateTime => DateTime.Parse( StringResolver( text ) ),
                 DeserializableType.Class => DeserializeClassStruct( text, type ),

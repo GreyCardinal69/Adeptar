@@ -40,7 +40,7 @@ namespace Adeptar.Unity
             {
                 for ( int i = 0; i < dict.Count; i++ )
                 {
-                    if ( IsDictionary( dict[i] ) )
+                    if ( dict[i] is IDictionary )
                     {
                         WriteNoIndentation( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), Builder, true, true );
                         Builder.Append( ':' );
@@ -82,7 +82,7 @@ namespace Adeptar.Unity
             {
                 for ( int i = 0; i < keyVals.Length; i++ )
                 {
-                    if ( IsDictionary( keyVals[i].Item2 ) )
+                    if ( keyVals[i].Item2 is IDictionary )
                     {
                         Write( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), Builder, Indent, true, true );
                         Builder.Append( ':' ).Append( '\n' );

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -9,82 +10,106 @@ namespace Adeptar.Unity
     /// A class providing methods for determining object types.
     /// </summary>
     public static class TypeGetters
-    { /// <summary>
-      /// Checks if the provided object is a <see cref="List{T}"/>.
-      /// </summary>
-      /// <param name="obj">The object to check.</param>
-      /// <returns>
-      /// True if the object is a <see cref="List{T}"/>.
-      /// </returns>
-        public static bool IsList( object obj )
-        {
-            return obj is IList &&
-                   obj.GetType().IsGenericType &&
-                   obj.GetType().GetGenericTypeDefinition().IsAssignableFrom( typeof( List<> ) );
-        }
+    {
 
         /// <summary>
-        /// Checks if an object is of type <see cref="ValueTuple"/>, such as (<see cref="int"/>, <see cref="int"/>).
+        /// Cached <see cref="System.Type"/> object for the open generic <see cref="System.Collections.Generic.Dictionary{TKey, TValue}"/> type definition (<c>typeof(Dictionary)</c>). Accessed via <see cref="_openGenericDictionaryType"/>.
         /// </summary>
-        /// <param name="tuple">The type to check for.</param>
-        /// <returns>True if the object is a <see cref="ValueTuple"/>.</returns>
-        public static bool IsTuple( Type tuple )
+        private static readonly Type _openGenericDictionaryType = typeof(Dictionary<,>);
+
+        /// <summary>
+        /// Cached <see cref="System.Type"/> object for the open generic <see cref="System.Collections.Generic.List{T}"/> type definition (<c>typeof(List)</c>). Accessed via <see cref="_openGenericListType"/>.
+        /// </summary>
+        private static readonly Type _openGenericListType = typeof(List<>);
+
+        /// <summary>
+        /// Cached <see cref="System.Type"/> object for the open generic <see cref="System.Collections.Generic.IList{T}"/> type definition (<c>typeof(IList)</c>). Accessed via <see cref="_openGenericIListType"/>.
+        /// </summary>
+        private static readonly Type _openGenericIListType = typeof(IList<>);
+
+        /// <summary>
+        /// Cached <see cref="System.Type"/> object for the <see cref="System.Char"/> type. Accessed via <see cref="_charType"/>.
+        /// </summary>
+        private static readonly Type _charType = typeof(char);
+
+        /// <summary>
+        /// Cached <see cref="System.Type"/> object for the <see cref="System.String"/> type. Accessed via <see cref="_stringType"/>.
+        /// </summary>
+        private static readonly Type _stringType = typeof(string);
+
+        /// <summary>
+        /// Cached <see cref="System.Type"/> object for the <see cref="System.DateTime"/> type. Accessed via <see cref="_dateTimeType"/>.
+        /// </summary>
+        private static readonly Type _dateTimeType = typeof(DateTime);
+
+        /// <summary>
+        /// Cached <see cref="System.Type"/> object for the <see cref="System.Boolean"/> type. Accessed via <see cref="_boolType"/>.
+        /// </summary>
+        private static readonly Type _boolType = typeof(bool);
+
+        /// <summary>
+        /// Cached <see cref="System.Type"/> object for the <see cref="System.Decimal"/> type. Accessed via <see cref="_decimalType"/>.
+        /// </summary>
+        private static readonly Type _decimalType = typeof(decimal);
+
+        /// <summary>
+        /// Cache for GetSerializableType results, mapping Type to its SerializableType.
+        /// Uses ConcurrentDictionary for thread safety.
+        /// </summary>
+        private static readonly ConcurrentDictionary<Type, SerializableType> _serializableTypeCache =
+            new ConcurrentDictionary<Type, SerializableType>();
+
+        /// <summary>
+        /// Gets the <see cref="SerializableType"/> classification for a given <see cref="Type"/>, utilizing a cache for performance.
+        /// </summary>
+        /// <param name="fInfo">The <see cref="Type"/> instance to classify, typically representing a field or property type during serialization.</param>
+        /// <returns>
+        /// The cached or calculated <see cref="SerializableType"/> corresponding to the input <paramref name="fInfo"/>.
+        /// Returns <see cref="SerializableType.Class"/> as a default if the type cannot be determined by the internal logic.
+        /// </returns>
+        /// <remarks>
+        /// This method acts as the public accessor for serialization type classification.
+        /// It first checks a static, thread-safe cache (<c>_serializableTypeCache</c>) for a previously computed result for the given <paramref name="fInfo"/>.
+        /// If the type is found in the cache, the cached value is returned immediately.
+        /// If the type is not found (cache miss), it calls the internal <see cref="GetSerializableTypeInternal"/> method to perform the actual classification logic.
+        /// The result from the internal method is then added to the cache before being returned.
+        /// </remarks>
+        /// <seealso cref="GetSerializableTypeInternal(Type)"/>
+        internal static SerializableType GetSerializableType( Type fInfo )
         {
-            if ( !tuple.IsGenericType )
+            if ( _serializableTypeCache.TryGetValue( fInfo, out SerializableType cachedResult ) )
             {
-                return false;
+                return cachedResult;
             }
-            Type openType = tuple.GetGenericTypeDefinition();
-            return openType == typeof( ValueTuple<> )
-                || openType == typeof( ValueTuple<,> )
-                || openType == typeof( ValueTuple<,,> )
-                || openType == typeof( ValueTuple<,,,> )
-                || openType == typeof( ValueTuple<,,,,> )
-                || openType == typeof( ValueTuple<,,,,,> )
-                || openType == typeof( ValueTuple<,,,,,,> )
-                || openType == typeof( ValueTuple<,,,,,,,> ) && IsTuple( tuple.GetGenericArguments()[7] );
+
+            SerializableType type = GetSerializableTypeInternal( fInfo );
+            _serializableTypeCache.TryAdd( fInfo, type );
+
+            return type;
         }
 
         /// <summary>
-        /// Cached types for <see cref="TypeGetters"/> methods.
+        /// Performs the core logic to determine the <see cref="SerializableType"/> classification for a given <see cref="Type"/>.
         /// </summary>
-        private static Type[] _cachedTypes = new Type[]
+        /// <param name="fInfo">The <see cref="Type"/> instance to classify.</param>
+        /// <returns>
+        /// The calculated <see cref="SerializableType"/> based on the type's characteristics.
+        /// Returns <see cref="SerializableType.Class"/> as a fallback if the type doesn't match any specific classification rules.
+        /// </returns>
+        /// <remarks>
+        /// This private helper method contains the actual, non-cached classification logic. It is called by <see cref="GetSerializableType(Type)"/> only when a cache miss occurs.
+        /// The sequence of checks within this method (<c>if</c> statements) is intentionally ordered based on performance benchmarks for common types.
+        /// </remarks>
+        /// <seealso cref="GetSerializableType(Type)"/>
+        private static SerializableType GetSerializableTypeInternal( Type fInfo )
         {
-            typeof( Dictionary<,> ),
-            typeof( List<> ),
-            typeof( IList<> ),
-            typeof( ValueTuple<> ),
-            typeof( ValueTuple<,> ),
-            typeof( ValueTuple<,,> ),
-            typeof( ValueTuple<,,,> ),
-            typeof( ValueTuple<,,,,> ),
-            typeof( ValueTuple<,,,,,> ),
-            typeof( ValueTuple<,,,,,,> ),
-            typeof( ValueTuple<,,,,,,,> ),
-            typeof( char ),
-            typeof( string ),
-            typeof( DateTime ),
-            typeof( bool ),
-            typeof( decimal ),
-            typeof( Enum )
-        };
-
-        /// <summary>
-        /// Gets the <see cref="SerializableType"/> of the provided <see cref="Type"/>.
-        /// </summary>
-        /// <param name="fInfo">The <see cref="Type"/> to check.</param>
-        /// <returns>The <see cref="SerializableType"/> of the provided <see cref="Type"/>.</returns>
-        public static SerializableType GetSerializableType( Type fInfo )
-        {
-            if ( fInfo == _cachedTypes[12] )
+            if ( fInfo == _stringType )
                 return SerializableType.String;
-            if ( fInfo == _cachedTypes[11] )
+            if ( fInfo == _charType )
                 return SerializableType.Char;
-            if ( fInfo == _cachedTypes[13] )
-                return SerializableType.Char;
-            if ( fInfo.IsEnum )
-                return SerializableType.Simple;
-            if ( fInfo == _cachedTypes[2] || fInfo == _cachedTypes[1] )
+            if ( fInfo == _dateTimeType )
+                return SerializableType.DateTime;
+            if ( fInfo == _openGenericIListType )
                 return SerializableType.Array;
             if ( fInfo.IsPrimitive )
                 return SerializableType.Simple;
@@ -93,9 +118,8 @@ namespace Adeptar.Unity
                 Type genericTypeDef = fInfo.GetGenericTypeDefinition();
                 if ( IsTupleGenericKnown( genericTypeDef ) )
                     return SerializableType.Tuple;
-                if ( genericTypeDef == _cachedTypes[0] )
+                if ( genericTypeDef == _openGenericDictionaryType )
                     return SerializableType.Dictionary;
-                Console.WriteLine( genericTypeDef == _cachedTypes[1] || genericTypeDef == _cachedTypes[2] );
             }
             if ( fInfo.IsArray )
                 return SerializableType.DimensionalArray;
@@ -104,33 +128,75 @@ namespace Adeptar.Unity
         }
 
         /// <summary>
-        /// Gets the Type's <see cref="DeserializableType"/>.
+        /// Cache for GetDeserializableType results, mapping Type to its DeserializableType.
+        /// Uses ConcurrentDictionary for thread safety.
         /// </summary>
-        /// <param name="fInfo">The Type's field type.</param>
+        private static readonly ConcurrentDictionary<Type, DeserializableType> _deserializableTypeCache =
+            new ConcurrentDictionary<Type, DeserializableType>();
+
+        /// <summary>
+        /// Gets the <see cref="DeserializableType"/> classification for a given <see cref="Type"/>, utilizing a cache for performance.
+        /// </summary>
+        /// <param name="fInfo">The <see cref="Type"/> instance to classify, typically representing a field or property type during deserialization.</param>
         /// <returns>
-        /// The object's <see cref="DeserializableType"/>. Returns <see cref="DeserializableType.Class"/> if the type
-        /// cant be determined.
+        /// The cached or calculated <see cref="DeserializableType"/> corresponding to the input <paramref name="fInfo"/>.
+        /// Returns <see cref="DeserializableType.Class"/> as a default if the type cannot be determined by the internal logic.
         /// </returns>
+        /// <remarks>
+        /// This method acts as the public accessor for deserialization type classification.
+        /// It first checks a static, thread-safe cache (<c>_deserializableTypeCache</c>) for a previously computed result for the given <paramref name="fInfo"/>.
+        /// If the type is found in the cache, the cached value is returned immediately.
+        /// If the type is not found (cache miss), it calls the internal <see cref="GetDeserializableTypeInternal"/> method to perform the actual classification logic.
+        /// The result from the internal method is then added to the cache before being returned.
+        /// This caching strategy significantly improves performance by ensuring the classification logic runs only once per unique <see cref="Type"/>.
+        /// </remarks>
+        /// <seealso cref="GetDeserializableTypeInternal(Type)"/>
         internal static DeserializableType GetDeserializableType( Type fInfo )
         {
-            if ( fInfo == _cachedTypes[12] )
+            if ( _deserializableTypeCache.TryGetValue( fInfo, out DeserializableType cachedResult ) )
+            {
+                return cachedResult;
+            }
+
+            DeserializableType type = GetDeserializableTypeInternal( fInfo );
+            _deserializableTypeCache.TryAdd( fInfo, type );
+
+            return type;
+        }
+
+        /// <summary>
+        /// Performs the core logic to determine the <see cref="DeserializableType"/> classification for a given <see cref="Type"/>.
+        /// </summary>
+        /// <param name="fInfo">The <see cref="Type"/> instance to classify.</param>
+        /// <returns>
+        /// The calculated <see cref="DeserializableType"/> based on the type's characteristics.
+        /// Returns <see cref="DeserializableType.Class"/> as a fallback if the type doesn't match any specific classification rules.
+        /// </returns>
+        /// <remarks>
+        /// This private helper method contains the actual, non-cached classification logic. It is called by <see cref="GetDeserializableType(Type)"/> only when a cache miss occurs.
+        /// The sequence of checks within this method (<c>if</c> statements) is intentionally ordered based on performance benchmarks for common types.
+        /// </remarks>
+        /// <seealso cref="GetDeserializableType(Type)"/>
+        private static DeserializableType GetDeserializableTypeInternal( Type fInfo )
+        {
+            if ( fInfo == _stringType )
                 return DeserializableType.String;
-            if ( fInfo == _cachedTypes[11] )
+            if ( fInfo == _charType )
                 return DeserializableType.Char;
-            if ( fInfo == _cachedTypes[13] )
+            if ( fInfo == _dateTimeType )
                 return DeserializableType.DateTime;
-            if ( fInfo == _cachedTypes[14] )
+            if ( fInfo == _boolType )
                 return DeserializableType.Boolean;
-            if ( fInfo.IsPrimitive || fInfo == _cachedTypes[15] )
+            if ( fInfo.IsPrimitive || fInfo == _decimalType )
                 return DeserializableType.Numeric;
             if ( fInfo.IsGenericType )
             {
                 Type genericTypeDef = fInfo.GetGenericTypeDefinition();
                 if ( IsTupleGenericKnown( genericTypeDef ) )
                     return DeserializableType.Tuple;
-                if ( genericTypeDef == _cachedTypes[0] )
+                if ( genericTypeDef == _openGenericDictionaryType )
                     return DeserializableType.Dictionary;
-                if ( genericTypeDef == _cachedTypes[1] || genericTypeDef == _cachedTypes[2] )
+                if ( genericTypeDef == _openGenericIListType || genericTypeDef == _openGenericListType )
                     return DeserializableType.List;
             }
             if ( fInfo.IsArray )
@@ -142,52 +208,26 @@ namespace Adeptar.Unity
         }
 
         /// <summary>
-        /// Checks if the provided object is a <see cref="Dictionary{TKey, TValue}"/>.
+        /// Contains the open generic type definitions for standard <see cref="System.ValueTuple"/> types (up to 8 type arguments).
         /// </summary>
-        /// <param name="obj">The object to check.</param>
-        /// <returns>
-        /// True/False if the object is of type <see cref="Dictionary{TKey, TValue}"/>.
-        /// </returns>
-        public static bool IsDictionary( object obj ) => obj is IDictionary;
-
-        /// <summary>
-        /// Checks if the provided object is a <see cref="Dictionary{TKey, TValue}"/>, uses a <see cref="Type"/>.
-        /// </summary>
-        /// <param name="type">The type to check for.</param>
-        /// <returns>
-        /// True if the type is a <see cref="Dictionary{TKey, TValue}"/>.
-        /// </returns>
-        public static bool IsDictionary( Type type ) => type.IsGenericType && type.GetGenericTypeDefinition() == typeof( Dictionary<,> );
-
-        /// <summary>
-        /// Checks if an object is of type <see cref="ValueTuple"/>, such as (<see cref="int"/>, <see cref="int"/>). Omits the .IsGeneric check.
-        /// </summary>
-        /// <param name="tuple">The type to check for.</param>
-        /// <returns>True if the object is a <see cref="ValueTuple"/>.</returns>
-        public static bool IsTupleGenericKnown( Type tuple )
+        /// <remarks>
+        /// This set is used by the <see cref="IsTupleGenericKnown"/> method to efficiently determine
+        /// if a given open generic type definition corresponds to one of the standard ValueTuple types.
+        /// This field is initialized once during static type initialization and is read-only thereafter.
+        /// </remarks>
+        private static readonly HashSet<Type> _valueTupleGenericTypes = new HashSet<Type>
         {
-            return tuple == _cachedTypes[3]
-                || tuple == _cachedTypes[4]
-                || tuple == _cachedTypes[5]
-                || tuple == _cachedTypes[6]
-                || tuple == _cachedTypes[7]
-                || tuple == _cachedTypes[8]
-                || tuple == _cachedTypes[9]
-                || tuple == _cachedTypes[10];
-        }
+            typeof(ValueTuple<>), typeof(ValueTuple<,>), typeof(ValueTuple<,,>),
+            typeof(ValueTuple<,,,>), typeof(ValueTuple<,,,,>), typeof(ValueTuple<,,,,,>),
+            typeof(ValueTuple<,,,,,,>), typeof(ValueTuple<,,,,,,,>)
+        };
 
         /// <summary>
-        /// Checks if the provided object has an empty constructor defined.
+        /// Checks if the provided open generic type definition is one of the standard <c>System.ValueTuple</c> generic types.
         /// </summary>
-        /// <param name="type">The type to check</param>
-        public static bool HasDefaultConstructor( Type type ) => type.IsValueType || type.GetConstructor( Type.EmptyTypes ) != null;
-
-        /// <summary>
-        /// Checks if the object is an array with two or more dimensions.
-        /// </summary>
-        /// <param name="received">The object to check.</param>
-        /// <returns>True if the object has two or three dimensions.</returns>
-        public static bool IsMultiDimensionalArray( object received ) => ( received as Array ).Rank > 1;
+        /// <param name="openGenericTupleType">The open generic type definition to check (e.g., obtained via <c>type.GetGenericTypeDefinition()</c>).</param>
+        /// <returns><c>true</c> if the specified type is found within the <see cref="_valueTupleGenericTypes"/> set; otherwise, <c>false</c>.</returns>
+        private static bool IsTupleGenericKnown( Type openGenericTupleType ) => _valueTupleGenericTypes.Contains( openGenericTupleType );
 
         /// <summary>
         /// Gets the object's <see cref="SerializableType"/>.
@@ -197,7 +237,7 @@ namespace Adeptar.Unity
         /// The provided object's <see cref="SerializableType"/>. Returns <see cref="SerializableType.Class"/> if the
         /// provided object is null or if its type can't be determined.
         /// </returns>
-        internal static SerializableType FetchType( object received )
+        public static SerializableType FetchType( object received )
         {
             switch ( received )
             {
@@ -212,79 +252,45 @@ namespace Adeptar.Unity
                 case bool _:
                 case IConvertible _:
                     return SerializableType.Simple;
-                case Array array:
+                case IList array:
+                    // IsMultiDimensionalArray handles potential error of trying to get rank of pure IList.
                     return IsMultiDimensionalArray( array ) ? SerializableType.DimensionalArray : SerializableType.Array;
                 case ITuple _:
                     return SerializableType.Tuple;
                 case IDictionary _:
                     return SerializableType.Dictionary;
-                case IList _:
-                    return SerializableType.Array;
                 default:
                     return SerializableType.Class;
             }
         }
 
         /// <summary>
-        /// Checks if the provided object is a numeric value of types: <see cref="sbyte"/>, <see cref="short"/>,
-        /// <see cref="ushort"/>, <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>,
-        /// <see cref="ulong"/>, <see cref="float"/>, <see cref="double"/> or <see cref="decimal"/>.
+        /// Checks if the object is an array with two or more dimensions.
         /// </summary>
-        /// <param name="value">The object to check.</param>
-        /// <returns>True if an object is a number.</returns>
-        public static bool IsNumber( object value )
+        /// <param name="received">The object to check.</param>
+        /// <returns>True if the object is an array and has rank > 1.</returns>
+        public static bool IsMultiDimensionalArray( object received )
         {
-            return value is sbyte
-                    || value is byte
-                    || value is short
-                    || value is ushort
-                    || value is int
-                    || value is uint
-                    || value is long
-                    || value is ulong
-                    || value is float
-                    || value is double
-                    || value is decimal;
+            if ( received is Array arr )
+                return arr.Rank > 1;
+            return false;
         }
 
         /// <summary>
-        /// Checks if the provided object is a numeric value of types: <see cref="sbyte"/>, <see cref="short"/>,
-        /// <see cref="ushort"/>, <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>,
-        /// <see cref="ulong"/>, <see cref="float"/>, <see cref="double"/> or <see cref="decimal"/> using <see cref="Type"/>
+        /// Parses a span containing an enum member name into the specified enum type (non-generic).
         /// </summary>
-        /// <param name="type">The Type to check.</param>
-        /// <returns>True if an object is a number.</returns>
-        public static bool IsNumericType( Type type ) => Type.GetTypeCode( type ) switch
+        /// <param name="enumType">The enum type to parse into.</param>
+        /// <param name="value">The span containing the member name to parse.</param>
+        /// <param name="ignoreCase">Whether to ignore case during parsing.</param>
+        /// <returns>The parsed enum value as an object.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="enumType"/> is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="enumType"/> is not an enum type, or if <paramref name="value"/> cannot be parsed.</exception>
+        public static object ParseEnum( Type enumType, ReadOnlySpan<char> value, bool ignoreCase = false )
         {
-            TypeCode.Byte => true,
-            TypeCode.SByte => true,
-            TypeCode.UInt16 => true,
-            TypeCode.UInt32 => true,
-            TypeCode.UInt64 => true,
-            TypeCode.Int16 => true,
-            TypeCode.Int32 => true,
-            TypeCode.Int64 => true,
-            TypeCode.Decimal => true,
-            TypeCode.Double => true,
-            TypeCode.Single => true,
-            _ => false
-        };
+            if ( enumType == null ) throw new ArgumentNullException( nameof( enumType ) );
 
-        /// <summary>
-        /// Parses an object into an enum using a generic T type.
-        /// </summary>
-        /// <typeparam name="T">The type to parse to.</typeparam>
-        /// <param name="obj">The object to parse.</param>
-        /// <returns>The converted enum.</returns>
-        public static T ParseToEnum<T>( object obj ) => (T)Enum.Parse( typeof( T ), obj.ToString() );
-
-        /// <summary>
-        /// Parses an object into an enum without a generic T type.
-        /// </summary>
-        /// <param name="obj">The object that is the enum.</param>
-        /// <param name="enumType">The type of the enum to parse to.</param>
-        /// <returns>Returns an object casted to the provided enum type.</returns>
-        public static object ParseToEnumNonGeneric( ReadOnlySpan<char> obj, Type enumType ) => Enum.Parse( enumType, obj.ToString() );
+            return Enum.Parse( enumType, value.ToString(), ignoreCase );
+        }
     }
 }
 
