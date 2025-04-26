@@ -39,7 +39,7 @@ namespace Adeptar.Unity
         public static object DeserializeString( string content, Type type ) => DeserializeObject( type, CleanText( content ) );
 
         /// <summary>
-        /// Deserializes an object serialized with the ID feature. Accepts a generic <see cref="{T}"/> type.
+        /// Deserializes an object serialized with the ID feature. Accepts a generic <typeparamref name="T"/> type.
         /// </summary>
         /// <typeparam name="T">The generic type to deserialize to.</typeparam>
         /// <param name="path">The path to the file where the object is serialized.</param>

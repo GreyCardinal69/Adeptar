@@ -4,5 +4,3 @@
 // a specific target and scoped to a namespace, type, member, etc.
 
 using System.Diagnostics.CodeAnalysis;
-
-[assembly: SuppressMessage( "Performance", "CA1822:Mark members as static", Justification = "<Pending>", Scope = "member", Target = "~M:AdeptarBenchmarks.MemoryBenchmarkerDemo.FourDimensionalArrayAder" )]
