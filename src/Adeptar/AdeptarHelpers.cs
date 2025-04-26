@@ -1,70 +1,88 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Text;
 
 namespace Adeptar
 {
     /// <summary>
-    /// A class containing helper methods for different uses.
+    /// A class containing helper methods for different use cases.
     /// </summary>
     public class AdeptarHelpers
     {
         /// <summary>
-        /// Checks if the provided file already has an object appended using the Id feature with the specified id.
-        /// The id is limited to numbers and letters.
+        /// Checks if the specified file contains an Adeptar object marker with the given ID (e.g., "~ObjectID~").
+        /// Reads the file in chunks for efficiency, suitable for files with or without newlines.
         /// </summary>
-        /// <param name="path">The path of the file.</param>
-        /// <param name="id">The id of the object to check for.</param>
-        /// <returns>True if the already exists in the file.</returns>
-        public static bool ContainsId( string path, string id ) => ContainsIdInternal( path, id );
-
-        /// <summary>
-        /// Checks if the provided file already has an object appended using the Id feature with the specified id.
-        /// The id is limited to numbers and letters.
-        /// </summary>
-        /// <param name="path">The path of the file.</param>
-        /// <param name="id">The id of the object to check for.</param>
-        /// <returns>True if the already exists in the file.</returns>
-        private static bool ContainsIdInternal( string path, string id )
+        /// <param name="path">The path to the file to check.</param>
+        /// <param name="id">The ID string to search for. Must contain only letters and digits.</param>
+        /// <returns><c>true</c> if the pattern "~id~" is found; otherwise, <c>false</c>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="path"/> or <paramref name="id"/> is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="path"/> is empty or whitespace, or if <paramref name="id"/> is empty, whitespace, or contains characters other than letters or digits.</exception>
+        /// <exception cref="AdeptarException">Thrown if an error occurs during file access (e.g., file not found, permissions error), wrapping the original IO exception.</exception>
+        private static bool ContainsId( string path, string id )
         {
-            bool inString = false;
-            bool startWrite = false;
-            string temp = "";
+            if ( path == null ) throw new ArgumentNullException( nameof( path ) );
+            if ( id == null ) throw new ArgumentNullException( nameof( id ) );
+            if ( string.IsNullOrWhiteSpace( path ) ) throw new ArgumentException( "File path cannot be empty or whitespace.", nameof( path ) );
+            if ( string.IsNullOrWhiteSpace( id ) ) throw new ArgumentException( "ID cannot be empty or whitespace.", nameof( id ) );
 
-            foreach ( char item in File.ReadAllText( path ) )
+            for ( int i = 0; i < id.Length; i++ )
             {
-                switch ( item )
+                if ( !char.IsLetterOrDigit( id[i] ) )
                 {
-                    case '~':
-                        if ( !inString )
+                    throw new ArgumentException( $"ID '{id}' contains invalid character '{id[i]}' at index {i}. Only letters and digits are allowed.", nameof( id ) );
+                }
+            }
+
+            const int bufferSize = 4096;
+            char[] buffer = new char[bufferSize];
+            int charsRead;
+            int idLength = id.Length;
+            int matchIndex = 0;
+
+            using ( FileStream fs = new FileStream( path, FileMode.Open, FileAccess.Read, FileShare.Read ) )
+            using ( StreamReader reader = new StreamReader( fs, Encoding.UTF8, true, bufferSize ) )
+            {
+                while ( ( charsRead = reader.ReadBlock( buffer, 0, bufferSize ) ) > 0 )
+                {
+                    for ( int i = 0; i < charsRead; i++ )
+                    {
+                        char currentChar = buffer[i];
+
+                        if ( matchIndex == 0 )
                         {
-                            startWrite = true;
-                        }
-                        break;
-                    case '"':
-                        inString = !inString;
-                        break;
-                    default:
-                        if ( startWrite && !inString )
-                        {
-                            if ( !char.IsLetterOrDigit( item ) )
+                            if ( currentChar == '~' )
                             {
-                                startWrite = false;
-                                if ( temp == id )
-                                {
-                                    return true;
-                                }
-                                else
-                                {
-                                    temp = "";
-                                }
+                                matchIndex = 1;
+                            }
+                        }
+                        else if ( matchIndex <= idLength )
+                        {
+                            if ( currentChar == id[matchIndex - 1] )
+                            {
+                                matchIndex++;
                             }
                             else
                             {
-                                temp += item;
+                                matchIndex = ( currentChar == '~' ) ? 1 : 0;
                             }
                         }
-                        break;
+                        else
+                        {
+                            if ( currentChar == '~' )
+                            {
+                                // Found the complete pattern ~id~
+                                return true;
+                            }
+                            else // Character after ID wasn't '~'
+                            {
+                                matchIndex = ( currentChar == '~' ) ? 1 : 0;
+                            }
+                        }
+                    }
                 }
             }
+
             return false;
         }
     }

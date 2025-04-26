@@ -3,8 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
 
-using static Adeptar.AdeptarReader;
-
 namespace Adeptar
 {
     /// <summary>
@@ -192,12 +190,12 @@ namespace Adeptar
 
                 if ( c == '"' )
                 {
-                    inString = !inString; // Toggle string state
-                    continue; // Move to next character
+                    inString = !inString;
+                    continue;
                 }
                 if ( inString )
                 {
-                    continue; // Ignore characters inside string literals
+                    continue;
                 }
 
                 switch ( c )
@@ -216,8 +214,8 @@ namespace Adeptar
                     case ',':
                         if ( level == 0 ) // Check if at the top level (not nested)
                         {
-                            delimiterFound = c; // Record the delimiter found
-                            return i;           // Return the index of the delimiter
+                            delimiterFound = c;
+                            return i;
                         }
                         break;
                 }
