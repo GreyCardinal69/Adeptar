@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections;
-using BenchmarkDotNet.Attributes;
 using Adeptar;
+using BenchmarkDotNet.Attributes;
 using Newtonsoft.Json;
-using System.Reflection;
 using static AdeptarBenchmarks.MemoryBenchmarkerDemo;
 
 namespace AdeptarBenchmarks
@@ -18,25 +16,8 @@ namespace AdeptarBenchmarks
             string serializePath = AppDomain.CurrentDomain.BaseDirectory + @"seri.ader";
             string deserializePath = AppDomain.CurrentDomain.BaseDirectory + @"deser.ader";
 
-            var type = typeof( MemoryBenchmarkerDemo.MyClassWithNested );
-            var obj = new MemoryBenchmarkerDemo.MyClassWithNested()
-            {
-                date = DateTime.Now,
-                Maps = new Dictionary<int, string>() { { 1, "hello" }, { 2, "world" } },
-                Number = 1,
-                Number3 = 4,
-                Odds = new int[] { 1, 3, 5, 7, 9 },
-                type = SerializableType.Dictionary,
-                NestedObject = new()
-                {
-                    Number = 1,
-                    Type = SerializableType.Dictionary,
-                }
-            };
 
-            AdeptarBaker.BakeClassStruct( type, obj );
 
-            Console.WriteLine(  AdeptarConverter.SerializeUsingBaked( obj, type ) );
 #else
             AdeptarBaker.BakeClassStruct( typeof( MemoryBenchmarkerDemo.MyClass ), new MemoryBenchmarkerDemo.MyClass() );
             AdeptarBaker.BakeClassStruct( typeof( MyClassWithNested ), new MyClassWithNested() );
@@ -50,11 +31,6 @@ namespace AdeptarBenchmarks
     [MemoryDiagnoser]
     public class MemoryBenchmarkerDemo
     {
-        public static Type Type = typeof( MemoryBenchmarkerDemo.MyClass );
-        public static Type Type2 = typeof( MemoryBenchmarkerDemo.MyClassWithNested );
-        public static int A1 = AdeptarBaker.IntBakeClassStruct( Type, new MyClass() );
-        public static int A2 = AdeptarBaker.IntBakeClassStruct( Type2, new MyClassWithNested() );
-
         public class NestedClass
         {
             public int Number;
@@ -96,11 +72,11 @@ namespace AdeptarBenchmarks
             public Dictionary<int, string> Maps;
             public DateTime date;
         }
-
+        
         [Benchmark]
         public void ClassAdeptarEmpty()
         {
-            AdeptarConverter.Serialize( new MyClass(), Type );
+            AdeptarConverter.Serialize( new MyClass() );
         }
 
         [Benchmark]
@@ -120,7 +96,7 @@ namespace AdeptarBenchmarks
                 Number3 = 4,
                 Odds = new int[] { 1, 3, 5, 7, 9 },
                 type = SerializableType.Dictionary
-            }, Type );
+            } );
         }
 
         [Benchmark]
@@ -156,7 +132,7 @@ namespace AdeptarBenchmarks
                     Number = 1,
                     Type = SerializableType.Dictionary,
                 }
-            }, Type2 );
+            } );
         }
 
         [Benchmark]
@@ -189,7 +165,7 @@ namespace AdeptarBenchmarks
                 Number3 = 4,
                 Odds = new int[] { 1, 3, 5, 7, 9 },
                 type = SerializableType.Dictionary
-            }, Type );
+            } );
         }
 
         [Benchmark]
@@ -206,12 +182,10 @@ namespace AdeptarBenchmarks
             }, Newtonsoft.Json.Formatting.None );
         }
 
-        public static Type Type3 = typeof( (int, string, MyClass, int[]) );
-
         [Benchmark]
         public void TupleAdeptar()
         {
-            AdeptarConverter.Serialize( (1, "Hello World", new MyClass(), new int[] { 1, 2, 3, 4 }), Type3 );
+            AdeptarConverter.Serialize( (1, "Hello World", new MyClass(), new int[] { 1, 2, 3, 4 }) );
         }
 
         [Benchmark]
@@ -220,12 +194,10 @@ namespace AdeptarBenchmarks
             JsonConvert.SerializeObject( (1, "Hello World", new MyClass(), new int[] { 1, 2, 3, 4 }) );
         }
 
-        public static Type Type4 = typeof( Dictionary<int, int[]> );
-
         [Benchmark]
         public void DictionaryWithArrayKeyAdeptar()
         {
-            AdeptarConverter.Serialize( new Dictionary<int, int[]> { { 1, new int[] { 1, 2, 3, 4 } }, { 2, new int[] { 3, 4, 5, 6 } } }, Type4 );
+            AdeptarConverter.Serialize( new Dictionary<int, int[]> { { 1, new int[] { 1, 2, 3, 4 } }, { 2, new int[] { 3, 4, 5, 6 } } } );
         }
 
         [Benchmark]
@@ -234,12 +206,10 @@ namespace AdeptarBenchmarks
             JsonConvert.SerializeObject( new Dictionary<int, int[]> { { 1, new int[] { 1, 2, 3, 4 } }, { 2, new int[] { 3, 4, 5, 6 } } } );
         }
 
-        public static Type Type5 = typeof( Dictionary<int, int> );
-
         [Benchmark]
         public void DictionaryAdeptar()
         {
-            AdeptarConverter.Serialize( new Dictionary<int, int> { { 1, 2 }, { 3, 4 } }, Type5 );
+            AdeptarConverter.Serialize( new Dictionary<int, int> { { 1, 2 }, { 3, 4 } } );
         }
 
         [Benchmark]
@@ -248,12 +218,10 @@ namespace AdeptarBenchmarks
             JsonConvert.SerializeObject( new Dictionary<int, int> { { 1, 2 }, { 3, 4 } } );
         }
 
-        public static Type Type6 = typeof( int[,,,] );
-
         [Benchmark]
         public void FourDimensionalArrayAdeptar()
         {
-            AdeptarConverter.Serialize( new int[2, 2, 2, 2] { { { { 1, 2 }, { 3, 4 } }, { { 5, 6 }, { 7, 8 } } }, { { { 1, 2 }, { 3, 4 } }, { { 5, 6 }, { 7, 8 } } } }, Type6 );
+            AdeptarConverter.Serialize( new int[2, 2, 2, 2] { { { { 1, 2 }, { 3, 4 } }, { { 5, 6 }, { 7, 8 } } }, { { { 1, 2 }, { 3, 4 } }, { { 5, 6 }, { 7, 8 } } } } );
         }
 
         [Benchmark]
@@ -262,12 +230,10 @@ namespace AdeptarBenchmarks
             JsonConvert.SerializeObject( new int[2, 2, 2, 2] { { { { 1, 2 }, { 3, 4 } }, { { 5, 6 }, { 7, 8 } } }, { { { 1, 2 }, { 3, 4 } }, { { 5, 6 }, { 7, 8 } } } } );
         }
 
-        public static Type Type7 = typeof( List<List<int>> );
-
         [Benchmark]
         public void NestedListAdeptar()
         {
-            AdeptarConverter.Serialize( new List<List<int>>() { new List<int>() { 1, 2, 3, 4 }, new List<int>() { 5, 6, 7, 8 } }, Type7 );
+            AdeptarConverter.Serialize( new List<List<int>>() { new List<int>() { 1, 2, 3, 4 }, new List<int>() { 5, 6, 7, 8 } } );
         }
 
         [Benchmark]
@@ -276,12 +242,10 @@ namespace AdeptarBenchmarks
             JsonConvert.SerializeObject( new List<List<int>>() { new List<int>() { 1, 2, 3, 4 }, new List<int>() { 5, 6, 7, 8 } } );
         }
 
-        public static Type Type8 = typeof( int[] );
-
         [Benchmark]
         public void ArrayAdeptar()
         {
-            AdeptarConverter.Serialize( new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, }, Type8 );
+            AdeptarConverter.Serialize( new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, } );
         }
 
         [Benchmark]
@@ -290,12 +254,10 @@ namespace AdeptarBenchmarks
             JsonConvert.SerializeObject( new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, } );
         }
 
-        public static Type Type9 = typeof( string );
-
         [Benchmark]
         public void StringAdeptar()
         {
-            AdeptarConverter.Serialize( @"hello world", Type9 );
+            AdeptarConverter.Serialize( @"hello world" );
         }
 
         [Benchmark]
@@ -304,12 +266,10 @@ namespace AdeptarBenchmarks
             JsonConvert.SerializeObject( @"hello world" );
         }
 
-        public static Type Type10 = typeof( long );
-
         [Benchmark]
         public void LongAdeptar()
         {
-            AdeptarConverter.Serialize( 12414124124, Type10 );
+            AdeptarConverter.Serialize( 12414124124 );
         }
 
         [Benchmark]
@@ -318,12 +278,10 @@ namespace AdeptarBenchmarks
             JsonConvert.SerializeObject( 12414124124 );
         }
 
-        public static Type Type11 = typeof( bool );
-
         [Benchmark]
         public void BoolAdeptar()
         {
-            AdeptarConverter.Serialize( true, Type11 );
+            AdeptarConverter.Serialize( true );
         }
 
         [Benchmark]
@@ -332,12 +290,10 @@ namespace AdeptarBenchmarks
             JsonConvert.SerializeObject( true );
         }
 
-        public static Type Type12 = typeof( double );
-
         [Benchmark]
         public void DoubleAdeptar()
         {
-            AdeptarConverter.Serialize( 5521355.124, Type12 );
+            AdeptarConverter.Serialize( 5521355.124 );
         }
 
         [Benchmark]
@@ -346,12 +302,10 @@ namespace AdeptarBenchmarks
             JsonConvert.SerializeObject( 5521355.124 );
         }
 
-        public static Type Type13 = typeof( Enum );
-
         [Benchmark]
         public void EnumAdeptar()
         {
-            AdeptarConverter.Serialize( System.Xml.Formatting.Indented, Type13 );
+            AdeptarConverter.Serialize( System.Xml.Formatting.Indented );
         }
 
         [Benchmark]
@@ -360,12 +314,10 @@ namespace AdeptarBenchmarks
             JsonConvert.SerializeObject( System.Xml.Formatting.Indented );
         }
 
-        public static Type Type14 = typeof( List<string> );
-
         [Benchmark]
         public void ListAdeptar()
         {
-            AdeptarConverter.Serialize( new List<string>() { "Some", "Random", "Words", "Words" }, Type14 );
+            AdeptarConverter.Serialize( new List<string>() { "Some", "Random", "Words", "Words" } );
         }
 
         [Benchmark]
