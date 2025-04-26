@@ -32,10 +32,11 @@
 *.dylib
 
 .vs/
+.idea/
 [Bb]in/
 [Oo]bj/
-.user
-.suo
+*.user
+*.suo
 [Bb]in/**/*.xml
 
 *bin/*
