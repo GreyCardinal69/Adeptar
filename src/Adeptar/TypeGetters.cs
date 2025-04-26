@@ -52,11 +52,55 @@ namespace Adeptar
         private static readonly Type _decimalType = typeof(decimal);
 
         /// <summary>
-        /// Gets the <see cref="SerializableType"/> of the provided <see cref="Type"/>.
+        /// Cache for GetSerializableType results, mapping Type to its SerializableType.
+        /// Uses ConcurrentDictionary for thread safety.
         /// </summary>
-        /// <param name="fInfo">The <see cref="Type"/> to check.</param>
-        /// <returns>The <see cref="SerializableType"/> of the provided <see cref="Type"/>.</returns>
-        public static SerializableType GetSerializableType( Type fInfo )
+        private static readonly ConcurrentDictionary<Type, SerializableType> _serializableTypeCache =
+            new ConcurrentDictionary<Type, SerializableType>();
+
+        /// <summary>
+        /// Gets the <see cref="SerializableType"/> classification for a given <see cref="Type"/>, utilizing a cache for performance.
+        /// </summary>
+        /// <param name="fInfo">The <see cref="Type"/> instance to classify, typically representing a field or property type during serialization.</param>
+        /// <returns>
+        /// The cached or calculated <see cref="SerializableType"/> corresponding to the input <paramref name="fInfo"/>.
+        /// Returns <see cref="SerializableType.Class"/> as a default if the type cannot be determined by the internal logic.
+        /// </returns>
+        /// <remarks>
+        /// This method acts as the public accessor for serialization type classification.
+        /// It first checks a static, thread-safe cache (<c>_serializableTypeCache</c>) for a previously computed result for the given <paramref name="fInfo"/>.
+        /// If the type is found in the cache, the cached value is returned immediately.
+        /// If the type is not found (cache miss), it calls the internal <see cref="GetSerializableTypeInternal"/> method to perform the actual classification logic.
+        /// The result from the internal method is then added to the cache before being returned.
+        /// </remarks>
+        /// <seealso cref="GetSerializableTypeInternal(Type)"/>
+        internal static SerializableType GetSerializableType( Type fInfo )
+        {
+            if ( _serializableTypeCache.TryGetValue( fInfo, out SerializableType cachedResult ) )
+            {
+                return cachedResult;
+            }
+
+            SerializableType type = GetSerializableTypeInternal( fInfo );
+            _serializableTypeCache.TryAdd( fInfo, type );
+
+            return type;
+        }
+
+        /// <summary>
+        /// Performs the core logic to determine the <see cref="SerializableType"/> classification for a given <see cref="Type"/>.
+        /// </summary>
+        /// <param name="fInfo">The <see cref="Type"/> instance to classify.</param>
+        /// <returns>
+        /// The calculated <see cref="SerializableType"/> based on the type's characteristics.
+        /// Returns <see cref="SerializableType.Class"/> as a fallback if the type doesn't match any specific classification rules.
+        /// </returns>
+        /// <remarks>
+        /// This private helper method contains the actual, non-cached classification logic. It is called by <see cref="GetSerializableType(Type)"/> only when a cache miss occurs.
+        /// The sequence of checks within this method (<c>if</c> statements) is intentionally ordered based on performance benchmarks for common types.
+        /// </remarks>
+        /// <seealso cref="GetSerializableType(Type)"/>
+        private static SerializableType GetSerializableTypeInternal( Type fInfo )
         {
             if ( fInfo == _stringType )
                 return SerializableType.String;
