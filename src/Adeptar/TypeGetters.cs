@@ -117,7 +117,7 @@ namespace Adeptar
                 Type genericTypeDef = fInfo.GetGenericTypeDefinition();
                 if ( IsTupleGenericKnown( genericTypeDef ) )
                     return SerializableType.Tuple;
-                if ( genericTypeDef ==  _openGenericDictionaryType )
+                if ( genericTypeDef == _openGenericDictionaryType )
                     return SerializableType.Dictionary;
             }
             if ( fInfo.IsArray )
@@ -158,7 +158,7 @@ namespace Adeptar
             }
 
             DeserializableType type = GetDeserializableTypeInternal( fInfo );
-            _deserializableTypeCache.TryAdd(fInfo, type);
+            _deserializableTypeCache.TryAdd( fInfo, type );
 
             return type;
         }
@@ -226,10 +226,7 @@ namespace Adeptar
         /// </summary>
         /// <param name="openGenericTupleType">The open generic type definition to check (e.g., obtained via <c>type.GetGenericTypeDefinition()</c>).</param>
         /// <returns><c>true</c> if the specified type is found within the <see cref="_valueTupleGenericTypes"/> set; otherwise, <c>false</c>.</returns>
-        private static bool IsTupleGenericKnown( Type openGenericTupleType )
-        {
-            return _valueTupleGenericTypes.Contains( openGenericTupleType );
-        }
+        private static bool IsTupleGenericKnown( Type openGenericTupleType ) => _valueTupleGenericTypes.Contains( openGenericTupleType );
 
         /// <summary>
         /// Gets the object's <see cref="SerializableType"/>.
@@ -254,14 +251,13 @@ namespace Adeptar
                 case bool _:
                 case IConvertible _:
                     return SerializableType.Simple;
-                case Array array:
+                case IList array:
+                    // IsMultiDimensionalArray handles potential error of trying to get rank of pure IList.
                     return IsMultiDimensionalArray( array ) ? SerializableType.DimensionalArray : SerializableType.Array;
                 case ITuple _:
                     return SerializableType.Tuple;
                 case IDictionary _:
                     return SerializableType.Dictionary;
-                case IList _:
-                    return SerializableType.Array;
                 default:
                     return SerializableType.Class;
             }
@@ -272,8 +268,12 @@ namespace Adeptar
         /// </summary>
         /// <param name="received">The object to check.</param>
         /// <returns>True if the object is an array and has rank > 1.</returns>
-        public static bool IsMultiDimensionalArray( object received ) => ( received as Array ).Rank > 1;
-
+        public static bool IsMultiDimensionalArray( object received )
+        {
+            if ( received is Array arr )
+                return arr.Rank > 1;
+            return false;
+        }
 
         /// <summary>
         /// Parses a span containing an enum member name into the specified enum type (non-generic).

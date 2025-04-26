@@ -18,6 +18,12 @@ namespace Adeptar
         /// <returns>The .NET version of the tuple.</returns>
         internal static object DeserializeTuple( ReadOnlySpan<char> text, Type type )
         {
+            if ( text.Length < 2 || text[0] != '(' || text[text.Length - 1] != ')' )
+            {
+                throw new AdeptarException( $"Invalid tuple format. Expected text enclosed in parentheses '()'. Received: '{text.ToString()}'" );
+            }
+
+
             int level = 0;
             int i = 0;
             int w = 0;
