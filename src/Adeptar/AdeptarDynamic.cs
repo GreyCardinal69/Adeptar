@@ -80,7 +80,7 @@ namespace Adeptar
                 throw new AdeptarException( $"Invalid variable name {key}, no property or field with such a name exists." );
             }
 
-            return ( T ) DeserializeObject( typeof( T ), _keyMaps[key] );
+            return (T)DeserializeObject( typeof( T ), _keyMaps[key] );
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace Adeptar
             }
             str.Append( '}' );
 
-            return ( T ) DeserializeObject( typeof( T ), str.ToString() );
+            return (T)DeserializeObject( typeof( T ), str.ToString() );
         }
 
         /// <summary>
@@ -140,7 +140,7 @@ namespace Adeptar
             }
             str.Append( '}' );
 
-            return ( T ) DeserializeObject( typeof( T ), str.ToString() );
+            return (T)DeserializeObject( typeof( T ), str.ToString() );
         }
 
         /// <summary>
@@ -170,7 +170,7 @@ namespace Adeptar
             }
             str.Append( '}' );
 
-            return ( T ) DeserializeClassStructWithMap( str.ToString(), typeof( T ), map );
+            return (T)DeserializeClassStructWithMap( str.ToString(), typeof( T ), map );
         }
 
         /// <summary>

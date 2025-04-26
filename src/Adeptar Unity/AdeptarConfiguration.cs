@@ -9,13 +9,13 @@
         /// <summary>
         /// Creates a new empty instance of an <see cref="AdeptarConfiguration"/> class.
         /// </summary>
-        public AdeptarConfiguration () { }
+        public AdeptarConfiguration() { }
 
         /// <summary>
         /// Creates a new instance of an <see cref="AdeptarConfiguration"/> class with an array of fields and or properties to ignore.
         /// </summary>
         /// <param name="toIgnore"></param>
-        public AdeptarConfiguration ( string[] toIgnore )
+        public AdeptarConfiguration( string[] toIgnore )
         {
             ToIgnore = toIgnore;
         }

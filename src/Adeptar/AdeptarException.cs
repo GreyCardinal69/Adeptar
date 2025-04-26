@@ -10,14 +10,14 @@ namespace Adeptar
         /// <summary>
         /// Initializes a new instance of the <see cref="AdeptarException"/> class.
         /// </summary>
-        public AdeptarException () { }
+        public AdeptarException() { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AdeptarException"/> class
         /// with a specified error message.
         /// </summary>
         /// <param name="message">The error message that explains the reason for the exception.</param>
-        public AdeptarException ( string message ) : base(message)
+        public AdeptarException( string message ) : base( message )
         {
         }
     }

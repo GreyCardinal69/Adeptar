@@ -21,7 +21,7 @@ namespace Adeptar
         internal static IList DeserializeArray( ReadOnlySpan<char> text, Type type )
         {
             if ( text.Length == 2 )
-                return ( IList ) Array.CreateInstance( type.GetElementType(), 0 );
+                return (IList)Array.CreateInstance( type.GetElementType(), 0 );
 
             bool inString = false;
             int length = 0;
@@ -243,7 +243,7 @@ namespace Adeptar
         internal static IList DeserializeList( ReadOnlySpan<char> text, Type type )
         {
             if ( text.Length == 2 )
-                return ( IList ) Array.CreateInstance( type.GetElementType(), 0 );
+                return (IList)Array.CreateInstance( type.GetElementType(), 0 );
 
             bool inString = false;
 
@@ -380,14 +380,14 @@ namespace Adeptar
                     case '>':
                         if ( inSizes )
                         {
-                            sizes.Add( ( int ) NumericResolver( IntType, text.Slice( j, i - j ).ToString() ) );
+                            sizes.Add( (int)NumericResolver( IntType, text.Slice( j, i - j ).ToString() ) );
                             j = i + 1;
                             inSizes = false;
                             exit = true;
                         }
                         break;
                     case ',':
-                        sizes.Add( ( int ) NumericResolver( IntType, text.Slice( j, i - j ).ToString() ) );
+                        sizes.Add( (int)NumericResolver( IntType, text.Slice( j, i - j ).ToString() ) );
                         j = i + 1;
                         break;
                 }

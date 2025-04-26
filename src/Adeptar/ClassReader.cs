@@ -1,6 +1,6 @@
-﻿using FastMember;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using FastMember;
 using static Adeptar.AdeptarReader;
 
 namespace Adeptar

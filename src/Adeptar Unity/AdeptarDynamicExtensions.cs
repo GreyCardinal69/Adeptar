@@ -11,7 +11,7 @@
         /// </summary>
         /// <param name="dynm"></param>
         /// <param name="path"></param>
-        public static AdeptarDynamic FromFile ( this AdeptarDynamic dynm, string path )
+        public static AdeptarDynamic FromFile( this AdeptarDynamic dynm, string path )
             => AdeptarDynamic.FromFile( path );
 
         /// <summary>
@@ -19,7 +19,7 @@
         /// </summary>
         /// <param name="dynm"></param>
         /// <param name="str"></param>
-        public static AdeptarDynamic FromString ( this AdeptarDynamic dynm, string str )
+        public static AdeptarDynamic FromString( this AdeptarDynamic dynm, string str )
             => AdeptarDynamic.FromString( str );
     }
 }

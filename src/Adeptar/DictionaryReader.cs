@@ -20,7 +20,7 @@ namespace Adeptar
         internal static IDictionary DeserializeDictionary( ReadOnlySpan<char> text, Type type )
         {
             if ( text.Length == 2 )
-                return ( IDictionary ) Activator.CreateInstance( type );
+                return (IDictionary)Activator.CreateInstance( type );
 
             int level = 0;
             int i = 0;

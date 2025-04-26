@@ -32,26 +32,29 @@ namespace Adeptar.Unity
             text = text.Slice( 1, text.Length - 1 );
             string name = "";
 
-            foreach (char item in text)
+            foreach ( char item in text )
             {
-                switch (item)
+                switch ( item )
                 {
                     case '"':
-                        if (falseEnd && inString){
+                        if ( falseEnd && inString )
+                        {
                             falseEnd = false;
                         }
-                        else if (!falseEnd)
+                        else if ( !falseEnd )
                             inString = !inString;
                         break;
                     case '[':
-                        if (!inString){
+                        if ( !inString )
+                        {
                             level++; nested = true;
                         }
-                        else if (!inString)
+                        else if ( !inString )
                             level++;
                         break;
                     case ']':
-                        if (level - 1 == 0 && !inString){
+                        if ( level - 1 == 0 && !inString )
+                        {
                             nested = false;
                         }
                         level--;
@@ -59,46 +62,56 @@ namespace Adeptar.Unity
                     case '\'':
                         break;
                     case '\\':
-                        if (inString){
+                        if ( inString )
+                        {
                             falseEnd = true;
-                        }else{
+                        }
+                        else
+                        {
                             throw new AdeptarException( "Invalid character '\\', such a character can appear only inside a string." );
                         }
                         break;
                     case ',':
-                        if (!nested && !inString){
+                        if ( !nested && !inString )
+                        {
                             FieldInfo field = type.GetField( name );
-                            field.SetValue( target, DeserializeObject( field.FieldType, text.Slice( j, w - j )));
+                            field.SetValue( target, DeserializeObject( field.FieldType, text.Slice( j, w - j ) ) );
                             j = w + 1;
                             i++;
                         }
                         break;
                     case '{':
-                        if (!inString){
+                        if ( !inString )
+                        {
                             level++;
                             nested = true;
                         }
                         break;
                     case '}':
-                        if (level - 1 == 0 && !inString){
+                        if ( level - 1 == 0 && !inString )
+                        {
                             nested = false;
                         }
                         level--;
                         break;
                     case '(':
-                        if (!inString){
+                        if ( !inString )
+                        {
                             level++;
                             nested = true;
                         }
                         break;
                     case ')':
-                        if (level - 1 == 0 && !inString){
+                        if ( level - 1 == 0 && !inString )
+                        {
                             nested = false;
                             level--;
                         }
-                        else if (level - 1 == -1 && !inString){
+                        else if ( level - 1 == -1 && !inString )
+                        {
                             level--;
-                            if (w == text.Length - 1){
+                            if ( w == text.Length - 1 )
+                            {
                                 FieldInfo field = type.GetField( name );
                                 field.SetValue( target, DeserializeObject( field.FieldType, text.Slice( j, w - j ) ) );
                                 j = w + 1;
@@ -107,17 +120,19 @@ namespace Adeptar.Unity
                         }
                         break;
                     case ':':
-                        if (!nested && !inString){
+                        if ( !nested && !inString )
+                        {
                             name = text.Slice( j, w - j ).ToString();
                             j = w + 1;
                         }
                         break;
                     default:
-                        if (!inString              &&
-                            item != '_'            &&
-                            item != '-'            &&
+                        if ( !inString &&
+                            item != '_' &&
+                            item != '-' &&
                             !char.IsLetter( item ) &&
-                            !char.IsDigit ( item ) ){
+                            !char.IsDigit( item ) )
+                        {
                             throw new AdeptarException( $"Invalid character \"{item}\" outside of string at position {i} ( indentation removed )." );
                         }
                         break;

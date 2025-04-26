@@ -1,7 +1,7 @@
-﻿using FastMember;
-using System;
+﻿using System;
 using System.Reflection;
 using System.Text;
+using FastMember;
 using static Adeptar.AdeptarWriter;
 using static Adeptar.TypeGetters;
 
@@ -112,7 +112,7 @@ namespace Adeptar
                     if ( vals[i].Type == _adeptarConfiguration )
                     {
                         object value = accessor[target, vals[i].Name];
-                        config = value is null ? config : ( AdeptarConfiguration ) value;
+                        config = value is null ? config : (AdeptarConfiguration)value;
                         config.MustBeUsed = true;
                         break;
                     }

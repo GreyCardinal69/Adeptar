@@ -15,7 +15,7 @@ namespace Adeptar
         /// Deserializes the Adeptar string from the file at the specified path to the .NET <see cref="Type"/>.
         /// </summary>
         /// <param name="path">The path to the object.</param>
-        public static T Deserialize<T>( string path ) => ( T ) DeserializeObject( typeof( T ), CleanText( File.ReadAllText( path ) ) );
+        public static T Deserialize<T>( string path ) => (T)DeserializeObject( typeof( T ), CleanText( File.ReadAllText( path ) ) );
 
         /// <summary>
         /// Deserializes the Adeptar string from the file at the specified path to the .NET <see cref="Type"/>.
@@ -28,7 +28,7 @@ namespace Adeptar
         /// Deserializes the Adeptar string to the specified .NET type.
         /// </summary>
         /// <param name="content">The Adeptar string.</param>
-        public static T DeserializeString<T>( string content ) => ( T ) DeserializeObject( typeof( T ), CleanText( content ) );
+        public static T DeserializeString<T>( string content ) => (T)DeserializeObject( typeof( T ), CleanText( content ) );
 
         /// <summary>
         /// Deserializes the Adeptar string to the specified .NET <see cref="Type"/>.
@@ -45,7 +45,7 @@ namespace Adeptar
         /// <param name="path">The path to the file where the object is serialized.</param>
         /// <param name="id">The id used to serialize the object with.</param>
         /// <returns>The deserialized .NET object.</returns>
-        public static T DeserializeAppended<T>( string path, string id ) => ( T ) DeserializeObject( typeof( T ), FetchAppendedSegment( File.ReadAllText( path ), id, 0 ) );
+        public static T DeserializeAppended<T>( string path, string id ) => (T)DeserializeObject( typeof( T ), FetchAppendedSegment( File.ReadAllText( path ), id, 0 ) );
 
         /// <summary>
         /// Deserializes an object serialized with the ID feature. Accepts <see cref="Type"/>.
@@ -65,7 +65,7 @@ namespace Adeptar
         /// <returns>The deserialized .NET object.</returns>
         public static T DeserializeAppendedWithSharedData<T>( string path, string id )
         {
-            ReadOnlySpan<char> text = File.ReadAllText( path );
+            ReadOnlySpan<char> text = CleanText(File.ReadAllText( path ));
 
             bool inString = false;
             bool falseEnd = false;
@@ -110,14 +110,14 @@ namespace Adeptar
                 }
             }
 
-            return ( T ) DeserializeObject( typeof( T ), string.Concat(
+            return (T)DeserializeObject( typeof( T ), string.Concat(
                 // takes the string data of the required object and removes the last comma and '}' from it.
                 string.Concat( FetchAppendedSegment( text, id, 2 ), "," ),
                 // appends the shared data at the end of the string above, when deserializing the ClassReader will read the field or property twice
                 // the individual value of the field/property will be overriden by the shared data value, since it is deserialized later.
                 // This is faster than deserializing the shared data as an individual object, deserializing the needed object, and then iterating
                 // through fields/properties of both and setting values.
-                string.Concat( CleanText( text.Slice( 3, i - 5 ) ), "}" ) ) );
+                string.Concat( text.Slice( 3, i - 5 ), "}" ) ) );
         }
 
         /// <summary>

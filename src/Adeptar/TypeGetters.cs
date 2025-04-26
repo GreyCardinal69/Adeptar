@@ -11,20 +11,6 @@ namespace Adeptar
     public static class TypeGetters
     {
         /// <summary>
-        /// Checks if the provided object is a <see cref="List{T}"/>.
-        /// </summary>
-        /// <param name="obj">The object to check.</param>
-        /// <returns>
-        /// True if the object is a <see cref="List{T}"/>.
-        /// </returns>
-        public static bool IsList( object obj )
-        {
-            return obj is IList &&
-                   obj.GetType().IsGenericType &&
-                   obj.GetType().GetGenericTypeDefinition().IsAssignableFrom( typeof( List<> ) );
-        }
-
-        /// <summary>
         /// Checks if an object is of type <see cref="ValueTuple"/>, such as (<see cref="int"/>, <see cref="int"/>).
         /// </summary>
         /// <param name="tuple">The type to check for.</param>
@@ -273,7 +259,7 @@ namespace Adeptar
         /// <typeparam name="T">The type to parse to.</typeparam>
         /// <param name="obj">The object to parse.</param>
         /// <returns>The converted enum.</returns>
-        public static T ParseToEnum<T>( object obj ) => ( T ) Enum.Parse( typeof( T ), obj.ToString() );
+        public static T ParseToEnum<T>( object obj ) => (T)Enum.Parse( typeof( T ), obj.ToString() );
 
         /// <summary>
         /// Parses an object into an enum without a generic T type.

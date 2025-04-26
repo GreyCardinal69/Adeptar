@@ -19,8 +19,8 @@ namespace Adeptar.Unity
         /// <returns>The .NET version of the <see cref="Dictionary{TKey, TValue}"/>.</returns>
         internal static IDictionary DeserializeDictionary( ReadOnlySpan<char> text, Type type )
         {
-            if (text.Length == 2)
-                return ( IDictionary ) Activator.CreateInstance( type );
+            if ( text.Length == 2 )
+                return (IDictionary)Activator.CreateInstance( type );
 
             int level = 0;
             int i = 0;
@@ -42,37 +42,43 @@ namespace Adeptar.Unity
 
             text = text.Slice( 1, text.Length - 1 );
 
-            foreach (char item in text)
+            foreach ( char item in text )
             {
-                switch (item)
+                switch ( item )
                 {
                     case '@':
-                        if (!inString && !nested){
+                        if ( !inString && !nested )
+                        {
                             complexKey = true;
                         }
                         break;
                     case '"':
-                        if (falseEnd && inString){
+                        if ( falseEnd && inString )
+                        {
                             falseEnd = false;
                         }
-                        else if (!falseEnd)
+                        else if ( !falseEnd )
                             inString = !inString;
                         break;
                     case '[':
-                        if (!inString && !complexKey){
+                        if ( !inString && !complexKey )
+                        {
                             level++; nested = true;
                         }
-                        else if (complexKey && !inString)
+                        else if ( complexKey && !inString )
                             level++;
                         break;
                     case ']':
-                        if (level - 1 == 0 && !inString && complexKey){
+                        if ( level - 1 == 0 && !inString && complexKey )
+                        {
                             complexKey = false;
                         }
-                        else if (level - 1 == 0 && !inString)
+                        else if ( level - 1 == 0 && !inString )
                             nested = false;
-                        else if (level - 1 == -1 && !inString && !complexKey){
-                            if (i == text.Length - 1){
+                        else if ( level - 1 == -1 && !inString && !complexKey )
+                        {
+                            if ( i == text.Length - 1 )
+                            {
                                 value = DeserializeObject( valueType, text.Slice( j, i - j ) );
                                 motherDictionary.Add( key, value );
                             }
@@ -82,55 +88,65 @@ namespace Adeptar.Unity
                     case '\'':
                         break;
                     case '\\':
-                        if (inString){
+                        if ( inString )
+                        {
                             falseEnd = true;
-                        }else{
+                        }
+                        else
+                        {
                             throw new AdeptarException( "Invalid character '\\', such a character can appear only inside a string." );
                         }
                         break;
                     case ',':
-                        if (!complexKey && !nested && !inString){
+                        if ( !complexKey && !nested && !inString )
+                        {
                             value = DeserializeObject( valueType, text.Slice( j, i - j ) );
                             j = i + 1;
                             motherDictionary.Add( key, value );
                         }
                         break;
                     case '{':
-                        if (!inString){
+                        if ( !inString )
+                        {
                             level++;
                             nested = true;
                         }
                         break;
                     case '}':
-                        if (level - 1 == 0 && !inString){
+                        if ( level - 1 == 0 && !inString )
+                        {
                             nested = false;
                             level--;
                         }
                         break;
                     case '(':
-                        if (!inString){
+                        if ( !inString )
+                        {
                             level++;
                             nested = true;
                         }
                         break;
                     case ')':
-                        if (level - 1 == 0 && !inString){
+                        if ( level - 1 == 0 && !inString )
+                        {
                             nested = false;
                             level--;
                         }
                         break;
                     case ':':
-                        if (!nested && !inString && !complexKey){
+                        if ( !nested && !inString && !complexKey )
+                        {
                             key = DeserializeObject( keyType, text.Slice( j, i - j ) );
                             j = i + 1;
                         }
                         break;
                     default:
-                        if (!inString              &&
-                            item != '_'            &&
-                            item != '-'            &&
+                        if ( !inString &&
+                            item != '_' &&
+                            item != '-' &&
                             !char.IsLetter( item ) &&
-                            !char.IsDigit ( item ) ){
+                            !char.IsDigit( item ) )
+                        {
                             throw new AdeptarException( $"Invalid character \"{item}\" outside of string at position {i} ( indentation removed )." );
                         }
                         break;

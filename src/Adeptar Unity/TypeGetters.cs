@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using static Adeptar.AdeptarWriter;
 
 namespace Adeptar.Unity
 {
@@ -96,7 +95,7 @@ namespace Adeptar.Unity
                     return SerializableType.Tuple;
                 if ( genericTypeDef == _cachedTypes[0] )
                     return SerializableType.Dictionary;
-                Console.WriteLine( genericTypeDef  == _cachedTypes[1] || genericTypeDef == _cachedTypes[2] );
+                Console.WriteLine( genericTypeDef == _cachedTypes[1] || genericTypeDef == _cachedTypes[2] );
             }
             if ( fInfo.IsArray )
                 return SerializableType.DimensionalArray;
@@ -277,7 +276,7 @@ namespace Adeptar.Unity
         /// <typeparam name="T">The type to parse to.</typeparam>
         /// <param name="obj">The object to parse.</param>
         /// <returns>The converted enum.</returns>
-        public static T ParseToEnum<T>( object obj ) => ( T ) Enum.Parse( typeof( T ), obj.ToString() );
+        public static T ParseToEnum<T>( object obj ) => (T)Enum.Parse( typeof( T ), obj.ToString() );
 
         /// <summary>
         /// Parses an object into an enum without a generic T type.

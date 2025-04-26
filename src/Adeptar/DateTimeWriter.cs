@@ -41,7 +41,7 @@ namespace Adeptar
 
         private static char Digit( int value )
         {
-            return ( char ) ( value + '0' );
+            return (char)( value + '0' );
         }
     }
 }

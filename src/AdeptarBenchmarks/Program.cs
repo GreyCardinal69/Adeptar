@@ -19,9 +19,6 @@ namespace AdeptarBenchmarks
 
 
 #else
-            AdeptarBaker.BakeClassStruct( typeof( MemoryBenchmarkerDemo.MyClass ), new MemoryBenchmarkerDemo.MyClass() );
-            AdeptarBaker.BakeClassStruct( typeof( MyClassWithNested ), new MyClassWithNested() );
-
             BenchmarkDotNet.Running.BenchmarkRunner.Run<MemoryBenchmarkerDemo>();
             Console.ReadLine();
 #endif
