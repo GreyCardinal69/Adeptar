@@ -31,6 +31,13 @@
 *.so.*
 *.dylib
 
+.vs/
+[Bb]in/
+[Oo]bj/
+.user
+.suo
+[Bb]in/**/*.xml
+
 *bin/*
 *bin\*
 src/*bin/*
