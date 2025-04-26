@@ -12,42 +12,48 @@ namespace Adeptar
     /// </summary>
     internal class TupleReader
     {
+        // --- Caches ---
+        /// <summary>
+        /// Cache for tuple FieldInfo objects keyed by tuple Type and then by field name ("Item1"..."Rest").
+        /// </summary>
         private static readonly ConcurrentDictionary<Type, Dictionary<string, FieldInfo>> _tupleFieldInfoCache =
             new ConcurrentDictionary<Type, Dictionary<string, FieldInfo>>();
+
+        /// <summary>
+        /// Cache for delegates that set a specific field on a boxed tuple instance. Keyed by FieldInfo.
+        /// </summary>
+        /// <remarks>
+        /// Uses a lambda calling FieldInfo.SetValue due to complexities of efficiently setting fields on boxed value types via Expression Trees.
+        /// </remarks>
         private static readonly ConcurrentDictionary<FieldInfo, Action<object, object>> _tupleFieldSetterCache =
             new ConcurrentDictionary<FieldInfo, Action<object, object>>();
 
+        /// <summary>
+        /// Binding flags used to retrieve public instance fields (like Item1, Rest) from ValueTuples.
+        /// </summary>
         private const BindingFlags FieldBindingFlags = BindingFlags.Public | BindingFlags.Instance;
 
         /// <summary>
-        /// Deserializes the Adeptar string representation of a tuple with named fields
-        /// e.g., "(Item1:1,Item2:"abc",Rest:(Item1:true))" into a .NET ValueTuple object.
-        /// Assumes input string has already been cleaned of extraneous whitespace/indentation.
+        /// Deserializes the Adeptar string representation of a tuple into a .NET ValueTuple object.
         /// </summary>
-        /// <param name="cleanedText">The ReadOnlySpan<char> containing the cleaned tuple string representation (including parentheses).</param>
+        /// <param name="cleanedText">The ReadOnlySpan containing the cleaned tuple string representation (including parentheses).</param>
         /// <param name="tupleType">The target <see cref="System.ValueTuple"/> type.</param>
-        /// <returns>The deserialized tuple object (boxed).</returns>
-        /// <exception cref="AdeptarSerializationException">Thrown if the format is invalid, field names mismatch, element count mismatches, or element deserialization fails.</exception>
+        /// <returns>The deserialized tuple object.</returns>
+        /// <exception cref="AdeptarException">Thrown if the format is invalid (e.g., missing '()', ':', ','), field names mismatch, element count mismatches, element deserialization fails, or type mismatches occur during setting.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="tupleType"/> is null (though typically checked before calling).</exception>
         internal static object DeserializeTuple( ReadOnlySpan<char> cleanedText, Type tupleType )
         {
-            // Basic Validation
+            if ( tupleType == null ) throw new ArgumentNullException( nameof( tupleType ) ); // Added explicit null check
+
             if ( cleanedText.Length < 2 || cleanedText[0] != '(' || cleanedText[cleanedText.Length - 1] != ')' )
             {
-                // Use a helper to show limited portion of text in exceptions for long inputs
                 throw new AdeptarException( $"Invalid tuple format. Expected cleaned text enclosed in parentheses '()'. Received start: '{PreviewSpan( cleanedText, 50 )}'" );
             }
-            if ( !tupleType.IsValueType || !IsValueTupleType( tupleType ) )
-            {
-                throw new AdeptarException( $"Invalid target type. Expected a ValueTuple type, but received {tupleType.FullName}." );
-            }
 
-            // Slice off parentheses. No Trim needed as input is pre-cleaned.
             ReadOnlySpan<char> innerSpan = cleanedText.Slice(1, cleanedText.Length - 2);
 
-            // Get expected fields (Item1, Item2, ..., Rest) and cache them
             Dictionary<string, FieldInfo> fields = GetOrCreateTupleFieldMap(tupleType);
 
-            // Create boxed instance
             object target = Activator.CreateInstance(tupleType);
             int elementsFound = 0;
 
@@ -57,7 +63,7 @@ namespace Adeptar
                 {
                     throw new AdeptarException( $"Invalid tuple format. Received empty content '()' but expected fields for type {tupleType.Name}." );
                 }
-                return target; // Return default empty tuple
+                return target;
             }
 
             // --- Parsing State ---
@@ -69,16 +75,13 @@ namespace Adeptar
             while ( currentPosition < innerSpan.Length )
             {
                 char delimiterFound;
-                // Find delimiter in the already cleaned span
                 int delimiterIndex = FindNextTopLevelDelimiter(innerSpan, currentPosition, out delimiterFound);
 
                 int endPosition = (delimiterIndex == -1) ? innerSpan.Length : delimiterIndex;
-                // No Trim() needed on the segment as innerSpan is clean
                 ReadOnlySpan<char> segment = innerSpan.Slice(currentPosition, endPosition - currentPosition);
 
                 if ( expectingName )
                 {
-                    // Segment should be the name (e.g., "Item1")
                     if ( delimiterFound != ':' )
                     {
                         throw new AdeptarException( $"Invalid tuple format. Expected ':' after field name but found '{delimiterFound}' or end of content near position {currentPosition}. Input: '{PreviewSpan( innerSpan )}'. Segment: '{segment.ToString()}'" );
@@ -87,15 +90,12 @@ namespace Adeptar
                     {
                         throw new AdeptarException( $"Invalid tuple format. Missing field name before ':' near position {currentPosition}. Input: '{PreviewSpan( innerSpan )}'." );
                     }
-                    // Convert name segment to string *once*
                     currentName = segment.ToString();
                     expectingName = false;
                     valueStartPosition = endPosition + 1; // Value starts after the colon
                 }
-                else // Expecting Value
+                else
                 {
-                    // Segment processing for value is done below after validation
-
                     if ( delimiterFound != ',' && delimiterIndex != -1 ) // Must be comma or end
                     {
                         throw new AdeptarException( $"Invalid tuple format. Expected ',' or end of tuple after value for field '{currentName}' but found '{delimiterFound}' near position {endPosition}. Input: '{PreviewSpan( innerSpan )}'." );
@@ -107,7 +107,6 @@ namespace Adeptar
                         throw new AdeptarException( $"Invalid field name '{currentName}' found in input for tuple type {tupleType.Name} near position {valueStartPosition - currentName.Length - 1}. Input: '{PreviewSpan( innerSpan )}'. Expected one of: {string.Join( ", ", fields.Keys )}." );
                     }
 
-                    // Get the value slice. No Trim() needed.
                     ReadOnlySpan<char> valueSpan = innerSpan.Slice(valueStartPosition, endPosition - valueStartPosition);
                     object elementValue;
 
@@ -123,77 +122,123 @@ namespace Adeptar
                             elementValue = AdeptarReader.DeserializeObject( currentField.FieldType, valueSpan );
                         }
                     }
-                    catch ( Exception ex ) when ( !( ex is Exception ) )
+                    catch ( AdeptarException ex )
                     {
-                        throw new Exception( $"Failed to deserialize value for tuple field '{currentName}'. Input: '{PreviewSpan( valueSpan )}'. See inner exception.", ex );
+                        throw new AdeptarException( $"Failed to deserialize value for tuple field '{currentName}'. Input: '{PreviewSpan( valueSpan )}'. Reason: {ex.Message}", ex );
                     }
                     catch ( Exception ex )
                     {
-                        throw new Exception( $"Failed to deserialize value for tuple field '{currentName}'. Input: '{PreviewSpan( valueSpan )}'. Reason: {ex.Message}", ex.InnerException );
+                        throw new AdeptarException( $"Failed to deserialize value for tuple field '{currentName}'. Input: '{PreviewSpan( valueSpan )}'. See inner exception.", ex );
                     }
 
-                    // Set the value using cached setter
                     try
                     {
                         Action<object, object> setter = GetOrCreateTupleFieldSetter(currentField);
                         setter( target, elementValue );
                         elementsFound++;
                     }
+                    // Catch potential ArgumentException from SetValue (type mismatch), TargetInvocationException etc.
                     catch ( Exception ex )
                     {
-                        throw new Exception( $"Failed to set value for tuple field '{currentName}'. Type mismatch or other error. See inner exception.", ex );
+                        throw new AdeptarException( $"Failed to set value for tuple field '{currentName}'. Type mismatch or other error. Value was '{elementValue ?? "null"}'. See inner exception.", ex );
                     }
 
-                    // Reset for next element
                     currentName = null;
                     expectingName = true;
                 }
 
-                // Move position past the delimiter (or to the end)
                 currentPosition = ( delimiterIndex == -1 ) ? innerSpan.Length : endPosition + 1;
             }
 
-            // Final Validation
             if ( !expectingName ) // Ended while expecting a value - dangling name:
             {
                 throw new AdeptarException( $"Invalid tuple format. Dangling field name '{currentName}' without a value at the end of input: '{PreviewSpan( innerSpan )}'." );
             }
-            // Optional check: Ensure all fields defined in the type were present in the input
-            // if (elementsFound < fields.Count && fields.Any(kvp => kvp.Key != "Rest")) { // Allow omitting 'Rest' if it's default? Depends on requirements.
-            //     throw new AdeptarSerializationException($"Missing fields in input for tuple type {tupleType.Name}. Found {elementsFound}, expected {fields.Count}. Input: '{PreviewSpan(innerSpan)}'.");
-            // }
 
-            return target; // Return the boxed tuple instance
+            return target;
         }
 
-        // (Keep FindNextTopLevelDelimiter helper - it doesn't rely on trimming)
+        /// <summary>
+        /// Finds the index of the next top-level delimiter (':' or ',') within the given span,
+        /// starting from the specified index, that is not nested within strings ('"'),
+        /// parentheses ('()'), square brackets ('[]'), or curly braces ('{}').
+        /// </summary>
+        /// <param name="span">The span of characters to search within (assumed pre-cleaned).</param>
+        /// <param name="startIndex">The zero-based starting position for the search.</param>
+        /// <param name="delimiterFound">When this method returns, contains the delimiter character (':' or ',') found at the top level, or the null character ('\0') if no top-level delimiter was found before the end of the span.</param>
+        /// <returns>The zero-based index position of the first top-level delimiter found; otherwise, -1 if no such delimiter is found.</returns>
+        /// <exception cref="AdeptarException">Thrown if mismatched nesting characters (e.g., extra closing brace) are detected.</exception>
         private static int FindNextTopLevelDelimiter( ReadOnlySpan<char> span, int startIndex, out char delimiterFound )
         {
             delimiterFound = '\0';
-            int level = 0;
-            bool inString = false;
-            bool escapeNext = false;
+            int level = 0;      // Tracks nesting depth for (), [], {}
+            bool inString = false; // Tracks whether currently inside double quotes
+            bool escapeNext = false; // Tracks if the next character is escaped by a backslash
 
             for ( int i = startIndex; i < span.Length; i++ )
             {
                 char c = span[i];
-                if ( escapeNext ) { escapeNext = false; continue; }
-                if ( c == '\\' ) { escapeNext = true; continue; }
-                if ( c == '"' ) { inString = !inString; continue; }
-                if ( inString ) continue;
+
+                if ( escapeNext )
+                {
+                    escapeNext = false; // Consume the escape, ignore the current character's normal meaning
+                    continue;
+                }
+                if ( c == '\\' )
+                {
+                    escapeNext = true; // Next character is escaped
+                    continue;
+                }
+
+                if ( c == '"' )
+                {
+                    inString = !inString; // Toggle string state
+                    continue; // Move to next character
+                }
+                if ( inString )
+                {
+                    continue; // Ignore characters inside string literals
+                }
 
                 switch ( c )
                 {
-                    case '(': case '[': case '{': level++; break;
-                    case ')': case ']': case '}': level--; break;
-                    case ':': case ',': if ( level == 0 ) { delimiterFound = c; return i; } break;
+                    case '(':
+                    case '[':
+                    case '{':
+                        level++;
+                        break;
+                    case ')':
+                    case ']':
+                    case '}':
+                        level--;
+                        break;
+                    case ':':
+                    case ',':
+                        if ( level == 0 ) // Check if at the top level (not nested)
+                        {
+                            delimiterFound = c; // Record the delimiter found
+                            return i;           // Return the index of the delimiter
+                        }
+                        break;
                 }
-                if ( level < 0 ) throw new AdeptarException( $"Mismatched nesting level (negative) near index {i}. Input: '{PreviewSpan( span )}'." );
+
+                // Check for invalid nesting (e.g., closing more levels than opened)
+                if ( level < 0 )
+                {
+                    throw new AdeptarException( $"Mismatched nesting level (negative) detected near index {i}. Check for unbalanced parentheses, brackets, or braces. Input: '{PreviewSpan( span )}'." );
+                }
             }
+
             return -1;
         }
 
-        // (Keep GetOrCreateTupleFieldMap - unchanged)
+        /// <summary>
+        /// Retrieves or creates and caches a dictionary mapping the standard ValueTuple field names ("Item1", "Item2", ..., "Rest")
+        /// to their corresponding <see cref="FieldInfo"/> objects for a given ValueTuple type.
+        /// </summary>
+        /// <param name="tupleType">The <see cref="System.ValueTuple"/> type for which to get the field map.</param>
+        /// <returns>A dictionary containing the relevant <see cref="FieldInfo"/> objects keyed by their standard names.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the given <paramref name="tupleType"/> is not a recognized ValueTuple type or if expected fields are missing.</exception>
         private static Dictionary<string, FieldInfo> GetOrCreateTupleFieldMap( Type tupleType )
         {
             return _tupleFieldInfoCache.GetOrAdd( tupleType, type =>
@@ -201,32 +246,42 @@ namespace Adeptar
                 var fieldMap = new Dictionary<string, FieldInfo>();
                 foreach ( var field in type.GetFields( FieldBindingFlags ) )
                 {
-                    if ( field.Name.StartsWith( "Item" ) || field.Name == "Rest" ) fieldMap[field.Name] = field;
-                }
-                if ( fieldMap.Count == 0 && type.GetFields( FieldBindingFlags ).Length > 0 )
-                {
-                    if ( type.FullName?.StartsWith( "System.ValueTuple`" ) != true || type.GenericTypeArguments.Length > 0 )
-                    { // Check if not ValueTuple<>
-                        throw new InvalidOperationException( $"Could not find expected 'ItemX' or 'Rest' fields for type {type.Name}." );
+                    // Only map fields named "ItemX" or "Rest"
+                    if ( field.Name.StartsWith( "Item" ) || field.Name == "Rest" )
+                    {
+                        fieldMap[field.Name] = field;
                     }
                 }
                 return fieldMap;
             } );
         }
 
-        // (Keep GetOrCreateTupleFieldSetter - unchanged)
+        /// <summary>
+        /// Retrieves or creates and caches a compiled delegate (<see cref="Action{T1, T2}"/>)
+        /// that efficiently sets the value of a specific field on a (boxed) ValueTuple object.
+        /// </summary>
+        /// <param name="field">The <see cref="FieldInfo"/> representing the ValueTuple field (e.g., Item1, Rest) to be set.</param>
+        /// <returns>An <see cref="Action{Object, Object}"/> delegate that takes the boxed tuple instance and the value to set.</returns>
         private static Action<object, object> GetOrCreateTupleFieldSetter( FieldInfo field )
         {
-            return _tupleFieldSetterCache.GetOrAdd( field, f => ( targetObj, valueObj ) => f.SetValue( targetObj, valueObj ) );
+            return _tupleFieldSetterCache.GetOrAdd( field, f =>
+            {
+                return ( targetObj, valueObj ) => f.SetValue( targetObj, valueObj );
+            } );
         }
 
-        // (Keep IsValueTupleType - unchanged)
-        private static bool IsValueTupleType( Type type ) => type != null && type.IsValueType && type.Namespace == "System" && type.Name.StartsWith( "ValueTuple`" );
-
-        // Helper to preview span content in exceptions
+        /// <summary>
+        /// Generates a preview string from a ReadOnlySpan, truncated if it exceeds a maximum length.
+        /// </summary>
+        /// <param name="span">The span to preview.</param>
+        /// <param name="maxLength">The maximum number of characters to include in the preview before truncation.</param>
+        /// <returns>A string representation of the span, potentially truncated with "..." appended.</returns>
         private static string PreviewSpan( ReadOnlySpan<char> span, int maxLength = 100 )
         {
-            if ( span.Length <= maxLength ) return span.ToString();
+            if ( span.Length <= maxLength )
+            {
+                return span.ToString();
+            }
             return span.Slice( 0, maxLength ).ToString() + "...";
         }
     }
