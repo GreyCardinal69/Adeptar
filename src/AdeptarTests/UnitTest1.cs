@@ -352,7 +352,6 @@ namespace AdeptarTests
         [TestMethod]
         public void HeavyTupleTestDeserialize ()
         {
-            Console.WriteLine( AdeptarConverter.Serialize( (1, 4, new MyClass(), "hello world", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, 3, '3', true, 0.00001) ));
             string text = AdeptarConverter.Serialize( (1, 4, new MyClass(), "hello world", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, 3, '3', true, 0.00001), Formatting.NoIndentation );
             Assert.AreEqual(
                 text,
