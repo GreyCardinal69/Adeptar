@@ -8,7 +8,7 @@ namespace Adeptar
     /// <summary>
     /// A class providing methods for determining object types.
     /// </summary>
-    public static class TypeGetters
+    internal static class TypeGetters
     {
         /// <summary>
         /// Checks if an object is of type <see cref="ValueTuple"/>, such as (<see cref="int"/>, <see cref="int"/>).
@@ -209,65 +209,20 @@ namespace Adeptar
         }
 
         /// <summary>
-        /// Checks if the provided object is a numeric value of types: <see cref="sbyte"/>, <see cref="short"/>,
-        /// <see cref="ushort"/>, <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>,
-        /// <see cref="ulong"/>, <see cref="float"/>, <see cref="double"/> or <see cref="decimal"/>.
+        /// Parses a span containing an enum member name into the specified enum type (non-generic).
         /// </summary>
-        /// <param name="value">The object to check.</param>
-        /// <returns>True if an object is a number.</returns>
-        public static bool IsNumber( object value )
+        /// <param name="enumType">The enum type to parse into.</param>
+        /// <param name="value">The span containing the member name to parse.</param>
+        /// <param name="ignoreCase">Whether to ignore case during parsing.</param>
+        /// <returns>The parsed enum value as an object.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="enumType"/> is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="enumType"/> is not an enum type, or if <paramref name="value"/> cannot be parsed.</exception>
+        public static object ParseEnum( Type enumType, ReadOnlySpan<char> value, bool ignoreCase = false )
         {
-            return value is sbyte
-                    || value is byte
-                    || value is short
-                    || value is ushort
-                    || value is int
-                    || value is uint
-                    || value is long
-                    || value is ulong
-                    || value is float
-                    || value is double
-                    || value is decimal;
+            if ( enumType == null ) throw new ArgumentNullException( nameof( enumType ) );
+
+            return Enum.Parse( enumType, value.ToString(), ignoreCase );
         }
-
-        /// <summary>
-        /// Checks if the provided object is a numeric value of types: <see cref="sbyte"/>, <see cref="short"/>,
-        /// <see cref="ushort"/>, <see cref="int"/>, <see cref="uint"/>, <see cref="long"/>,
-        /// <see cref="ulong"/>, <see cref="float"/>, <see cref="double"/> or <see cref="decimal"/> using <see cref="Type"/>
-        /// </summary>
-        /// <param name="type">The Type to check.</param>
-        /// <returns>True if an object is a number.</returns>
-        public static bool IsNumericType( Type type ) => Type.GetTypeCode( type ) switch
-        {
-            TypeCode.Byte => true,
-            TypeCode.SByte => true,
-            TypeCode.UInt16 => true,
-            TypeCode.UInt32 => true,
-            TypeCode.UInt64 => true,
-            TypeCode.Int16 => true,
-            TypeCode.Int32 => true,
-            TypeCode.Int64 => true,
-            TypeCode.Decimal => true,
-            TypeCode.Double => true,
-            TypeCode.Single => true,
-            _ => false
-        };
-
-        /// <summary>
-        /// Parses an object into an enum using a generic T type.
-        /// </summary>
-        /// <typeparam name="T">The type to parse to.</typeparam>
-        /// <param name="obj">The object to parse.</param>
-        /// <returns>The converted enum.</returns>
-        public static T ParseToEnum<T>( object obj ) => (T)Enum.Parse( typeof( T ), obj.ToString() );
-
-        /// <summary>
-        /// Parses an object into an enum without a generic T type.
-        /// </summary>
-        /// <param name="obj">The object that is the enum.</param>
-        /// <param name="enumType">The type of the enum to parse to.</param>
-        /// <returns>Returns an object casted to the provided enum type.</returns>
-        public static object ParseToEnumNonGeneric( ReadOnlySpan<char> obj, Type enumType ) => Enum.Parse( enumType, obj.ToString() );
     }
 }
 
