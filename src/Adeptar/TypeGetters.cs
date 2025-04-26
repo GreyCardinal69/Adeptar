@@ -19,14 +19,6 @@ namespace Adeptar
             typeof( Dictionary<,> ),
             typeof( List<> ),
             typeof( IList<> ),
-            typeof( ValueTuple<> ),
-            typeof( ValueTuple<,> ),
-            typeof( ValueTuple<,,> ),
-            typeof( ValueTuple<,,,> ),
-            typeof( ValueTuple<,,,,> ),
-            typeof( ValueTuple<,,,,,> ),
-            typeof( ValueTuple<,,,,,,> ),
-            typeof( ValueTuple<,,,,,,,> ),
             typeof( char ),
             typeof( string ),
             typeof( DateTime ),
@@ -155,20 +147,28 @@ namespace Adeptar
         public static bool IsDictionary( object obj ) => obj is IDictionary;
 
         /// <summary>
-        /// Checks if an object is of type <see cref="ValueTuple"/>, such as (<see cref="int"/>, <see cref="int"/>). Omits the .IsGeneric check.
+        /// Contains the open generic type definitions for standard <see cref="System.ValueTuple"/> types (up to 8 type arguments).
         /// </summary>
-        /// <param name="tuple">The type to check for.</param>
-        /// <returns>True if the object is a <see cref="ValueTuple"/>.</returns>
-        public static bool IsTupleGenericKnown( Type tuple )
+        /// <remarks>
+        /// This set is used by the <see cref="IsTupleGenericKnown"/> method to efficiently determine
+        /// if a given open generic type definition corresponds to one of the standard ValueTuple types.
+        /// This field is initialized once during static type initialization and is read-only thereafter.
+        /// </remarks>
+        private static readonly HashSet<Type> _valueTupleGenericTypes = new HashSet<Type>
         {
-            return tuple == _cachedTypes[3]
-                || tuple == _cachedTypes[4]
-                || tuple == _cachedTypes[5]
-                || tuple == _cachedTypes[6]
-                || tuple == _cachedTypes[7]
-                || tuple == _cachedTypes[8]
-                || tuple == _cachedTypes[9]
-                || tuple == _cachedTypes[10];
+            typeof(ValueTuple<>), typeof(ValueTuple<,>), typeof(ValueTuple<,,>),
+            typeof(ValueTuple<,,,>), typeof(ValueTuple<,,,,>), typeof(ValueTuple<,,,,,>),
+            typeof(ValueTuple<,,,,,,>), typeof(ValueTuple<,,,,,,,>)
+        };
+
+        /// <summary>
+        /// Checks if the provided open generic type definition is one of the standard <c>System.ValueTuple</c> generic types.
+        /// </summary>
+        /// <param name="openGenericTupleType">The open generic type definition to check (e.g., obtained via <c>type.GetGenericTypeDefinition()</c>).</param>
+        /// <returns><c>true</c> if the specified type is found within the <see cref="_valueTupleGenericTypes"/> set; otherwise, <c>false</c>.</returns>
+        private static bool IsTupleGenericKnown( Type openGenericTupleType )
+        {
+            return _valueTupleGenericTypes.Contains( openGenericTupleType );
         }
 
         /// <summary>
