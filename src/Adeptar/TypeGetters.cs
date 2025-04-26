@@ -12,19 +12,44 @@ namespace Adeptar
     internal static class TypeGetters
     {
         /// <summary>
-        /// Cached types for <see cref="TypeGetters"/> methods.
+        /// Cached <see cref="System.Type"/> object for the open generic <see cref="System.Collections.Generic.Dictionary{TKey, TValue}"/> type definition (<c>typeof(Dictionary)</c>). Accessed via <see cref="_openGenericDictionaryType"/>.
         /// </summary>
-        private static Type[] _cachedTypes = new Type[]
-        {
-            typeof( Dictionary<,> ),
-            typeof( List<> ),
-            typeof( IList<> ),
-            typeof( char ),
-            typeof( string ),
-            typeof( DateTime ),
-            typeof( bool ),
-            typeof( decimal )
-        };
+        private static readonly Type _openGenericDictionaryType = typeof(Dictionary<,>);
+
+        /// <summary>
+        /// Cached <see cref="System.Type"/> object for the open generic <see cref="System.Collections.Generic.List{T}"/> type definition (<c>typeof(List)</c>). Accessed via <see cref="_openGenericListType"/>.
+        /// </summary>
+        private static readonly Type _openGenericListType = typeof(List<>);
+
+        /// <summary>
+        /// Cached <see cref="System.Type"/> object for the open generic <see cref="System.Collections.Generic.IList{T}"/> type definition (<c>typeof(IList)</c>). Accessed via <see cref="_openGenericIListType"/>.
+        /// </summary>
+        private static readonly Type _openGenericIListType = typeof(IList<>);
+
+        /// <summary>
+        /// Cached <see cref="System.Type"/> object for the <see cref="System.Char"/> type. Accessed via <see cref="_charType"/>.
+        /// </summary>
+        private static readonly Type _charType = typeof(char);
+
+        /// <summary>
+        /// Cached <see cref="System.Type"/> object for the <see cref="System.String"/> type. Accessed via <see cref="_stringType"/>.
+        /// </summary>
+        private static readonly Type _stringType = typeof(string);
+
+        /// <summary>
+        /// Cached <see cref="System.Type"/> object for the <see cref="System.DateTime"/> type. Accessed via <see cref="_dateTimeType"/>.
+        /// </summary>
+        private static readonly Type _dateTimeType = typeof(DateTime);
+
+        /// <summary>
+        /// Cached <see cref="System.Type"/> object for the <see cref="System.Boolean"/> type. Accessed via <see cref="_boolType"/>.
+        /// </summary>
+        private static readonly Type _boolType = typeof(bool);
+
+        /// <summary>
+        /// Cached <see cref="System.Type"/> object for the <see cref="System.Decimal"/> type. Accessed via <see cref="_decimalType"/>.
+        /// </summary>
+        private static readonly Type _decimalType = typeof(decimal);
 
         /// <summary>
         /// Gets the <see cref="SerializableType"/> of the provided <see cref="Type"/>.
@@ -33,13 +58,13 @@ namespace Adeptar
         /// <returns>The <see cref="SerializableType"/> of the provided <see cref="Type"/>.</returns>
         public static SerializableType GetSerializableType( Type fInfo )
         {
-            if ( fInfo == _cachedTypes[12] )
+            if ( fInfo == _stringType )
                 return SerializableType.String;
-            if ( fInfo == _cachedTypes[11] )
+            if ( fInfo == _charType )
                 return SerializableType.Char;
-            if ( fInfo == _cachedTypes[13] )
+            if ( fInfo == _dateTimeType )
                 return SerializableType.DateTime;
-            if ( fInfo == _cachedTypes[2] )
+            if ( fInfo == _openGenericIListType )
                 return SerializableType.Array;
             if ( fInfo.IsPrimitive )
                 return SerializableType.Simple;
@@ -48,7 +73,7 @@ namespace Adeptar
                 Type genericTypeDef = fInfo.GetGenericTypeDefinition();
                 if ( IsTupleGenericKnown( genericTypeDef ) )
                     return SerializableType.Tuple;
-                if ( genericTypeDef == _cachedTypes[0] )
+                if ( genericTypeDef ==  _openGenericDictionaryType )
                     return SerializableType.Dictionary;
             }
             if ( fInfo.IsArray )
@@ -109,24 +134,24 @@ namespace Adeptar
         /// <seealso cref="GetDeserializableType(Type)"/>
         private static DeserializableType GetDeserializableTypeInternal( Type fInfo )
         {
-            if ( fInfo == _cachedTypes[12] )
+            if ( fInfo == _stringType )
                 return DeserializableType.String;
-            if ( fInfo == _cachedTypes[11] )
+            if ( fInfo == _charType )
                 return DeserializableType.Char;
-            if ( fInfo == _cachedTypes[13] )
+            if ( fInfo == _dateTimeType )
                 return DeserializableType.DateTime;
-            if ( fInfo == _cachedTypes[14] )
+            if ( fInfo == _boolType )
                 return DeserializableType.Boolean;
-            if ( fInfo.IsPrimitive || fInfo == _cachedTypes[15] )
+            if ( fInfo.IsPrimitive || fInfo == _decimalType )
                 return DeserializableType.Numeric;
             if ( fInfo.IsGenericType )
             {
                 Type genericTypeDef = fInfo.GetGenericTypeDefinition();
                 if ( IsTupleGenericKnown( genericTypeDef ) )
                     return DeserializableType.Tuple;
-                if ( genericTypeDef == _cachedTypes[0] )
+                if ( genericTypeDef == _openGenericDictionaryType )
                     return DeserializableType.Dictionary;
-                if ( genericTypeDef == _cachedTypes[1] || genericTypeDef == _cachedTypes[2] )
+                if ( genericTypeDef == _openGenericIListType || genericTypeDef == _openGenericListType )
                     return DeserializableType.List;
             }
             if ( fInfo.IsArray )
@@ -136,15 +161,6 @@ namespace Adeptar
 
             return DeserializableType.Class;
         }
-
-        /// <summary>
-        /// Checks if the provided object is a <see cref="Dictionary{TKey, TValue}"/>.
-        /// </summary>
-        /// <param name="obj">The object to check.</param>
-        /// <returns>
-        /// True/False if the object is of type <see cref="Dictionary{TKey, TValue}"/>.
-        /// </returns>
-        public static bool IsDictionary( object obj ) => obj is IDictionary;
 
         /// <summary>
         /// Contains the open generic type definitions for standard <see cref="System.ValueTuple"/> types (up to 8 type arguments).
