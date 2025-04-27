@@ -14,10 +14,8 @@ namespace Adeptar
     /// <seealso cref="AdeptarWriter"/>
     /// <seealso cref="AdeptarSettings"/>
     [AttributeUsage( AttributeTargets.Field | AttributeTargets.Property, Inherited = true, AllowMultiple = false )]
-    public sealed class AdeptarIgnoreAttribute : Attribute // Added 'sealed' and 'Attribute' suffix
+    public sealed class AdeptarIgnoreAttribute : Attribute
     {
-        // This is a marker attribute, so no constructor or properties are needed.
-        // The presence of the attribute itself provides the necessary information.
     }
 }
 

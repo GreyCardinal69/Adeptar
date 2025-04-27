@@ -9,16 +9,19 @@ using static Adeptar.TypeGetters;
 namespace Adeptar
 {
     /// <summary>
-    /// A class that contains method(s) for deserializing .Adeptar objects.
+    /// Internal central dispatcher for deserializing Adeptar objects from ReadOnlySpan.
     /// </summary>
     internal class AdeptarReader
     {
         /// <summary>
-        /// Serves as a "main" node that coordinates deserialization of elements.
+        /// Deserializes a ReadOnlySpan containing Adeptar data into an object of the specified type.
+        /// Acts as the central dispatcher for deserialization logic based on the target type.
         /// </summary>
-        /// <param name="type">The type of the object.</param>
-        /// <param name="text">The .Adeptar string representation of the object.</param>
+        /// <param name="type">The target <see cref="Type"/> to deserialize into.</param>
+        /// <param name="text">The <see cref="ReadOnlySpan{Char}"/> containing the Adeptar representation of the object. Assumed to be the exact segment for the object (e.g., including surrounding quotes for strings, braces for objects, etc.).</param>
         /// <returns>The deserialized .NET object.</returns>
+        /// <exception cref="AdeptarException">Thrown for format errors, type mismatches, or other deserialization issues.</exception>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null.</exception>
         internal static object DeserializeObject( Type type, ReadOnlySpan<char> text )
         {
             DeserializableType deserializableType = GetDeserializableType( type );
@@ -38,7 +41,7 @@ namespace Adeptar
                 DeserializableType.Dictionary => DeserializeDictionary( text, type ),
                 DeserializableType.DimensionalArray => DeserializeDimensionalArray( text, type ),
                 DeserializableType.Tuple => DeserializeTuple( text, type ),
-                _ => throw new NotImplementedException(),
+                _ => throw new AdeptarException( $"Internal Error: Deserialization not implemented or type '{type.FullName}'." )
             };
         }
     }

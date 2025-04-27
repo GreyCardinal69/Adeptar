@@ -8,7 +8,7 @@ using static Adeptar.AdeptarDebugger;
 namespace Adeptar
 {
     /// <summary>
-    /// Internal class containing method(s) for deserialization of tuples
+    /// Internal class containing methods for the deserialization of tuples.
     /// </summary>
     internal class TupleReader
     {

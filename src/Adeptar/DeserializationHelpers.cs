@@ -8,7 +8,7 @@ using static Adeptar.AdeptarDebugger;
 namespace Adeptar
 {
     /// <summary>
-    /// A class that contains methods for deserialization of .Adeptar objects.
+    /// A class that contains methods for the deserialization of .Adeptar objects.
     /// </summary>
     internal class DeserializationHelpers
     {
