@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using static Adeptar.AdeptarDebugger;
 using static Adeptar.AdeptarDeserializer;
 
 namespace Adeptar
@@ -14,147 +14,159 @@ namespace Adeptar
         /// <summary>
         /// Deserializes the Adeptar string of type <see cref="Dictionary{TKey, TValue}"/> to a .NET object.
         /// </summary>
-        /// <param name="text">The Adeptar string representation of the object.</param>
-        /// <param name="type">The type of the <see cref="Dictionary{TKey, TValue}"/>.</param>
+        /// <param name="sourceSpan">The Adeptar string representation of the object.</param>
+        /// <param name="dictionaryType">The type of the <see cref="Dictionary{TKey, TValue}"/>.</param>
         /// <returns>The .NET version of the <see cref="Dictionary{TKey, TValue}"/>.</returns>
-        internal static IDictionary DeserializeDictionary( ReadOnlySpan<char> text, Type type )
+        internal static IDictionary DeserializeDictionary( ReadOnlySpan<char> sourceSpan, Type dictionaryType )
         {
-            if ( text.Length == 2 )
-                return (IDictionary)Activator.CreateInstance( type );
-
-            int level = 0;
-            int i = 0;
-            int j = 0;
-
-            IDictionary motherDictionary = ( IDictionary ) Activator.CreateInstance( type );
-
-            bool nested = false;
-            bool inString = false;
-            bool falseEnd = false;
-            bool complexKey = false;
-
-            Type[] generics = type.GetGenericArguments();
-            Type keyType = generics[0];
-            Type valueType = generics[1];
-
-            Object key = null;
-            Object value = null;
-
-            text = text.Slice( 1, text.Length - 1 );
-
-            foreach ( char item in text )
+            if ( sourceSpan.Length < 2 || sourceSpan[0] != '[' || sourceSpan[sourceSpan.Length - 1] != ']' )
             {
-                switch ( item )
-                {
-                    case '@':
-                        if ( !inString && !nested )
-                        {
-                            complexKey = true;
-                        }
-                        break;
-                    case '"':
-                        if ( falseEnd && inString )
-                        {
-                            falseEnd = false;
-                        }
-                        else if ( !falseEnd )
-                            inString = !inString;
-                        break;
-                    case '[':
-                        if ( !inString && !complexKey )
-                        {
-                            level++; nested = true;
-                        }
-                        else if ( complexKey && !inString )
-                            level++;
-                        break;
-                    case ']':
-                        if ( level - 1 == 0 && !inString && complexKey )
-                        {
-                            complexKey = false;
-                        }
-                        else if ( level - 1 == 0 && !inString )
-                            nested = false;
-                        else if ( level - 1 == -1 && !inString && !complexKey )
-                        {
-                            if ( i == text.Length - 1 )
-                            {
-                                value = DeserializeObject( valueType, text.Slice( j, i - j ) );
-                                motherDictionary.Add( key, value );
-                            }
-                        }
-                        level--;
-                        break;
-                    case '\'':
-                        break;
-                    case '\\':
-                        if ( inString )
-                        {
-                            falseEnd = true;
-                        }
-                        else
-                        {
-                            throw new AdeptarException( "Invalid character '\\', such a character can appear only inside a string." );
-                        }
-                        break;
-                    case ',':
-                        if ( !complexKey && !nested && !inString )
-                        {
-                            value = DeserializeObject( valueType, text.Slice( j, i - j ) );
-                            j = i + 1;
-                            motherDictionary.Add( key, value );
-                        }
-                        break;
-                    case '{':
-                        if ( !inString )
-                        {
-                            level++;
-                            nested = true;
-                        }
-                        break;
-                    case '}':
-                        if ( level - 1 == 0 && !inString )
-                        {
-                            nested = false;
-                            level--;
-                        }
-                        break;
-                    case '(':
-                        if ( !inString )
-                        {
-                            level++;
-                            nested = true;
-                        }
-                        break;
-                    case ')':
-                        if ( level - 1 == 0 && !inString )
-                        {
-                            nested = false;
-                            level--;
-                        }
-                        break;
-                    case ':':
-                        if ( !nested && !inString && !complexKey )
-                        {
-                            key = DeserializeObject( keyType, text.Slice( j, i - j ) );
-                            j = i + 1;
-                        }
-                        break;
-                    default:
-                        if ( !inString &&
-                            item != '_' &&
-                            item != '-' &&
-                            !char.IsLetter( item ) &&
-                            !char.IsDigit( item ) )
-                        {
-                            throw new AdeptarException( $"Invalid character \"{item}\" outside of string at position {i} ( indentation removed )." );
-                        }
-                        break;
-                }
-                i++;
+                throw new AdeptarException( $"Invalid dictionary format. Expected cleaned text enclosed in square brackets '[]'. Received start: '{PreviewSpan( sourceSpan, 50 )}'" );
             }
 
-            return motherDictionary;
+            if ( sourceSpan.Length == 2 )
+            {
+                return (IDictionary)Activator.CreateInstance( dictionaryType );
+            }
+
+            Type[] genericArgs = dictionaryType.GetGenericArguments();
+            Type keyType = genericArgs[0];
+            Type valueType = genericArgs[1];
+
+            IDictionary targetDictionary = (IDictionary)Activator.CreateInstance( dictionaryType );
+
+            int nestingLevel = 0;
+            int segmentStartIndex = 0;
+            int currentReadIndex = 0;
+            int spanPosition = 0;
+
+            bool isInsideNestedStructure = false;
+            bool isInsideStringLiteral = false;
+            bool escapeNextChar = false;
+            bool readingComplexKey = false;
+
+            object currentKey = null;
+            object currentValue = null;
+
+            ReadOnlySpan<char> contentSpan = sourceSpan.Slice( 1, sourceSpan.Length - 2 );
+
+            foreach ( char currentChar in contentSpan )
+            {
+                if ( escapeNextChar )
+                {
+                    escapeNextChar = false;
+                }
+                else switch ( currentChar )
+                    {
+                        case '@':
+                            if ( !isInsideStringLiteral && !isInsideNestedStructure && nestingLevel == 0 )
+                            {
+                                readingComplexKey = true;
+                                segmentStartIndex = spanPosition + 1;
+                            }
+                            break;
+                        case '"':
+                            isInsideStringLiteral = !isInsideStringLiteral;
+                            break;
+                        case '[':
+                        case '{':
+                        case '(':
+                            if ( !isInsideStringLiteral )
+                            {
+                                nestingLevel++;
+                                isInsideNestedStructure = true;
+                            }
+                            break;
+                        case ']':
+                        case '}':
+                        case ')':
+                            if ( !isInsideStringLiteral )
+                            {
+                                if ( nestingLevel == 1 )
+                                {
+                                    if ( readingComplexKey && currentChar == ']' )
+                                    {
+                                        readingComplexKey = false;
+                                    }
+                                    isInsideNestedStructure = false;
+                                }
+                                nestingLevel--;
+                                if ( nestingLevel < 0 ) throw new AdeptarException( $"Mismatched closing bracket '{currentChar}' near position {spanPosition}. Input: '[{PreviewSpan( contentSpan )}]'" );
+                            }
+                            break;
+                        case '\\':
+                            if ( isInsideStringLiteral )
+                            {
+                                escapeNextChar = true;
+                            }
+                            else
+                            {
+                                throw new AdeptarException( $"Invalid character '\\' outside string literal near position {spanPosition}. Input: '[{PreviewSpan( contentSpan )}]'." );
+                            }
+                            break;
+                        case ',':
+                            if ( nestingLevel == 0 && !isInsideNestedStructure && !isInsideStringLiteral && !readingComplexKey )
+                            {
+                                ReadOnlySpan<char> valueSegment = contentSpan.Slice( segmentStartIndex, spanPosition - segmentStartIndex );
+                                try
+                                {
+                                    currentValue = DeserializeObject( valueType, valueSegment );
+                                }
+                                catch ( AdeptarException ex ) { throw new AdeptarException( $"Failed to deserialize value for dictionary key '{currentKey ?? "??"}'. Input: '{valueSegment.ToString()}'. Reason: {ex.Message}", ex ); }
+                                catch ( Exception ex ) { throw new AdeptarException( $"Failed to deserialize value for dictionary key '{currentKey ?? "??"}'. Input: '{valueSegment.ToString()}'. See inner exception.", ex ); }
+
+                                try { targetDictionary.Add( currentKey, currentValue ); }
+                                catch ( Exception ex ) { throw new AdeptarException( $"Failed to add key/value pair. Key: '{currentKey ?? "??"}'. See inner exception.", ex ); }
+
+                                segmentStartIndex = spanPosition + 1;
+                                currentKey = null;
+                                currentValue = null;
+                            }
+                            break;
+                        case ':':
+                            if ( nestingLevel == 0 && !isInsideNestedStructure && !isInsideStringLiteral && !readingComplexKey )
+                            {
+                                ReadOnlySpan<char> keySegment = contentSpan.Slice( segmentStartIndex, spanPosition - segmentStartIndex );
+                                try
+                                {
+                                    currentKey = DeserializeObject( keyType, keySegment );
+                                }
+                                catch ( AdeptarException ex ) { throw new AdeptarException( $"Failed to deserialize dictionary key. Input: '{keySegment.ToString()}'. Reason: {ex.Message}", ex ); }
+                                catch ( Exception ex ) { throw new AdeptarException( $"Failed to deserialize dictionary key. Input: '{keySegment.ToString()}'. See inner exception.", ex ); }
+
+                                segmentStartIndex = spanPosition + 1;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                spanPosition++;
+                currentReadIndex++;
+            }
+
+            if ( currentKey != null )
+            {
+                if ( segmentStartIndex >= contentSpan.Length )
+                {
+                    throw new AdeptarException( $"Invalid dictionary format. Dangling key '{currentKey}' without a value at the end. Input: '[{PreviewSpan( contentSpan )}]'." );
+                }
+
+                ReadOnlySpan<char> lastValueSegment = contentSpan.Slice( segmentStartIndex );
+                try
+                {
+                    currentValue = DeserializeObject( valueType, lastValueSegment );
+                }
+                catch ( AdeptarException ex ) { throw new AdeptarException( $"Failed to deserialize last value for dictionary key '{currentKey}'. Input: '{lastValueSegment.ToString()}'. Reason: {ex.Message}", ex ); }
+                catch ( Exception ex ) { throw new AdeptarException( $"Failed to deserialize last value for dictionary key '{currentKey}'. Input: '{lastValueSegment.ToString()}'. See inner exception.", ex ); }
+
+                try { targetDictionary.Add( currentKey, currentValue ); }
+                catch ( Exception ex ) { throw new AdeptarException( $"Failed to add last key/value pair. Key: '{currentKey}'. See inner exception.", ex ); }
+            }
+
+            if ( isInsideStringLiteral ) throw new AdeptarException( "Unterminated string literal at end of dictionary content." );
+            if ( nestingLevel != 0 ) throw new AdeptarException( $"Mismatched nesting level ({nestingLevel}) at end of dictionary content." );
+
+            return targetDictionary;
         }
     }
 }

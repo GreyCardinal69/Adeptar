@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Adeptar
+﻿namespace Adeptar
 {
     /// <summary>
     /// A class that provides functionality for field/property serialization manipulations.
