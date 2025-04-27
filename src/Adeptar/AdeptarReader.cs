@@ -4,7 +4,7 @@ using static Adeptar.ClassReader;
 using static Adeptar.DeserializationHelpers;
 using static Adeptar.DictionaryReader;
 using static Adeptar.TupleReader;
-using static Adeptar.TypeGetters;
+using static Adeptar.TypeClassifiers;
 
 namespace Adeptar
 {
@@ -24,11 +24,11 @@ namespace Adeptar
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="type"/> is null.</exception>
         internal static object DeserializeObject( Type type, ReadOnlySpan<char> text )
         {
-            DeserializableType deserializableType = GetDeserializableType( type );
+            DeserializableType deserializableType = DeserializableTypeOf( type );
 
             return deserializableType switch
             {
-                DeserializableType.Numeric => ParseNumeric( type, text.ToString() ),
+                DeserializableType.Numeric => NumericResolver( type, text.ToString() ),
                 DeserializableType.String => StringResolver( text ),
                 DeserializableType.Boolean => Convert.ToBoolean( text.ToString() ),
                 DeserializableType.Char => Convert.ToChar( text.Slice( 1, 1 ).ToString() ),

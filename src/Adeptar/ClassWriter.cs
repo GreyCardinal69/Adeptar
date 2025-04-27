@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Text;
 using FastMember;
 using static Adeptar.AdeptarWriter;
-using static Adeptar.TypeGetters;
+using static Adeptar.TypeClassifiers;
 
 namespace Adeptar
 {
@@ -88,7 +88,7 @@ namespace Adeptar
 
                     if ( value is null )
                     {
-                        WriteRaw( value, GetSerializableType( itemType ), builder, indent, count == last );
+                        WriteRaw( value, SerializableTypeOf( itemType ), builder, indent, count == last );
                     }
                     else if ( CurrentSettings.UseIndentation )
                     {
@@ -184,7 +184,7 @@ namespace Adeptar
 
                     if ( value is null )
                     {
-                        WriteRaw( value, GetSerializableType( itemType ), builder, indent, count == last );
+                        WriteRaw( value, SerializableTypeOf( itemType ), builder, indent, count == last );
                     }
                     else if ( CurrentSettings.UseIndentation )
                     {

@@ -31,7 +31,7 @@ namespace Adeptar
         /// <summary>
         /// Binding flags used to retrieve public instance fields (like Item1, Rest) from ValueTuples.
         /// </summary>
-        private const BindingFlags FieldBindingFlags = BindingFlags.Public | BindingFlags.Instance;
+        private const BindingFlags _fieldBindingFlags = BindingFlags.Public | BindingFlags.Instance;
 
         /// <summary>
         /// Deserializes the Adeptar string representation of a tuple into a .NET ValueTuple object.
@@ -244,7 +244,7 @@ namespace Adeptar
             return _tupleFieldInfoCache.GetOrAdd( tupleType, type =>
             {
                 var fieldMap = new Dictionary<string, FieldInfo>();
-                foreach ( var field in type.GetFields( FieldBindingFlags ) )
+                foreach ( var field in type.GetFields( _fieldBindingFlags ) )
                 {
                     // Only map fields named "ItemX" or "Rest"
                     if ( field.Name.StartsWith( "Item" ) || field.Name == "Rest" )

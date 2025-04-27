@@ -11,10 +11,9 @@ namespace Adeptar
     /// A class that contains methods for the deserialization of .Adeptar objects.
     /// </summary>
     internal class DeserializationHelpers
-    {
-        /// <summary>
-        /// Cached type for <see cref="sbyte"/>.
-        /// </summary>
+    {  /// <summary>
+       /// Cached type for <see cref="sbyte"/>.
+       /// </summary>
         private static Type _sbyteType = typeof( sbyte );
 
         /// <summary>
@@ -66,6 +65,25 @@ namespace Adeptar
         /// Cached type for <see cref="double"/>.
         /// </summary>
         private static Type _doubleType = typeof( double );
+
+        /// <summary>
+        /// Private enumeration for determining the type of a number.
+        /// </summary>
+        private enum NumericType
+        {
+            Sbyte,
+            Byte,
+            Short,
+            Ushort,
+            Int,
+            Uint,
+            Long,
+            Ulong,
+            Decimal,
+            Double,
+            Single,
+            NotNumeric,
+        }
 
         /// <summary>
         /// Removes insignificant whitespace (tabs, spaces, newlines) from Adeptar text
@@ -127,43 +145,62 @@ namespace Adeptar
         }
 
         /// <summary>
-        /// Parses a string segment representing a numeric value into the specified target numeric type.
-        /// Uses culture-invariant parsing and handles potential format or overflow errors.
+        /// Resolves objects considered numeric, such as: <see cref="int"/>, <see cref="long"/>,
+        /// <see cref="short"/>, <see cref="byte"/> and others..
         /// </summary>
-        /// <param name="targetType">The target numeric <see cref="Type"/> (e.g., typeof(int), typeof(double)).</param>
-        /// <param name="valueSpan">The <see cref="ReadOnlySpan{Char}"/> containing the numeric string to parse.</param>
-        /// <returns>The parsed numeric value as an <see cref="object"/>.</returns>
-        /// <exception cref="AdeptarException">Thrown if the value cannot be parsed as the target type due to format or overflow issues.</exception>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="targetType"/> is null.</exception>
-        /// <exception cref="NotSupportedException">Thrown if the <paramref name="targetType"/> is not a supported numeric type.</exception>
-        internal static object ParseNumeric( Type targetType, ReadOnlySpan<char> valueSpan )
+        /// <param name="typeOf">The type to convert to.</param>
+        /// <param name="value">The string representation of the number.</param>
+        /// <returns>The adeptar string converted to a .NET object.</returns>
+        internal static object NumericResolver( Type typeOf, string value )
         {
-            if ( targetType == null ) throw new ArgumentNullException( nameof( targetType ) );
-
-            const NumberStyles styles = NumberStyles.Any;
-            var culture = CultureInfo.InvariantCulture;
-
-            try
+            return GetNumericType( typeOf ) switch
             {
-                if ( targetType == _intType ) { if ( int.TryParse( valueSpan, styles, culture, out int result ) ) return result; }
-                else if ( targetType == _doubleType ) { if ( double.TryParse( valueSpan, styles, culture, out double result ) ) return result; }
-                else if ( targetType == _floatType ) { if ( float.TryParse( valueSpan, styles, culture, out float result ) ) return result; }
-                else if ( targetType == _longType ) { if ( long.TryParse( valueSpan, styles, culture, out long result ) ) return result; }
-                else if ( targetType == _decimalType ) { if ( decimal.TryParse( valueSpan, styles, culture, out decimal result ) ) return result; }
-                else if ( targetType == _shortType ) { if ( short.TryParse( valueSpan, styles, culture, out short result ) ) return result; }
-                else if ( targetType == _byteType ) { if ( byte.TryParse( valueSpan, styles, culture, out byte result ) ) return result; }
-                else if ( targetType == _sbyteType ) { if ( sbyte.TryParse( valueSpan, styles, culture, out sbyte result ) ) return result; }
-                else if ( targetType == _ushortType ) { if ( ushort.TryParse( valueSpan, styles, culture, out ushort result ) ) return result; }
-                else if ( targetType == _uintType ) { if ( uint.TryParse( valueSpan, styles, culture, out uint result ) ) return result; }
-                else if ( targetType == _ulongType ) { if ( ulong.TryParse( valueSpan, styles, culture, out ulong result ) ) return result; }
-                else { throw new NotSupportedException( $"Numeric parsing not supported for type: {targetType.FullName}" ); }
+                NumericType.Byte => Convert.ToByte( value ),
+                NumericType.Sbyte => Convert.ToSByte( value ),
+                NumericType.Short => Convert.ToInt16( value ),
+                NumericType.Ushort => Convert.ToUInt16( value ),
+                NumericType.Long => Convert.ToInt64( value ),
+                NumericType.Ulong => Convert.ToUInt64( value ),
+                NumericType.Single => Convert.ToSingle( value ),
+                NumericType.Decimal => Convert.ToDecimal( value ),
+                NumericType.Double => Convert.ToDouble( value ),
+                NumericType.Uint => Convert.ToUInt64( value ),
+                NumericType.Int => Convert.ToInt32( value ),
+                NumericType.NotNumeric => null
+            };
+        }
 
-                throw new FormatException( $"Input string '{valueSpan.ToString()}' was not in a correct format for type {targetType.Name}." );
-            }
-            catch ( Exception ex ) when ( ex is FormatException || ex is OverflowException )
-            {
-                throw new AdeptarException( $"Failed to parse numeric value '{PreviewSpan( valueSpan )}' as type {targetType.Name}. Reason: {ex.Message}", ex );
-            }
+        /// <summary>
+        /// Gets the <see cref="NumericType"/> of the specified <see cref="Type"/>
+        /// which is presumably a numeric one.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <returns>The <see cref="NumericType"/> of the provided <see cref="Type"/>.</returns>
+        private static NumericType GetNumericType( Type type )
+        {
+            if ( type == _sbyteType )
+                return NumericType.Sbyte;
+            if ( type == _byteType )
+                return NumericType.Byte;
+            if ( type == _shortType )
+                return NumericType.Short;
+            if ( type == _ushortType )
+                return NumericType.Ushort;
+            if ( type == _intType )
+                return NumericType.Int;
+            if ( type == _uintType )
+                return NumericType.Uint;
+            if ( type == _longType )
+                return NumericType.Long;
+            if ( type == _ulongType )
+                return NumericType.Ulong;
+            if ( type == _floatType )
+                return NumericType.Single;
+            if ( type == _decimalType )
+                return NumericType.Decimal;
+            if ( type == _doubleType )
+                return NumericType.Double;
+            return NumericType.NotNumeric;
         }
 
         /// <summary>
@@ -192,7 +229,6 @@ namespace Adeptar
                 {
                     if ( textSpan[openTildePos + 1 + idLength] == '~' )
                     {
-                        // Found the marker ~id~
                         int segmentStartPos = openTildePos + 1 + idLength + 1;
                         int nextTildePos = textSpan.Slice(segmentStartPos).IndexOf('~');
                         int segmentEndPos;
@@ -211,7 +247,6 @@ namespace Adeptar
                         int finalLength = rawLength - additionalTakeAway;
                         if ( finalLength < 0 )
                         {
-                            // This suggests additionalTakeAway is too large for the found segment
                             throw new ArgumentOutOfRangeException( nameof( additionalTakeAway ), $"Calculated segment length ({rawLength}) is less than additionalTakeAway ({additionalTakeAway}) for ID '{id}'." );
                         }
 
@@ -225,88 +260,11 @@ namespace Adeptar
         }
 
         /// <summary>
-        /// Resolves escape sequences within a string literal read from Adeptar format.
-        /// Assumes input includes the surrounding double quotes.
+        /// Removes first and last quatation marks of the string.
         /// </summary>
-        /// <param name="text">The string literal span (including quotes) to unescape.</param>
-        /// <returns>The unescaped string content.</returns>
-        /// <exception cref="AdeptarException">Thrown for invalid escape sequences or unterminated strings.</exception>
-        /// <remarks>
-        /// Handles standard escape sequences: \", \\, \n, \r, \t, \b, \f.
-        /// Basic support for \uXXXX Unicode escapes.
-        /// </remarks>
-        internal static string StringResolver( ReadOnlySpan<char> text )
-        {
-            if ( text.Length < 2 || text[0] != '"' || text[text.Length - 1] != '"' )
-            {
-                throw new AdeptarException( $"Invalid string literal format. Expected content enclosed in double quotes. Received: '{PreviewSpan( text )}'" );
-            }
-
-            ReadOnlySpan<char> innerSpan = text.Slice(1, text.Length - 2);
-            StringBuilder sb = new StringBuilder(innerSpan.Length);
-            bool escapeActive = false;
-
-            for ( int i = 0; i < innerSpan.Length; i++ )
-            {
-                char c = innerSpan[i];
-
-                if ( escapeActive )
-                {
-                    switch ( c )
-                    {
-                        case '"': sb.Append( '"' ); break;
-                        case '\\': sb.Append( '\\' ); break;
-                        case 'n': sb.Append( '\n' ); break;
-                        case 'r': sb.Append( '\r' ); break;
-                        case 't': sb.Append( '\t' ); break;
-                        case 'b': sb.Append( '\b' ); break;
-                        case 'f': sb.Append( '\f' ); break;
-                        case 'u':
-                            // Unicode escape \uXXXX
-                            if ( i + 4 < innerSpan.Length )
-                            {
-                                ReadOnlySpan<char> hexSpan = innerSpan.Slice(i + 1, 4);
-                                if ( ushort.TryParse( hexSpan, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort unicodeChar ) )
-                                {
-                                    sb.Append( (char)unicodeChar );
-                                    i += 4; // Skip the 4 hex digits
-                                }
-                                else
-                                {
-                                    throw new AdeptarException( $"Invalid Unicode escape sequence '\\u{hexSpan.ToString()}' found in string literal." );
-                                }
-                            }
-                            else
-                            {
-                                throw new AdeptarException( "Incomplete Unicode escape sequence '\\u' found at end of string literal." );
-                            }
-                            break;
-                        default:
-                            throw new AdeptarException( $"Invalid escape sequence '\\{c}' found in string literal." );
-                    }
-                    escapeActive = false;
-                }
-                else if ( c == '\\' )
-                {
-                    escapeActive = true;
-                }
-                else if ( c == '"' )
-                {
-                    throw new AdeptarException( "Unescaped double quote found inside string literal." );
-                }
-                else
-                {
-                    sb.Append( c );
-                }
-            }
-
-            if ( escapeActive )
-            {
-                throw new AdeptarException( "Unterminated escape sequence at end of string literal." );
-            }
-
-            return sb.ToString();
-        }
+        /// <param name="text">The string to resolve.</param>
+        /// <returns>The string with first and last quotation marks removed.</returns>
+        internal static string StringResolver( ReadOnlySpan<char> text ) => text.Slice( 1, text.Length - 2 ).ToString();
 
         /// <summary>
         /// Increments an array with a binary style.
@@ -314,26 +272,21 @@ namespace Adeptar
         /// The array serves as an index for a dimensional array.
         /// Accepts a <see cref="List{T}"/> of ints that serves as an upper bound.
         /// </summary>
-        /// <param name="dimensionSizes">The sizes of the dimensional array.</param>
-        /// <param name="currentIndex">The current index of the dimensional array to use.</param>
+        /// <param name="sizes">The sizes of the dimensional array.</param>
+        /// <param name="index">The current index of the dimensional array to use.</param>
         /// <returns>The index array incremented with binary style.</returns>
-        public static void BinaryStyleIndexArrayByRefIncrement( in List<int> dimensionSizes, ref int[] currentIndex )
+        public static void BinaryStyleIndexArrayByRefIncrement( in List<int> sizes, ref int[] index )
         {
-            if ( dimensionSizes == null ) throw new ArgumentNullException( nameof( dimensionSizes ) );
-            if ( currentIndex == null ) throw new ArgumentNullException( nameof( currentIndex ) );
-            if ( dimensionSizes.Count != currentIndex.Length )
-                throw new ArgumentException( $"Dimension mismatch: sizes has {dimensionSizes.Count} elements, index has {currentIndex.Length} elements." );
-
-            for ( int i = dimensionSizes.Count - 1; i >= 0; i-- )
+            for ( int i = sizes.Count - 1; i >= 0; i-- )
             {
-                if ( dimensionSizes[i] > currentIndex[i] )
+                if ( sizes[i] > index[i] )
                 {
-                    currentIndex[i]++;
+                    index[i]++;
                     return;
                 }
                 else
                 {
-                    currentIndex[i] = 0;
+                    index[i] = 0;
                 }
             }
         }

@@ -2,7 +2,7 @@
 using System.IO;
 using static Adeptar.AdeptarReader;
 using static Adeptar.DeserializationHelpers;
-using static Adeptar.TypeGetters;
+using static Adeptar.TypeClassifiers;
 
 namespace Adeptar
 {

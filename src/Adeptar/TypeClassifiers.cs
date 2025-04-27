@@ -9,7 +9,7 @@ namespace Adeptar
     /// <summary>
     /// A class providing methods for determining object types.
     /// </summary>
-    internal static class TypeGetters
+    internal static class TypeClassifiers
     {
         /// <summary>
         /// Cached <see cref="System.Type"/> object for the open generic <see cref="System.Collections.Generic.Dictionary{TKey, TValue}"/> type definition (<c>typeof(Dictionary)</c>). Accessed via <see cref="_openGenericDictionaryType"/>.
@@ -59,68 +59,68 @@ namespace Adeptar
             new ConcurrentDictionary<Type, SerializableType>();
 
         /// <summary>
-        /// Gets the <see cref="SerializableType"/> classification for a given <see cref="Type"/>, utilizing a cache for performance.
+        /// Gets the <see cref="SerializableType"/> classification for a given <see cref="Type"/>.
         /// </summary>
-        /// <param name="fInfo">The <see cref="Type"/> instance to classify, typically representing a field or property type during serialization.</param>
+        /// <param name="type">The <see cref="Type"/> instance to classify, typically representing a field or property type during serialization.</param>
         /// <returns>
-        /// The cached or calculated <see cref="SerializableType"/> corresponding to the input <paramref name="fInfo"/>.
+        /// The cached or calculated <see cref="SerializableType"/> corresponding to the input <paramref name="type"/>.
         /// Returns <see cref="SerializableType.Class"/> as a default if the type cannot be determined by the internal logic.
         /// </returns>
         /// <remarks>
         /// This method acts as the public accessor for serialization type classification.
-        /// It first checks a static, thread-safe cache (<c>_serializableTypeCache</c>) for a previously computed result for the given <paramref name="fInfo"/>.
+        /// It first checks a static, thread-safe cache (<c>_serializableTypeCache</c>) for a previously computed result for the given <paramref name="type"/>.
         /// If the type is found in the cache, the cached value is returned immediately.
-        /// If the type is not found (cache miss), it calls the internal <see cref="GetSerializableTypeInternal"/> method to perform the actual classification logic.
+        /// If the type is not found (cache miss), it calls the internal <see cref="SerializableTypeOfInternal"/> method to perform the actual classification logic.
         /// The result from the internal method is then added to the cache before being returned.
         /// </remarks>
-        /// <seealso cref="GetSerializableTypeInternal(Type)"/>
-        internal static SerializableType GetSerializableType( Type fInfo )
+        /// <seealso cref="SerializableTypeOfInternal(Type)"/>
+        internal static SerializableType SerializableTypeOf( Type type )
         {
-            if ( _serializableTypeCache.TryGetValue( fInfo, out SerializableType cachedResult ) )
+            if ( _serializableTypeCache.TryGetValue( type, out SerializableType cachedResult ) )
             {
                 return cachedResult;
             }
 
-            SerializableType type = GetSerializableTypeInternal( fInfo );
-            _serializableTypeCache.TryAdd( fInfo, type );
+            SerializableType value = SerializableTypeOfInternal( type );
+            _serializableTypeCache.TryAdd( type, value );
 
-            return type;
+            return value;
         }
 
         /// <summary>
         /// Performs the core logic to determine the <see cref="SerializableType"/> classification for a given <see cref="Type"/>.
         /// </summary>
-        /// <param name="fInfo">The <see cref="Type"/> instance to classify.</param>
+        /// <param name="type">The <see cref="Type"/> instance to classify.</param>
         /// <returns>
         /// The calculated <see cref="SerializableType"/> based on the type's characteristics.
         /// Returns <see cref="SerializableType.Class"/> as a fallback if the type doesn't match any specific classification rules.
         /// </returns>
         /// <remarks>
-        /// This private helper method contains the actual, non-cached classification logic. It is called by <see cref="GetSerializableType(Type)"/> only when a cache miss occurs.
+        /// This private helper method contains the actual, non-cached classification logic. It is called by <see cref="SerializableTypeOf(Type)"/> only when a cache miss occurs.
         /// The sequence of checks within this method (<c>if</c> statements) is intentionally ordered based on performance benchmarks for common types.
         /// </remarks>
-        /// <seealso cref="GetSerializableType(Type)"/>
-        private static SerializableType GetSerializableTypeInternal( Type fInfo )
+        /// <seealso cref="SerializableTypeOf(Type)"/>
+        private static SerializableType SerializableTypeOfInternal( Type type )
         {
-            if ( fInfo == _stringType )
+            if ( type == _stringType )
                 return SerializableType.String;
-            if ( fInfo == _charType )
+            if ( type == _charType )
                 return SerializableType.Char;
-            if ( fInfo == _dateTimeType )
+            if ( type == _dateTimeType )
                 return SerializableType.DateTime;
-            if ( fInfo == _openGenericIListType )
+            if ( type == _openGenericIListType )
                 return SerializableType.Array;
-            if ( fInfo.IsPrimitive )
+            if ( type.IsPrimitive )
                 return SerializableType.Simple;
-            if ( fInfo.IsGenericType )
+            if ( type.IsGenericType )
             {
-                Type genericTypeDef = fInfo.GetGenericTypeDefinition();
-                if ( IsTupleGenericKnown( genericTypeDef ) )
+                Type genericTypeDef = type.GetGenericTypeDefinition();
+                if ( IsKnownTupleGenericDefinition( genericTypeDef ) )
                     return SerializableType.Tuple;
                 if ( genericTypeDef == _openGenericDictionaryType )
                     return SerializableType.Dictionary;
             }
-            if ( fInfo.IsArray )
+            if ( type.IsArray )
                 return SerializableType.DimensionalArray;
 
             return SerializableType.Class;
@@ -134,73 +134,73 @@ namespace Adeptar
             new ConcurrentDictionary<Type, DeserializableType>();
 
         /// <summary>
-        /// Gets the <see cref="DeserializableType"/> classification for a given <see cref="Type"/>, utilizing a cache for performance.
+        /// Gets the <see cref="DeserializableType"/> classification for a given <see cref="Type"/>.
         /// </summary>
-        /// <param name="fInfo">The <see cref="Type"/> instance to classify, typically representing a field or property type during deserialization.</param>
+        /// <param name="type">The <see cref="Type"/> instance to classify, typically representing a field or property type during deserialization.</param>
         /// <returns>
-        /// The cached or calculated <see cref="DeserializableType"/> corresponding to the input <paramref name="fInfo"/>.
+        /// The cached or calculated <see cref="DeserializableType"/> corresponding to the input <paramref name="type"/>.
         /// Returns <see cref="DeserializableType.Class"/> as a default if the type cannot be determined by the internal logic.
         /// </returns>
         /// <remarks>
         /// This method acts as the public accessor for deserialization type classification.
-        /// It first checks a static, thread-safe cache (<c>_deserializableTypeCache</c>) for a previously computed result for the given <paramref name="fInfo"/>.
+        /// It first checks a static, thread-safe cache (<c>_deserializableTypeCache</c>) for a previously computed result for the given <paramref name="type"/>.
         /// If the type is found in the cache, the cached value is returned immediately.
-        /// If the type is not found (cache miss), it calls the internal <see cref="GetDeserializableTypeInternal"/> method to perform the actual classification logic.
+        /// If the type is not found (cache miss), it calls the internal <see cref="DeserializableTypeOfInternal"/> method to perform the actual classification logic.
         /// The result from the internal method is then added to the cache before being returned.
         /// This caching strategy significantly improves performance by ensuring the classification logic runs only once per unique <see cref="Type"/>.
         /// </remarks>
-        /// <seealso cref="GetDeserializableTypeInternal(Type)"/>
-        internal static DeserializableType GetDeserializableType( Type fInfo )
+        /// <seealso cref="DeserializableTypeOfInternal(Type)"/>
+        internal static DeserializableType DeserializableTypeOf( Type type )
         {
-            if ( _deserializableTypeCache.TryGetValue( fInfo, out DeserializableType cachedResult ) )
+            if ( _deserializableTypeCache.TryGetValue( type, out DeserializableType cachedResult ) )
             {
                 return cachedResult;
             }
 
-            DeserializableType type = GetDeserializableTypeInternal( fInfo );
-            _deserializableTypeCache.TryAdd( fInfo, type );
+            DeserializableType value = DeserializableTypeOfInternal( type );
+            _deserializableTypeCache.TryAdd( type, value );
 
-            return type;
+            return value;
         }
 
         /// <summary>
         /// Performs the core logic to determine the <see cref="DeserializableType"/> classification for a given <see cref="Type"/>.
         /// </summary>
-        /// <param name="fInfo">The <see cref="Type"/> instance to classify.</param>
+        /// <param name="type">The <see cref="Type"/> instance to classify.</param>
         /// <returns>
         /// The calculated <see cref="DeserializableType"/> based on the type's characteristics.
         /// Returns <see cref="DeserializableType.Class"/> as a fallback if the type doesn't match any specific classification rules.
         /// </returns>
         /// <remarks>
-        /// This private helper method contains the actual, non-cached classification logic. It is called by <see cref="GetDeserializableType(Type)"/> only when a cache miss occurs.
+        /// This private helper method contains the actual, non-cached classification logic. It is called by <see cref="DeserializableTypeOf(Type)"/> only when a cache miss occurs.
         /// The sequence of checks within this method (<c>if</c> statements) is intentionally ordered based on performance benchmarks for common types.
         /// </remarks>
-        /// <seealso cref="GetDeserializableType(Type)"/>
-        private static DeserializableType GetDeserializableTypeInternal( Type fInfo )
+        /// <seealso cref="DeserializableTypeOf(Type)"/>
+        private static DeserializableType DeserializableTypeOfInternal( Type type )
         {
-            if ( fInfo == _stringType )
+            if ( type == _stringType )
                 return DeserializableType.String;
-            if ( fInfo == _charType )
+            if ( type == _charType )
                 return DeserializableType.Char;
-            if ( fInfo == _dateTimeType )
+            if ( type == _dateTimeType )
                 return DeserializableType.DateTime;
-            if ( fInfo == _boolType )
+            if ( type == _boolType )
                 return DeserializableType.Boolean;
-            if ( fInfo.IsPrimitive || fInfo == _decimalType )
+            if ( type.IsPrimitive || type == _decimalType )
                 return DeserializableType.Numeric;
-            if ( fInfo.IsGenericType )
+            if ( type.IsGenericType )
             {
-                Type genericTypeDef = fInfo.GetGenericTypeDefinition();
-                if ( IsTupleGenericKnown( genericTypeDef ) )
+                Type genericTypeDef = type.GetGenericTypeDefinition();
+                if ( IsKnownTupleGenericDefinition( genericTypeDef ) )
                     return DeserializableType.Tuple;
                 if ( genericTypeDef == _openGenericDictionaryType )
                     return DeserializableType.Dictionary;
                 if ( genericTypeDef == _openGenericIListType || genericTypeDef == _openGenericListType )
                     return DeserializableType.List;
             }
-            if ( fInfo.IsArray )
-                return fInfo.GetArrayRank() > 1 ? DeserializableType.DimensionalArray : DeserializableType.Array;
-            if ( fInfo.IsEnum )
+            if ( type.IsArray )
+                return type.GetArrayRank() > 1 ? DeserializableType.DimensionalArray : DeserializableType.Array;
+            if ( type.IsEnum )
                 return DeserializableType.Enum;
 
             return DeserializableType.Class;
@@ -210,7 +210,7 @@ namespace Adeptar
         /// Contains the open generic type definitions for standard <see cref="System.ValueTuple"/> types (up to 8 type arguments).
         /// </summary>
         /// <remarks>
-        /// This set is used by the <see cref="IsTupleGenericKnown"/> method to efficiently determine
+        /// This set is used by the <see cref="IsKnownTupleGenericDefinition"/> method to efficiently determine
         /// if a given open generic type definition corresponds to one of the standard ValueTuple types.
         /// This field is initialized once during static type initialization and is read-only thereafter.
         /// </remarks>
@@ -226,7 +226,7 @@ namespace Adeptar
         /// </summary>
         /// <param name="openGenericTupleType">The open generic type definition to check (e.g., obtained via <c>type.GetGenericTypeDefinition()</c>).</param>
         /// <returns><c>true</c> if the specified type is found within the <see cref="_valueTupleGenericTypes"/> set; otherwise, <c>false</c>.</returns>
-        private static bool IsTupleGenericKnown( Type openGenericTupleType ) => _valueTupleGenericTypes.Contains( openGenericTupleType );
+        private static bool IsKnownTupleGenericDefinition( Type openGenericTupleType ) => _valueTupleGenericTypes.Contains( openGenericTupleType );
 
         /// <summary>
         /// Gets the object's <see cref="SerializableType"/>.
