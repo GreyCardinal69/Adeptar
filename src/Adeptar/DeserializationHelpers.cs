@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
+using static Adeptar.AdeptarDebugger;
+
 namespace Adeptar
 {
     /// <summary>
@@ -32,7 +34,7 @@ namespace Adeptar
         /// <summary>
         /// Cached type for <see cref="int"/>.
         /// </summary>
-        internal static Type IntType = typeof( int );
+        internal static Type _intType = typeof( int );
 
         /// <summary>
         /// Cached type for <see cref="uint"/>.
@@ -205,7 +207,7 @@ namespace Adeptar
                 return NumericType.Short;
             if ( type == _ushortType )
                 return NumericType.Ushort;
-            if ( type == IntType )
+            if ( type == _intType )
                 return NumericType.Int;
             if ( type == _uintType )
                 return NumericType.Uint;
