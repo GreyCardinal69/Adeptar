@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using static Adeptar.AdeptarReader;
+using static Adeptar.AdeptarDeserializer;
 using static Adeptar.ClassReader;
 using static Adeptar.DeserializationHelpers;
 

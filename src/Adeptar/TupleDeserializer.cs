@@ -118,7 +118,7 @@ namespace Adeptar
                         }
                         else
                         {
-                            elementValue = AdeptarReader.DeserializeObject( currentField.FieldType, valueSpan );
+                            elementValue = AdeptarDeserializer.DeserializeObject( currentField.FieldType, valueSpan );
                         }
                     }
                     catch ( AdeptarException ex )

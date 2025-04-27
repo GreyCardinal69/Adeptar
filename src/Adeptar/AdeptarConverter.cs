@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using static Adeptar.AdeptarReader;
+using static Adeptar.AdeptarDeserializer;
 using static Adeptar.DeserializationHelpers;
 using static Adeptar.TypeClassifiers;
 

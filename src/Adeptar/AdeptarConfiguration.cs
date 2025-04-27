@@ -25,7 +25,7 @@ namespace Adeptar
         /// <summary>
         /// An array of field and or property names to ignore.
         /// </summary>
-        public IReadOnlyList<string> ToIgnore { get; init; }
+        public string[] ToIgnore { get; init; }
 
         /// <summary>
         /// Indicates that a <see cref="AdeptarConfiguration"/> exists in the class or the struct to serialize.

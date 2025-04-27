@@ -2,14 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 
-using static Adeptar.AdeptarReader;
+using static Adeptar.AdeptarDeserializer;
 
 namespace Adeptar
 {
     /// <summary>
     /// Internal class containing method(s) for deserialization of <see cref="Dictionary{TKey, TValue}"/>
     /// </summary>
-    internal class DictionaryReader
+    internal class DictionaryDeserializer
     {
         /// <summary>
         /// Deserializes the Adeptar string of type <see cref="Dictionary{TKey, TValue}"/> to a .NET object.

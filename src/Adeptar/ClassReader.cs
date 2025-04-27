@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using FastMember;
-using static Adeptar.AdeptarReader;
+using static Adeptar.AdeptarDeserializer;
 
 namespace Adeptar
 {

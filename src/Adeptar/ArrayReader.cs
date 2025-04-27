@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using static Adeptar.AdeptarReader;
+using static Adeptar.AdeptarDeserializer;
 using static Adeptar.DeserializationHelpers;
 
 namespace Adeptar
