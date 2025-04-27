@@ -380,14 +380,14 @@ namespace Adeptar
                     case '>':
                         if ( inSizes )
                         {
-                            sizes.Add( (int)NumericResolver( IntType, text.Slice( j, i - j ).ToString() ) );
+                            sizes.Add( (int)ParseNumeric( _intType, text.Slice( j, i - j ).ToString() ) );
                             j = i + 1;
                             inSizes = false;
                             exit = true;
                         }
                         break;
                     case ',':
-                        sizes.Add( (int)NumericResolver( IntType, text.Slice( j, i - j ).ToString() ) );
+                        sizes.Add( (int)ParseNumeric( _intType, text.Slice( j, i - j ).ToString() ) );
                         j = i + 1;
                         break;
                 }

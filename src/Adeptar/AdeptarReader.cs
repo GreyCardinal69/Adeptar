@@ -25,7 +25,7 @@ namespace Adeptar
 
             return deserializableType switch
             {
-                DeserializableType.Numeric => NumericResolver( type, text.ToString() ),
+                DeserializableType.Numeric => ParseNumeric( type, text.ToString() ),
                 DeserializableType.String => StringResolver( text ),
                 DeserializableType.Boolean => Convert.ToBoolean( text.ToString() ),
                 DeserializableType.Char => Convert.ToChar( text.Slice( 1, 1 ).ToString() ),
