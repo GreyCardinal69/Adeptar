@@ -236,32 +236,18 @@ namespace Adeptar
         /// The provided object's <see cref="SerializableType"/>. Returns <see cref="SerializableType.Class"/> if the
         /// provided object is null or if its type can't be determined.
         /// </returns>
-        public static SerializableType FetchType( object received )
-        {
-            switch ( received )
+        public static SerializableType FetchType( object received ) =>
+        received switch
             {
-                case string _:
-                    return SerializableType.String;
-                case DateTime _:
-                case DateTimeOffset _:
-                    return SerializableType.DateTime;
-                case char _:
-                    return SerializableType.Char;
-                case Enum _:
-                case bool _:
-                case IConvertible _:
-                    return SerializableType.Simple;
-                case IList array:
-                    // IsMultiDimensionalArray handles potential error of trying to get rank of pure IList.
-                    return IsMultiDimensionalArray( array ) ? SerializableType.DimensionalArray : SerializableType.Array;
-                case ITuple _:
-                    return SerializableType.Tuple;
-                case IDictionary _:
-                    return SerializableType.Dictionary;
-                default:
-                    return SerializableType.Class;
-            }
-        }
+                string => SerializableType.String,
+                DateTime or DateTimeOffset => SerializableType.DateTime,
+                char => SerializableType.Char,
+                Enum or bool or IConvertible => SerializableType.Simple,
+                IList array => IsMultiDimensionalArray( array ) ? SerializableType.DimensionalArray : SerializableType.Array,
+                ITuple => SerializableType.Tuple,
+                IDictionary => SerializableType.Dictionary,
+                _ => SerializableType.Class
+            };
 
         /// <summary>
         /// Checks if the object is an array with two or more dimensions.
