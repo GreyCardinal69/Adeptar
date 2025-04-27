@@ -3,11 +3,21 @@
 namespace Adeptar.Unity
 {
     /// <summary>
-    /// Instructs the <see cref="AdeptarWriter"/> to not serialize the property or the field.
+    /// Instructs the Adeptar serializer to skip the attributed property or field during serialization.
     /// </summary>
-    [AttributeUsage( AttributeTargets.Field | AttributeTargets.Property )]
-    public class AdeptarIgnore : Attribute
+    /// <remarks>
+    /// Apply this attribute to public fields or properties of a class or struct that should be
+    /// excluded when serializing an object using Adeptar.
+    /// Note: Serialization behavior might depend on <see cref="AdeptarSettings"/> configured
+    /// in the serializer (e.g., <see cref="AdeptarSettings.CheckClassAttributes"/> might need to be enabled).
+    /// </remarks>
+    /// <seealso cref="AdeptarWriter"/>
+    /// <seealso cref="AdeptarSettings"/>
+    [AttributeUsage( AttributeTargets.Field | AttributeTargets.Property, Inherited = true, AllowMultiple = false )]
+    public sealed class AdeptarIgnoreAttribute : Attribute // Added 'sealed' and 'Attribute' suffix
     {
+        // This is a marker attribute, so no constructor or properties are needed.
+        // The presence of the attribute itself provides the necessary information.
     }
 }
 
