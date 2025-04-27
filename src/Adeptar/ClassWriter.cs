@@ -23,9 +23,9 @@ namespace Adeptar
         private static AdeptarConfiguration _defaultConfig = new() { ToIgnore = new string[] { } };
 
         /// <summary>
-        /// Cached type for <see cref="AdeptarIgnore"/>.
+        /// Cached type for <see cref="AdeptarIgnoreAttribute"/>.
         /// </summary>
-        private static Type _ignoreAttribute = typeof( AdeptarIgnore );
+        private static Type _ignoreAttribute = typeof( AdeptarIgnoreAttribute );
 
         /// <summary>
         /// Serializes the class or struct object to a .Adeptar string.

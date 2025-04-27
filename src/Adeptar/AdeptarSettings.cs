@@ -3,10 +3,11 @@
     /// <summary>
     /// A class that controls object serialization rules.
     /// </summary>
-    public class AdeptarSettings
+    public sealed class AdeptarSettings
     {
         /// <summary>
-        /// Tells the <see cref="AdeptarWriter"/> whether to check for .Adeptar attributes on fields or properties.
+        /// Gets a value indicating whether the <see cref="AdeptarWriter"/> should check for Adeptar attributes
+        /// (like <see cref="AdeptarIgnoreAttribute"/>) on fields or properties during serialization.
         /// </summary>
         public bool CheckClassAttributes { get; set; }
 
