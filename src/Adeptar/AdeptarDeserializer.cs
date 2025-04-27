@@ -11,7 +11,7 @@ namespace Adeptar
     /// <summary>
     /// Internal central dispatcher for deserializing Adeptar objects from ReadOnlySpan.
     /// </summary>
-    internal class AdeptarReader
+    internal class AdeptarDeserializer
     {
         /// <summary>
         /// Deserializes a ReadOnlySpan containing Adeptar data into an object of the specified type.
