@@ -1,4 +1,6 @@
-﻿namespace Adeptar
+﻿using System.Collections.Generic;
+
+namespace Adeptar
 {
     /// <summary>
     /// A class that provides functionality for field/property serialization manipulations.
@@ -23,7 +25,7 @@
         /// <summary>
         /// An array of field and or property names to ignore.
         /// </summary>
-        public string[] ToIgnore { get; init; }
+        public IReadOnlyList<string> ToIgnore { get; init; }
 
         /// <summary>
         /// Indicates that a <see cref="AdeptarConfiguration"/> exists in the class or the struct to serialize.

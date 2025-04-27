@@ -10,7 +10,7 @@ namespace Adeptar
     /// <summary>
     /// Internal class containing methods for the deserialization of tuples.
     /// </summary>
-    internal class TupleReader
+    internal static class TupleDeserializer
     {
         // --- Caches ---
         /// <summary>
@@ -36,21 +36,21 @@ namespace Adeptar
         /// <summary>
         /// Deserializes the Adeptar string representation of a tuple into a .NET ValueTuple object.
         /// </summary>
-        /// <param name="cleanedText">The ReadOnlySpan containing the cleaned tuple string representation (including parentheses).</param>
+        /// <param name="sourceText">The ReadOnlySpan containing the cleaned tuple string representation (including parentheses).</param>
         /// <param name="tupleType">The target <see cref="System.ValueTuple"/> type.</param>
         /// <returns>The deserialized tuple object.</returns>
         /// <exception cref="AdeptarException">Thrown if the format is invalid (e.g., missing '()', ':', ','), field names mismatch, element count mismatches, element deserialization fails, or type mismatches occur during setting.</exception>
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="tupleType"/> is null (though typically checked before calling).</exception>
-        internal static object DeserializeTuple( ReadOnlySpan<char> cleanedText, Type tupleType )
+        internal static object DeserializeTuple( ReadOnlySpan<char> sourceText, Type tupleType )
         {
             if ( tupleType == null ) throw new ArgumentNullException( nameof( tupleType ) ); // Added explicit null check
 
-            if ( cleanedText.Length < 2 || cleanedText[0] != '(' || cleanedText[cleanedText.Length - 1] != ')' )
+            if ( sourceText.Length < 2 || sourceText[0] != '(' || sourceText[sourceText.Length - 1] != ')' )
             {
-                throw new AdeptarException( $"Invalid tuple format. Expected cleaned text enclosed in parentheses '()'. Received start: '{PreviewSpan( cleanedText, 50 )}'" );
+                throw new AdeptarException( $"Invalid tuple format. Expected cleaned text enclosed in parentheses '()'. Received start: '{PreviewSpan( sourceText, 50 )}'" );
             }
 
-            ReadOnlySpan<char> innerSpan = cleanedText.Slice(1, cleanedText.Length - 2);
+            ReadOnlySpan<char> innerSpan = sourceText.Slice(1, sourceText.Length - 2);
 
             Dictionary<string, FieldInfo> fields = GetOrCreateTupleFieldMap(tupleType);
 
@@ -66,7 +66,6 @@ namespace Adeptar
                 return target;
             }
 
-            // --- Parsing State ---
             int currentPosition = 0;
             bool expectingName = true;
             string currentName = null;
@@ -137,7 +136,6 @@ namespace Adeptar
                         setter( target, elementValue );
                         elementsFound++;
                     }
-                    // Catch potential ArgumentException from SetValue (type mismatch), TargetInvocationException etc.
                     catch ( Exception ex )
                     {
                         throw new AdeptarException( $"Failed to set value for tuple field '{currentName}'. Type mismatch or other error. Value was '{elementValue ?? "null"}'. See inner exception.", ex );
@@ -150,7 +148,7 @@ namespace Adeptar
                 currentPosition = ( delimiterIndex == -1 ) ? innerSpan.Length : endPosition + 1;
             }
 
-            if ( !expectingName ) // Ended while expecting a value - dangling name:
+            if ( !expectingName )
             {
                 throw new AdeptarException( $"Invalid tuple format. Dangling field name '{currentName}' without a value at the end of input: '{PreviewSpan( innerSpan )}'." );
             }
@@ -186,7 +184,7 @@ namespace Adeptar
                 }
                 if ( c == '\\' )
                 {
-                    escapeNext = true; // Next character is escaped
+                    escapeNext = true;
                     continue;
                 }
 

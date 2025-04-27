@@ -3,7 +3,7 @@ using static Adeptar.ArrayReader;
 using static Adeptar.ClassReader;
 using static Adeptar.DeserializationHelpers;
 using static Adeptar.DictionaryReader;
-using static Adeptar.TupleReader;
+using static Adeptar.TupleDeserializer;
 using static Adeptar.TypeClassifiers;
 
 namespace Adeptar
