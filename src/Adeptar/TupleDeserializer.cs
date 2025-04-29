@@ -29,7 +29,7 @@ namespace Adeptar
             new ConcurrentDictionary<FieldInfo, Action<object, object>>();
 
         /// <summary>
-        /// Binding flags used to retrieve public instance fields (like Item1, Rest) from ValueTuples.
+        /// Binding flags used to retrieve public instance fields from ValueTuples.
         /// </summary>
         private const BindingFlags _fieldBindingFlags = BindingFlags.Public | BindingFlags.Instance;
 

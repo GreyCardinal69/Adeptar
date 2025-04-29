@@ -9,7 +9,7 @@ namespace Adeptar
     /// <summary>
     /// A class providing methods for determining object types.
     /// </summary>
-    internal static class TypeClassifiers
+    public static class TypeClassifiers
     {
         /// <summary>
         /// Cached <see cref="System.Type"/> object for the open generic <see cref="System.Collections.Generic.Dictionary{TKey, TValue}"/>.
@@ -100,7 +100,7 @@ namespace Adeptar
         /// The sequence of checks within this method (<c>if</c> statements) is intentionally ordered based on performance benchmarks for common types.
         /// </remarks>
         /// <seealso cref="SerializableTypeOf(Type)"/>
-        private static SerializableType SerializableTypeOfInternal( Type type )
+        public static SerializableType SerializableTypeOfInternal( Type type )
         {
             if ( type == _stringType )
                 return SerializableType.String;
@@ -176,7 +176,7 @@ namespace Adeptar
         /// The sequence of checks within this method (<c>if</c> statements) is intentionally ordered based on performance benchmarks for common types.
         /// </remarks>
         /// <seealso cref="DeserializableTypeOf(Type)"/>
-        private static DeserializableType DeserializableTypeOfInternal( Type type )
+        public static DeserializableType DeserializableTypeOfInternal( Type type )
         {
             if ( type == _stringType )
                 return DeserializableType.String;
@@ -234,31 +234,29 @@ namespace Adeptar
         /// <param name="received">The received object.</param>
         /// <returns>
         /// The provided object's <see cref="SerializableType"/>. Returns <see cref="SerializableType.Class"/> if the
-        /// provided object is null or if its type can't be determined.
+        /// provided object is null, is a class/struct or if its type can't be determined.
         /// </returns>
+        [MethodImpl( MethodImplOptions.AggressiveInlining )]
         public static SerializableType FetchSerializableTypeOf( object received ) =>
         received switch
         {
+            null => SerializableType.Class,
             string => SerializableType.String,
+
             DateTime or DateTimeOffset => SerializableType.DateTime,
+            bool => SerializableType.Simple,
             char => SerializableType.Char,
-            Enum or bool or IConvertible => SerializableType.Simple,
-            IList array => IsMultiDimensionalArray( array ) ? SerializableType.DimensionalArray : SerializableType.Array,
+
+            Array array => array.Rank > 1 ? SerializableType.DimensionalArray : SerializableType.Array,
+
             ITuple => SerializableType.Tuple,
             IDictionary => SerializableType.Dictionary,
+            IList => SerializableType.Array,
+
+            Enum or IConvertible => SerializableType.Simple,
+
             _ => SerializableType.Class
         };
-
-        /// <summary>
-        /// Checks if the object is an array with two or more dimensions.
-        /// </summary>
-        /// <param name="received">The object to check.</param>
-        /// <returns>True if the object is an array and has rank > 1.</returns>
-        public static bool IsMultiDimensionalArray( object received )
-        {
-            if ( received is Array array ) return array.Rank > 1;
-            return false;
-        }
 
         /// <summary>
         /// Parses a span containing an enum member name into the specified enum type (non-generic).
