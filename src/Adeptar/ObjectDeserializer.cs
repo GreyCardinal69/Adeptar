@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using FastMember;
 using static Adeptar.AdeptarDeserializer;
@@ -6,11 +7,17 @@ using static Adeptar.AdeptarDeserializer;
 namespace Adeptar
 {
     /// <summary>
-    /// Internal class containing method(s) for deserialization of class or struct objects.
+    /// Internal class containing methods for deserialization of class or struct objects.
     /// and two or more dimensional arrays.
     /// </summary>
-    internal sealed class ClassDeserializer
+    internal sealed class ObjectDeserializer
     {
+        // --- Caches ---
+        private static readonly ConcurrentDictionary<Type, TypeAccessor> _accessorCache = new();
+        private static readonly ConcurrentDictionary<Type, Dictionary<string, Member>> _memberMapCache = new();
+        private static readonly ConcurrentDictionary<Type, Func<object>> _defaultConstructorCache = new();
+
+
         /// <summary>
         /// Deserializes the Adeptar string of a class or a struct to a .NET object.
         /// </summary>

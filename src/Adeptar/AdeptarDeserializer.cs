@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using static Adeptar.ArrayDeserializer;
-using static Adeptar.ClassDeserializer;
+using static Adeptar.ObjectDeserializer;
 using static Adeptar.DeserializationHelpers;
 using static Adeptar.DictionaryDeserializer;
 using static Adeptar.TupleDeserializer;
