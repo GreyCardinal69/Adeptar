@@ -287,7 +287,7 @@ namespace Adeptar
                     {
                         mainBuilder.Append( name ).Append( ':' ).Append( ' ' );
                     }
-                    mainBuilder.Append( toSerialize );
+                    mainBuilder.Append( Convert.ToString( toSerialize, CultureInfo.InvariantCulture ) );
                     break;
                 case SerializableType.String:
                     if ( calledByClassWriter )

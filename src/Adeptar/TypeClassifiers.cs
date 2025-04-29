@@ -9,7 +9,7 @@ namespace Adeptar
     /// <summary>
     /// A class providing methods for determining object types.
     /// </summary>
-    public static class TypeClassifiers
+    internal static class TypeClassifiers
     {
         /// <summary>
         /// Cached <see cref="System.Type"/> object for the open generic <see cref="System.Collections.Generic.Dictionary{TKey, TValue}"/>.
@@ -100,7 +100,7 @@ namespace Adeptar
         /// The sequence of checks within this method (<c>if</c> statements) is intentionally ordered based on performance benchmarks for common types.
         /// </remarks>
         /// <seealso cref="SerializableTypeOf(Type)"/>
-        public static SerializableType SerializableTypeOfInternal( Type type )
+        private static SerializableType SerializableTypeOfInternal( Type type )
         {
             if ( type == _stringType )
                 return SerializableType.String;
@@ -176,7 +176,7 @@ namespace Adeptar
         /// The sequence of checks within this method (<c>if</c> statements) is intentionally ordered based on performance benchmarks for common types.
         /// </remarks>
         /// <seealso cref="DeserializableTypeOf(Type)"/>
-        public static DeserializableType DeserializableTypeOfInternal( Type type )
+        private static DeserializableType DeserializableTypeOfInternal( Type type )
         {
             if ( type == _stringType )
                 return DeserializableType.String;
@@ -237,7 +237,7 @@ namespace Adeptar
         /// provided object is null, is a class/struct or if its type can't be determined.
         /// </returns>
         [MethodImpl( MethodImplOptions.AggressiveInlining )]
-        public static SerializableType FetchSerializableTypeOf( object received ) =>
+        internal static SerializableType FetchSerializableTypeOf( object received ) =>
         received switch
         {
             null => SerializableType.Class,

@@ -177,7 +177,7 @@ namespace Adeptar
 
                 if ( escapeNext )
                 {
-                    escapeNext = false; // Consume the escape, ignore the current character's normal meaning
+                    escapeNext = false; // Consumes the escape, ignores the current character's normal meaning
                     continue;
                 }
                 if ( c == '\\' )
