@@ -353,7 +353,7 @@ namespace Adeptar
                         int count = tempList.Count;
                         for ( int i = 0; i < count; i++ )
                         {
-                            Write( tempList[i], FetchType( tempList[i] ), mainBuilder, indent + 1, count - 1 == i, false );
+                            Write( tempList[i], FetchSerializableTypeOf( tempList[i] ), mainBuilder, indent + 1, count - 1 == i, false );
                             mainBuilder.Append( '\n' );
                         }
                         for ( int i = 0; i < indent; i++ )
@@ -521,7 +521,7 @@ namespace Adeptar
                         int count = tempList.Count;
                         for ( int i = 0; i < count; i++ )
                         {
-                            WriteNoIndentation( tempList[i], FetchType( tempList[i] ), mainBuilder, count - 1 == i, false );
+                            WriteNoIndentation( tempList[i], FetchSerializableTypeOf( tempList[i] ), mainBuilder, count - 1 == i, false );
                         }
                     }
                     mainBuilder.Append( ']' );

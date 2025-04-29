@@ -26,7 +26,7 @@ namespace Adeptar
             }
 
             IList tempList = target as IList;
-            SerializableType type = FetchType( tempList[0] );
+            SerializableType type = FetchSerializableTypeOf( tempList[0] );
             int count = tempList.Count;
 
             if ( !CurrentSettings.UseIndentation )
@@ -135,7 +135,7 @@ namespace Adeptar
                 {
                     for ( IEnumerator iterator = stack.Pop(); iterator.MoveNext(); )
                     {
-                        Write( iterator.Current, FetchType( iterator.Current ), builder, indent, count == len - 1, false );
+                        Write( iterator.Current, FetchSerializableTypeOf( iterator.Current ), builder, indent, count == len - 1, false );
                         for ( int i = 0; i < indent; i++ )
                         {
                             builder.Append( '\n' );
@@ -151,7 +151,7 @@ namespace Adeptar
                 {
                     for ( IEnumerator iterator = stack.Pop(); iterator.MoveNext(); )
                     {
-                        WriteNoIndentation( iterator.Current, FetchType( iterator.Current ), builder, count == len - 1, false );
+                        WriteNoIndentation( iterator.Current, FetchSerializableTypeOf( iterator.Current ), builder, count == len - 1, false );
                         count++;
                     }
                 }

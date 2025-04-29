@@ -42,7 +42,7 @@ namespace Adeptar
                 {
                     if ( dict[i] is IDictionary )
                     {
-                        WriteNoIndentation( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), Builder, true, true );
+                        WriteNoIndentation( keyVals[i].Item1, FetchSerializableTypeOf( keyVals[i].Item1 ), Builder, true, true );
                         Builder.Append( ':' );
                         if ( Indent >= 1 )
                         {
@@ -57,10 +57,10 @@ namespace Adeptar
                     }
                     else
                     {
-                        SerializableType RootType = FetchType( keyVals[i].Item2 );
+                        SerializableType RootType = FetchSerializableTypeOf( keyVals[i].Item2 );
                         if ( RootType == SerializableType.Array )
                         {
-                            WriteNoIndentation( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), Builder, true, true );
+                            WriteNoIndentation( keyVals[i].Item1, FetchSerializableTypeOf( keyVals[i].Item1 ), Builder, true, true );
                             Builder.Append( ':' );
                             WriteNoIndentation( keyVals[i].Item2, RootType, Builder, true, false );
                             if ( count != keyVals.Length - 1 )
@@ -70,7 +70,7 @@ namespace Adeptar
                         }
                         else
                         {
-                            WriteNoIndentation( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), Builder, true, true );
+                            WriteNoIndentation( keyVals[i].Item1, FetchSerializableTypeOf( keyVals[i].Item1 ), Builder, true, true );
                             Builder.Append( ':' );
                             WriteNoIndentation( keyVals[i].Item2, RootType, Builder, count == dict.Count - 1, false );
                         }
@@ -84,7 +84,7 @@ namespace Adeptar
                 {
                     if ( keyVals[i].Item2 is IDictionary )
                     {
-                        Write( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), Builder, Indent, true, true );
+                        Write( keyVals[i].Item1, FetchSerializableTypeOf( keyVals[i].Item1 ), Builder, Indent, true, true );
                         Builder.Append( ':' ).Append( '\n' );
                         if ( Indent >= 1 )
                         {
@@ -109,10 +109,10 @@ namespace Adeptar
                     }
                     else
                     {
-                        SerializableType RootType = FetchType( keyVals[i].Item2 );
+                        SerializableType RootType = FetchSerializableTypeOf( keyVals[i].Item2 );
                         if ( RootType == SerializableType.Array )
                         {
-                            Write( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), Builder, Indent, true, false );
+                            Write( keyVals[i].Item1, FetchSerializableTypeOf( keyVals[i].Item1 ), Builder, Indent, true, false );
                             Builder.Append( ':' );
                             Builder.Append( '\n' );
                             Write( keyVals[i].Item2, RootType, Builder, Indent, true, false );
@@ -123,7 +123,7 @@ namespace Adeptar
                         }
                         else
                         {
-                            Write( keyVals[i].Item1, FetchType( keyVals[i].Item1 ), Builder, isIndended ? Indent : 0, true, false );
+                            Write( keyVals[i].Item1, FetchSerializableTypeOf( keyVals[i].Item1 ), Builder, isIndended ? Indent : 0, true, false );
                             Builder.Append( ':' );
                             Write( keyVals[i].Item2, RootType, Builder, 0, count == dict.Count - 1, false );
                         }

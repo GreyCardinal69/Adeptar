@@ -11,7 +11,7 @@ namespace Adeptar.Unity
     /// Internal class containing method(s) for deserialization of class or struct objects.
     /// and two or more dimensional arrays.
     /// </summary>
-    internal class ClassReader
+    internal sealed class ClassReader
     {
         /// <summary>
         /// Deserializes the Adeptar string of a class or a struct to a .NET object.

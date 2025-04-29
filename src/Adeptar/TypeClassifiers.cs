@@ -236,7 +236,7 @@ namespace Adeptar
         /// The provided object's <see cref="SerializableType"/>. Returns <see cref="SerializableType.Class"/> if the
         /// provided object is null or if its type can't be determined.
         /// </returns>
-        public static SerializableType FetchType( object received ) =>
+        public static SerializableType FetchSerializableTypeOf( object received ) =>
         received switch
         {
             string => SerializableType.String,

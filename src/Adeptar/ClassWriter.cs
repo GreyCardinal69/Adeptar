@@ -92,12 +92,12 @@ namespace Adeptar
                     }
                     else if ( CurrentSettings.UseIndentation )
                     {
-                        Write( value, FetchType( value ), builder, indent, count == last, false );
+                        Write( value, FetchSerializableTypeOf( value ), builder, indent, count == last, false );
                         builder.Append( '\n' );
                     }
                     else
                     {
-                        WriteNoIndentation( value, FetchType( value ), builder, count == last, false );
+                        WriteNoIndentation( value, FetchSerializableTypeOf( value ), builder, count == last, false );
                     }
 
                     count++;
@@ -188,12 +188,12 @@ namespace Adeptar
                     }
                     else if ( CurrentSettings.UseIndentation )
                     {
-                        Write( value, FetchType( value ), builder, indent, count == last, false );
+                        Write( value, FetchSerializableTypeOf( value ), builder, indent, count == last, false );
                         builder.Append( '\n' );
                     }
                     else
                     {
-                        WriteNoIndentation( value, FetchType( value ), builder, count == last, false );
+                        WriteNoIndentation( value, FetchSerializableTypeOf( value ), builder, count == last, false );
                     }
 
                     count++;
@@ -226,12 +226,12 @@ namespace Adeptar
 
                 if ( CurrentSettings.UseIndentation )
                 {
-                    Write( value, FetchType( value ), builder, indent, count == FieldTypes.Length - 1, false );
+                    Write( value, FetchSerializableTypeOf( value ), builder, indent, count == FieldTypes.Length - 1, false );
                     builder.Append( '\n' );
                 }
                 else
                 {
-                    WriteNoIndentation( value, FetchType( value ), builder, count == FieldTypes.Length - 1, false );
+                    WriteNoIndentation( value, FetchSerializableTypeOf( value ), builder, count == FieldTypes.Length - 1, false );
                 }
 
                 count++;

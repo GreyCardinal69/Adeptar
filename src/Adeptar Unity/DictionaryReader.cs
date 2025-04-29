@@ -40,7 +40,7 @@ namespace Adeptar.Unity
             Object key = null;
             Object value = null;
 
-            text = text.Slice( 1, text.Length - 1 );
+            text = text.Slice( 1 );
 
             foreach ( char item in text )
             {

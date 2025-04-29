@@ -23,7 +23,7 @@
         /// <summary>
         /// An array of field and or property names to ignore.
         /// </summary>
-        public string[] ToIgnore { get; set; }
+        public string[] ToIgnore;
 
         /// <summary>
         /// Indicates that a <see cref="AdeptarConfiguration"/> exists in the class or the struct to serialize.

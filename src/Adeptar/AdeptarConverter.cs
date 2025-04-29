@@ -130,7 +130,7 @@ namespace Adeptar
         public static void SerializeWrite( string path, object toSerialize, AdeptarSettings settings )
         {
             AdeptarWriter.AssignSettings( settings );
-            AdeptarWriter.SerializeWrite( path, toSerialize, FetchType( toSerialize ), SerializationMode.Default );
+            AdeptarWriter.SerializeWrite( path, toSerialize, FetchSerializableTypeOf( toSerialize ), SerializationMode.Default );
         }
 
         /// <summary>
@@ -142,7 +142,7 @@ namespace Adeptar
         public static string Serialize( object toSerialize, AdeptarSettings settings )
         {
             AdeptarWriter.AssignSettings( settings );
-            return AdeptarWriter.Serialize( toSerialize, FetchType( toSerialize ) );
+            return AdeptarWriter.Serialize( toSerialize, FetchSerializableTypeOf( toSerialize ) );
         }
 
         /// <summary>
@@ -157,7 +157,7 @@ namespace Adeptar
         public static void SerializeAppend( string path, object toSerialize, string id, AdeptarSettings settings )
         {
             AdeptarWriter.AssignSettings( settings );
-            AdeptarWriter.SerializeWrite( path, toSerialize, FetchType( toSerialize ), SerializationMode.Append, id );
+            AdeptarWriter.SerializeWrite( path, toSerialize, FetchSerializableTypeOf( toSerialize ), SerializationMode.Append, id );
         }
 
         /// <summary>
@@ -172,7 +172,7 @@ namespace Adeptar
         public static void SerializeRewriteAppended( string path, object toSerialize, string id, AdeptarSettings settings )
         {
             AdeptarWriter.AssignSettings( settings );
-            AdeptarWriter.SerializeWrite( path, toSerialize, FetchType( toSerialize ), SerializationMode.ChangeAppended, id );
+            AdeptarWriter.SerializeWrite( path, toSerialize, FetchSerializableTypeOf( toSerialize ), SerializationMode.ChangeAppended, id );
         }
 
         /// <summary>
@@ -183,7 +183,7 @@ namespace Adeptar
         public static void SerializeWrite( string path, object toSerialize )
         {
             AdeptarWriter.AssignSettings( AdeptarWriter.DefaultSettings );
-            AdeptarWriter.SerializeWrite( path, toSerialize, FetchType( toSerialize ), SerializationMode.Default );
+            AdeptarWriter.SerializeWrite( path, toSerialize, FetchSerializableTypeOf( toSerialize ), SerializationMode.Default );
         }
 
         /// <summary>
@@ -200,7 +200,7 @@ namespace Adeptar
                 UseIndentation = formatting == Formatting.Indented,
             };
             AdeptarWriter.AssignSettings( settings );
-            AdeptarWriter.SerializeWrite( path, toSerialize, FetchType( toSerialize ), SerializationMode.Default );
+            AdeptarWriter.SerializeWrite( path, toSerialize, FetchSerializableTypeOf( toSerialize ), SerializationMode.Default );
         }
 
         /// <summary>
@@ -211,7 +211,7 @@ namespace Adeptar
         public static string Serialize( object toSerialize )
         {
             AdeptarWriter.AssignSettings( AdeptarWriter.DefaultSettings );
-            return AdeptarWriter.Serialize( toSerialize, FetchType( toSerialize ) );
+            return AdeptarWriter.Serialize( toSerialize, FetchSerializableTypeOf( toSerialize ) );
         }
 
         /// <summary>
@@ -228,7 +228,7 @@ namespace Adeptar
                 UseIndentation = formatting == Formatting.Indented,
             };
             AdeptarWriter.AssignSettings( settings );
-            return AdeptarWriter.Serialize( toSerialize, FetchType( toSerialize ) );
+            return AdeptarWriter.Serialize( toSerialize, FetchSerializableTypeOf( toSerialize ) );
         }
 
         /// <summary>
@@ -248,7 +248,7 @@ namespace Adeptar
                 IgnoreNullValues = true
             };
             AdeptarWriter.AssignSettings( settings );
-            AdeptarWriter.SerializeWrite( path, toSerialize, FetchType( toSerialize ), SerializationMode.SetShared );
+            AdeptarWriter.SerializeWrite( path, toSerialize, FetchSerializableTypeOf( toSerialize ), SerializationMode.SetShared );
         }
 
         /// <summary>
@@ -268,7 +268,7 @@ namespace Adeptar
                 UseIndentation = formatting == Formatting.Indented,
             };
             AdeptarWriter.AssignSettings( settings );
-            AdeptarWriter.SerializeWrite( path, toSerialize, FetchType( toSerialize ), SerializationMode.Append, id );
+            AdeptarWriter.SerializeWrite( path, toSerialize, FetchSerializableTypeOf( toSerialize ), SerializationMode.Append, id );
         }
 
         /// <summary>
@@ -288,7 +288,7 @@ namespace Adeptar
                 UseIndentation = formatting == Formatting.Indented,
             };
             AdeptarWriter.AssignSettings( settings );
-            AdeptarWriter.SerializeWrite( path, toSerialize, FetchType( toSerialize ), SerializationMode.ChangeAppended, id );
+            AdeptarWriter.SerializeWrite( path, toSerialize, FetchSerializableTypeOf( toSerialize ), SerializationMode.ChangeAppended, id );
         }
     }
 }
