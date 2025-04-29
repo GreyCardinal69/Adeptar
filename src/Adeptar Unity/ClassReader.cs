@@ -195,7 +195,7 @@ namespace Adeptar.Unity
             bool inString = false;
             bool falseEnd = false;
 
-            text = text.Slice( 1, text.Length - 1 );
+            text = text.Slice( 1 );
             string name = "";
 
             foreach ( char item in text )

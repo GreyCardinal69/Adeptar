@@ -10,7 +10,7 @@ namespace Adeptar
     /// <summary>
     /// Contains methods for serializing arrays, lists and 2 or more dimensional arrays into .Adeptar strings.
     /// </summary>
-    internal class ArrayWriter
+    internal sealed class ArrayWriter
     {
         /// <summary>
         /// Writes arrays and lists into a .Adeptar string, appends to the builder instance.

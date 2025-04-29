@@ -5,7 +5,7 @@ namespace Adeptar.Unity
     /// <summary>
     /// An exception that is thrown when an error occurs during Adeptar serialization or deserialization.
     /// </summary>
-    internal class AdeptarException : Exception
+    public class AdeptarException : Exception
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="AdeptarException"/> class.

@@ -306,7 +306,7 @@ namespace Adeptar
                                 mainBuilder.Append( "\\t" );
                                 break;
                             case '\\':
-                                mainBuilder.Append( "\\" );
+                                mainBuilder.Append( '\\' );
                                 break;
                             default:
                                 mainBuilder.Append( str[i] );
@@ -480,7 +480,7 @@ namespace Adeptar
                                 mainBuilder.Append( "\\t" );
                                 break;
                             case '\\':
-                                mainBuilder.Append( "\\" );
+                                mainBuilder.Append( '\\' );
                                 break;
                             default:
                                 mainBuilder.Append( str[i] );

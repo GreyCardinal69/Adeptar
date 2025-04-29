@@ -5,7 +5,7 @@ namespace Adeptar.Unity
     /// <summary>
     /// A class containing helper methods for different uses.
     /// </summary>
-    public class AdeptarHelpers
+    public static class AdeptarHelpers
     {
         /// <summary>
         /// Checks if the provided file already has an object appended using the Id feature with the specified id.

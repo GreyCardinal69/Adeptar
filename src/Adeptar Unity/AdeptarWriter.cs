@@ -13,7 +13,7 @@ namespace Adeptar.Unity
     /// <summary>
     /// Core class that coordinates serialization via recursion.
     /// </summary>
-    internal class AdeptarWriter
+    internal sealed class AdeptarWriter
     {
         /// <summary>
         /// The main instance of a <see cref="StringBuilder"/> the text is appended to.

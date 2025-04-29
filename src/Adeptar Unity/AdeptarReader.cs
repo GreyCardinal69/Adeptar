@@ -11,7 +11,7 @@ namespace Adeptar.Unity
     /// <summary>
     /// A class that contains method(s) for deserializing .Adeptar objects.
     /// </summary>
-    internal class AdeptarReader
+    internal sealed class AdeptarReader
     {
         /// <summary>
         /// Serves as a "main" node that coordinates deserialization of elements.

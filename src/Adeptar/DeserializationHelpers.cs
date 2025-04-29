@@ -7,7 +7,7 @@ namespace Adeptar
     /// <summary>
     /// A class that contains methods for the deserialization of .Adeptar objects.
     /// </summary>
-    internal class DeserializationHelpers
+    internal sealed class DeserializationHelpers
     {  /// <summary>
        /// Cached type for <see cref="sbyte"/>.
        /// </summary>

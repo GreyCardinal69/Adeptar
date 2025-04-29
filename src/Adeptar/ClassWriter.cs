@@ -70,7 +70,7 @@ namespace Adeptar
                     {
                         if ( value is string )
                         {
-                            if ( value as string == "" )
+                            if ( string.IsNullOrEmpty( value as string ) )
                             {
                                 count++;
                                 continue;
@@ -166,7 +166,7 @@ namespace Adeptar
                     {
                         if ( value is string )
                         {
-                            if ( value as string == "" )
+                            if ( string.IsNullOrEmpty( value as string ) )
                             {
                                 count++;
                                 continue;
