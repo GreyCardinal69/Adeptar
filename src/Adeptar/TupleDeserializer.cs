@@ -85,13 +85,13 @@ namespace Adeptar
                     {
                         throw new AdeptarException( $"Invalid tuple format. Expected ':' after field name but found '{delimiterFound}' or end of content near position {currentPosition}. Input: '{PreviewSpan( innerSpan )}'. Segment: '{segment.ToString()}'" );
                     }
-                    if ( segment.IsEmpty ) // Check if name itself is empty
+                    if ( segment.IsEmpty )
                     {
                         throw new AdeptarException( $"Invalid tuple format. Missing field name before ':' near position {currentPosition}. Input: '{PreviewSpan( innerSpan )}'." );
                     }
                     currentName = segment.ToString();
                     expectingName = false;
-                    valueStartPosition = endPosition + 1; // Value starts after the colon
+                    valueStartPosition = endPosition + 1;
                 }
                 else
                 {
@@ -100,7 +100,6 @@ namespace Adeptar
                         throw new AdeptarException( $"Invalid tuple format. Expected ',' or end of tuple after value for field '{currentName}' but found '{delimiterFound}' near position {endPosition}. Input: '{PreviewSpan( innerSpan )}'." );
                     }
 
-                    // Validate field name and get FieldInfo
                     if ( !fields.TryGetValue( currentName, out FieldInfo currentField ) )
                     {
                         throw new AdeptarException( $"Invalid field name '{currentName}' found in input for tuple type {tupleType.Name} near position {valueStartPosition - currentName.Length - 1}. Input: '{PreviewSpan( innerSpan )}'. Expected one of: {string.Join( ", ", fields.Keys )}." );
@@ -111,7 +110,6 @@ namespace Adeptar
 
                     try
                     {
-                        // Deserialize the value: Special handling for 'Rest' field
                         if ( currentName == "Rest" )
                         {
                             elementValue = DeserializeTuple( valueSpan, currentField.FieldType );

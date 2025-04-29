@@ -12,42 +12,42 @@ namespace Adeptar
     internal static class TypeClassifiers
     {
         /// <summary>
-        /// Cached <see cref="System.Type"/> object for the open generic <see cref="System.Collections.Generic.Dictionary{TKey, TValue}"/> type definition (<c>typeof(Dictionary)</c>). Accessed via <see cref="_openGenericDictionaryType"/>.
+        /// Cached <see cref="System.Type"/> object for the open generic <see cref="System.Collections.Generic.Dictionary{TKey, TValue}"/>.
         /// </summary>
         private static readonly Type _openGenericDictionaryType = typeof(Dictionary<,>);
 
         /// <summary>
-        /// Cached <see cref="System.Type"/> object for the open generic <see cref="System.Collections.Generic.List{T}"/> type definition (<c>typeof(List)</c>). Accessed via <see cref="_openGenericListType"/>.
+        /// Cached <see cref="System.Type"/> object for the open generic <see cref="System.Collections.Generic.List{T}"/> type definition (<c>typeof(List)</c>).
         /// </summary>
         private static readonly Type _openGenericListType = typeof(List<>);
 
         /// <summary>
-        /// Cached <see cref="System.Type"/> object for the open generic <see cref="System.Collections.Generic.IList{T}"/> type definition (<c>typeof(IList)</c>). Accessed via <see cref="_openGenericIListType"/>.
+        /// Cached <see cref="System.Type"/> object for the open generic <see cref="System.Collections.Generic.IList{T}"/> type definition (<c>typeof(IList)</c>).
         /// </summary>
         private static readonly Type _openGenericIListType = typeof(IList<>);
 
         /// <summary>
-        /// Cached <see cref="System.Type"/> object for the <see cref="System.Char"/> type. Accessed via <see cref="_charType"/>.
+        /// Cached <see cref="System.Type"/> object for the <see cref="System.Char"/> type.
         /// </summary>
         private static readonly Type _charType = typeof(char);
 
         /// <summary>
-        /// Cached <see cref="System.Type"/> object for the <see cref="System.String"/> type. Accessed via <see cref="_stringType"/>.
+        /// Cached <see cref="System.Type"/> object for the <see cref="System.String"/> type.
         /// </summary>
         private static readonly Type _stringType = typeof(string);
 
         /// <summary>
-        /// Cached <see cref="System.Type"/> object for the <see cref="System.DateTime"/> type. Accessed via <see cref="_dateTimeType"/>.
+        /// Cached <see cref="System.Type"/> object for the <see cref="System.DateTime"/> type.
         /// </summary>
         private static readonly Type _dateTimeType = typeof(DateTime);
 
         /// <summary>
-        /// Cached <see cref="System.Type"/> object for the <see cref="System.Boolean"/> type. Accessed via <see cref="_boolType"/>.
+        /// Cached <see cref="System.Type"/> object for the <see cref="System.Boolean"/> type.
         /// </summary>
         private static readonly Type _boolType = typeof(bool);
 
         /// <summary>
-        /// Cached <see cref="System.Type"/> object for the <see cref="System.Decimal"/> type. Accessed via <see cref="_decimalType"/>.
+        /// Cached <see cref="System.Type"/> object for the <see cref="System.Decimal"/> type.
         /// </summary>
         private static readonly Type _decimalType = typeof(decimal);
 
@@ -238,16 +238,16 @@ namespace Adeptar
         /// </returns>
         public static SerializableType FetchType( object received ) =>
         received switch
-            {
-                string => SerializableType.String,
-                DateTime or DateTimeOffset => SerializableType.DateTime,
-                char => SerializableType.Char,
-                Enum or bool or IConvertible => SerializableType.Simple,
-                IList array => IsMultiDimensionalArray( array ) ? SerializableType.DimensionalArray : SerializableType.Array,
-                ITuple => SerializableType.Tuple,
-                IDictionary => SerializableType.Dictionary,
-                _ => SerializableType.Class
-            };
+        {
+            string => SerializableType.String,
+            DateTime or DateTimeOffset => SerializableType.DateTime,
+            char => SerializableType.Char,
+            Enum or bool or IConvertible => SerializableType.Simple,
+            IList array => IsMultiDimensionalArray( array ) ? SerializableType.DimensionalArray : SerializableType.Array,
+            ITuple => SerializableType.Tuple,
+            IDictionary => SerializableType.Dictionary,
+            _ => SerializableType.Class
+        };
 
         /// <summary>
         /// Checks if the object is an array with two or more dimensions.
@@ -256,8 +256,7 @@ namespace Adeptar
         /// <returns>True if the object is an array and has rank > 1.</returns>
         public static bool IsMultiDimensionalArray( object received )
         {
-            if ( received is Array arr )
-                return arr.Rank > 1;
+            if ( received is Array array ) return array.Rank > 1;
             return false;
         }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using static Adeptar.AdeptarDeserializer;
-using static Adeptar.ClassReader;
+using static Adeptar.ClassDeserializer;
 using static Adeptar.DeserializationHelpers;
 
 namespace Adeptar

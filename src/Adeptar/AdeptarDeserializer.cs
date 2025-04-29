@@ -1,6 +1,6 @@
 ﻿using System;
 using static Adeptar.ArrayReader;
-using static Adeptar.ClassReader;
+using static Adeptar.ClassDeserializer;
 using static Adeptar.DeserializationHelpers;
 using static Adeptar.DictionaryDeserializer;
 using static Adeptar.TupleDeserializer;
