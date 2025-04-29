@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using static Adeptar.AdeptarDeserializer;
-using static Adeptar.ObjectDeserializer;
 using static Adeptar.DeserializationHelpers;
+using static Adeptar.ObjectDeserializer;
 
 namespace Adeptar
 {
@@ -170,7 +170,7 @@ namespace Adeptar
             }
             str.Append( '}' );
 
-            return (T)DeserializeClassStructWithMap( str.ToString(), typeof( T ), map );
+            return (T)DeserializeObjectInstance( str.ToString(), typeof( T ), map );
         }
 
         /// <summary>

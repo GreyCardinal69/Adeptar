@@ -169,7 +169,7 @@ namespace Adeptar
             delimiterFound = '\0';
             int level = 0;      // Tracks nesting depth for (), [], {}
             bool inString = false; // Tracks whether currently inside double quotes
-            bool escapeNext = false; // Tracks if the next character is escaped by a backslash
+            bool escapeNext = false;
 
             for ( int i = startIndex; i < span.Length; i++ )
             {
@@ -177,7 +177,7 @@ namespace Adeptar
 
                 if ( escapeNext )
                 {
-                    escapeNext = false; // Consumes the escape, ignores the current character's normal meaning
+                    escapeNext = false;
                     continue;
                 }
                 if ( c == '\\' )

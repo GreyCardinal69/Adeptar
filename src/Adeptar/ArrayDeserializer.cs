@@ -17,16 +17,8 @@ namespace Adeptar
     /// </summary>
     internal static class ArrayDeserializer
     {
-        // Cache for List<T> default constructors
         private static readonly ConcurrentDictionary<Type, Func<object>> _listConstructorCache = new();
 
-        // Cached types used for reflection checks
-        private static readonly Type _IListType = typeof(IList);
-        private static readonly Type _objectType = typeof(object);
-        private static readonly Type _IEnumerableType = typeof(IEnumerable<>); // Cache generic definition
-        private static readonly Type _listType = typeof(List<>); // Cache generic definition
-
-        // Binding flags for constructor lookup
         private const BindingFlags _constructorBindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
         /// <summary>
@@ -115,40 +107,6 @@ namespace Adeptar
         }
 
         /// <summary>
-        /// Finds the index of the next top-level delimiter (defaulting to ',') not nested within strings or structures.
-        /// Can optionally stop at a specific closing character.
-        /// </summary>
-        private static int FindNextTopLevelDelimiter( ReadOnlySpan<char> span, int startIndex, out char delimiterFound, char primaryDelimiter = ',', char stopChar = '\0' )
-        {
-            delimiterFound = '\0';
-            int level = 0;
-            bool inString = false;
-            bool escapeNext = false;
-
-            for ( int i = startIndex; i < span.Length; i++ )
-            {
-                char c = span[i];
-                if ( escapeNext ) { escapeNext = false; continue; }
-                if ( c == '\\' ) { escapeNext = true; continue; }
-                if ( c == '"' ) { inString = !inString; continue; }
-                if ( inString ) continue;
-
-                if ( c == stopChar && level == 0 ) return -1;
-
-                switch ( c )
-                {
-                    case '(': case '[': case '{': level++; break;
-                    case ')': case ']': case '}': level--; break;
-                    case var del when del == primaryDelimiter:
-                        if ( level == 0 ) { delimiterFound = c; return i; }
-                        break;
-                }
-                if ( level < 0 ) throw new AdeptarException( $"Mismatched nesting level near index {i} in '{PreviewSpan( span )}'." );
-            }
-            return -1;
-        }
-
-        /// <summary>
         /// Deserializes the Adeptar string representation of a list (`[...]`) into a .NET <see cref="List{T}"/> or compatible <see cref="IList"/>.
         /// </summary>
         /// <param name="sourceSpan">The ReadOnlySpan containing the cleaned list string representation (must include surrounding brackets).</param>
@@ -211,74 +169,65 @@ namespace Adeptar
             }
         }
 
-        /// <summary>Checks for surrounding brackets and throws if invalid.</summary>
-        private static void ValidateSurroundingBrackets( ReadOnlySpan<char> span )
-        {
-            if ( span.Length < 2 || span[0] != '[' || span[span.Length - 1] != ']' )
-            {
-                throw new AdeptarException( $"Invalid list format. Expected content enclosed in square brackets '[]'. Received start: '{PreviewSpan( span, 50 )}'" );
-            }
-        }
-
         /// <summary>
         /// Deserializes the Adeptar string of two or more dimensional arrays to a .NET object.
         /// </summary>
-        /// <param name="text">The Adeptar string representation of the object.</param>
-        /// <param name="type">The type of the dimensional array.</param>
+        /// <param name="sourceSpan">The Adeptar string representation of the object.</param>
+        /// <param name="arrayType">The type of the dimensional array.</param>
         /// <returns>The .NET version of the dimensional array.</returns>
-        internal static object DeserializeDimensionalArray( ReadOnlySpan<char> text, Type type )
+        internal static object DeserializeDimensionalArray( ReadOnlySpan<char> sourceSpan, Type arrayType )
         {
-            List<int> sizes = new();
-            bool inSizes = false;
-            bool exit = false;
+            List<int> dimensionSizes = new();
+            bool inDimensions = false;
+            bool leaveLoop = false;
 
-            int i = 0, j = 0;
+            int j = 0;
 
-            foreach ( char item in text )
+            for ( int i = 0; i < sourceSpan.Length; i++ )
             {
-                if ( exit )
-                    break;
+                var item = sourceSpan[i];
+
+                if ( leaveLoop ) break;
                 switch ( item )
                 {
                     case '<':
-                        inSizes = true;
+                        inDimensions = true;
                         j = i + 1;
                         break;
                     case '>':
-                        if ( inSizes )
+                        if ( inDimensions )
                         {
-                            sizes.Add( (int)NumericResolver( _intType, text.Slice( j, i - j ).ToString() ) );
+                            dimensionSizes.Add( (int)NumericResolver( _intType, sourceSpan.Slice( j, i - j ).ToString() ) );
                             j = i + 1;
-                            inSizes = false;
-                            exit = true;
+                            inDimensions = false;
+                            leaveLoop = true;
                         }
                         break;
                     case ',':
-                        sizes.Add( (int)NumericResolver( _intType, text.Slice( j, i - j ).ToString() ) );
+                        dimensionSizes.Add( (int)NumericResolver( _intType, sourceSpan.Slice( j, i - j ).ToString() ) );
                         j = i + 1;
                         break;
                 }
-                i++;
             }
 
-            text = text.Slice( j );
+            sourceSpan = sourceSpan.Slice( j );
 
-            Type elementType = type.GetElementType();
+            Type elementType = arrayType.GetElementType();
 
-            IList flat = DeserializeArray( $"[{text.ToString()}", elementType.MakeArrayType() );
-            Array main = Array.CreateInstance( elementType, sizes.ToArray() );
+            IList flat = DeserializeArray( (ReadOnlySpan<char>)string.Concat("[".AsSpan(), sourceSpan), elementType.MakeArrayType() );
+            Array main = Array.CreateInstance( elementType, dimensionSizes.ToArray() );
 
-            int[] index = new int[sizes.Count];
+            int[] index = new int[dimensionSizes.Count];
 
-            for ( int e = 0; e < sizes.Count; e++ )
+            for ( int e = 0; e < dimensionSizes.Count; e++ )
             {
-                sizes[e] = sizes[e] - 1;
+                dimensionSizes[e] = dimensionSizes[e] - 1;
             }
 
             for ( int w = 0; w < flat.Count; w++ )
             {
                 main.SetValue( flat[w], index );
-                BinaryStyleIndexArrayByRefIncrement( in sizes, ref index );
+                BinaryStyleIndexArrayByRefIncrement( in dimensionSizes, ref index );
             }
 
             return main;

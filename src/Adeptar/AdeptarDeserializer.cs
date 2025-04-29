@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Globalization;
 using static Adeptar.ArrayDeserializer;
-using static Adeptar.ObjectDeserializer;
 using static Adeptar.DeserializationHelpers;
 using static Adeptar.DictionaryDeserializer;
+using static Adeptar.ObjectDeserializer;
 using static Adeptar.TupleDeserializer;
 using static Adeptar.TypeClassifiers;
 
@@ -36,7 +36,7 @@ namespace Adeptar
                 DeserializableType.Enum => ParseEnum( type, text ),
                 DeserializableType.NULL => null,
                 DeserializableType.DateTime => DateTime.Parse( StringResolver( text ), CultureInfo.InvariantCulture ),
-                DeserializableType.Class => DeserializeClassStruct( text, type ),
+                DeserializableType.Class => DeserializeObjectInstance( text, type ),
                 DeserializableType.Array => DeserializeArray( text, type ),
                 DeserializableType.List => DeserializeList( text, type ),
                 DeserializableType.Dictionary => DeserializeDictionary( text, type ),

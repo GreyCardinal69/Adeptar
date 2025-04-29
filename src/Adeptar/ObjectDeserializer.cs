@@ -1,299 +1,164 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using FastMember;
-using static Adeptar.AdeptarDeserializer;
+using static Adeptar.AdeptarDebugger;
+using static Adeptar.DeserializationHelpers;
 
 namespace Adeptar
 {
-    /// <summary>
-    /// Internal class containing methods for deserialization of class or struct objects.
-    /// and two or more dimensional arrays.
-    /// </summary>
-    internal sealed class ObjectDeserializer
+    internal static class ObjectDeserializer
     {
-        // --- Caches ---
         private static readonly ConcurrentDictionary<Type, TypeAccessor> _accessorCache = new();
         private static readonly ConcurrentDictionary<Type, Dictionary<string, Member>> _memberMapCache = new();
         private static readonly ConcurrentDictionary<Type, Func<object>> _defaultConstructorCache = new();
 
+        private delegate void KeyValueSpanAction( ReadOnlySpan<char> key, ReadOnlySpan<char> value );
 
         /// <summary>
-        /// Deserializes the Adeptar string of a class or a struct to a .NET object.
+        /// Deserializes the Adeptar representation of an object.
         /// </summary>
-        /// <param name="text">The Adeptar string representation of the object.</param>
-        /// <param name="type">The type of the class or struct.</param>
-        /// <returns>The .NET version of the class or struct.</returns>
-        internal static object DeserializeClassStruct( ReadOnlySpan<char> text, Type type )
+        internal static object DeserializeObjectInstance( ReadOnlySpan<char> sourceSpan, Type targetType, Dictionary<string, string> memberNameMap = null )
         {
-            int level = 0;
-            int i = 0;
-            int w = 0;
-            int j = 0;
+            ArgumentNullException.ThrowIfNull( targetType );
+            ValidateSurroundingBraces( sourceSpan );
 
-            object target = Activator.CreateInstance( type );
+            object targetInstance = CreateInstance(targetType);
+            TypeAccessor accessor = GetOrCreateAccessor(targetType);
+            Dictionary<string, Member> members = GetOrCreateMemberMap(targetType);
 
-            TypeAccessor accessor = TypeAccessor.Create( type, true );
-            MemberSet members = accessor.GetMembers();
+            ReadOnlySpan<char> contentSpan = sourceSpan.Slice(1, sourceSpan.Length - 2);
+            if ( contentSpan.IsEmpty ) return targetInstance;
 
-            List<String> ids = new();
-
-            foreach ( Member item in members )
+            ParseKeyValuePairs( contentSpan, ( keySpan, valueSpan ) =>
             {
-                ids.Add( item.Name );
-            }
+                string sourceKey = keySpan.ToString();
+                string targetMemberName = sourceKey;
 
-            bool nested = false;
-            bool inString = false;
-            bool falseEnd = false;
-
-            text = text.Slice( 1 );
-            string name = "";
-
-            foreach ( char item in text )
-            {
-                switch ( item )
+                if ( memberNameMap != null && memberNameMap.TryGetValue( sourceKey, out string mappedName ) )
                 {
-                    case '\'':
-                        break;
-                    case '"':
-                        if ( falseEnd && inString )
-                        {
-                            falseEnd = false;
-                        }
-                        else if ( !falseEnd )
-                            inString = !inString;
-                        break;
-                    case '[':
-                        if ( !inString )
-                        {
-                            level++; nested = true;
-                        }
-                        else if ( !inString )
-                            level++;
-                        break;
-                    case ']':
-                        if ( level - 1 == 0 && !inString )
-                        {
-                            nested = false;
-                        }
-                        level--;
-                        break;
-                    case '\\':
-                        if ( inString )
-                        {
-                            falseEnd = true;
-                        }
-                        else
-                        {
-                            throw new AdeptarException( "Invalid character '\\', such a character can appear only inside a string." );
-                        }
-                        break;
-                    case ',':
-                        if ( !nested && !inString )
-                        {
-                            if ( ids.Contains( name ) )
-                            {
-                                accessor[target, name] = DeserializeObject( members[ids.IndexOf( name )].Type, text.Slice( j, w - j ) );
-                            }
-                            i++;
-                            j = w + 1;
-                        }
-                        break;
-                    case '{':
-                        if ( !inString )
-                        {
-                            level++;
-                            nested = true;
-                        }
-                        break;
-                    case '}':
-                        if ( level - 1 == 0 && !inString )
-                        {
-                            nested = false;
-                        }
-                        else if ( w == text.Length - 1 && members.Count > 0 && ids.Contains( name ) )
-                        {
-                            accessor[target, name] = DeserializeObject( members[ids.IndexOf( name )].Type, text.Slice( j, w - j ) );
-                        }
-                        level--;
-                        break;
-                    case '(':
-                        if ( !inString )
-                        {
-                            level++;
-                            nested = true;
-                        }
-                        break;
-                    case ')':
-                        if ( level - 1 == 0 && !inString )
-                        {
-                            nested = false;
-                            level--;
-                        }
-                        break;
-                    case ':':
-                        if ( !nested && !inString )
-                        {
-                            name = text.Slice( j, w - j ).ToString();
-                            j = w + 1;
-                        }
-                        break;
-                    default:
-                        if ( !inString &&
-                            item != '_' &&
-                            item != '-' &&
-                            !char.IsLetter( item ) &&
-                            !char.IsDigit( item ) )
-                        {
-                            throw new AdeptarException( $"Invalid character \"{item}\" outside of string at position {i} ( indentation removed )." );
-                        }
-                        break;
+                    targetMemberName = mappedName;
                 }
-                w++;
-            }
 
-            return target;
+                if ( members.TryGetValue( targetMemberName, out Member member ) )
+                {
+                    object deserializedValue;
+                    try
+                    {
+                        deserializedValue = AdeptarDeserializer.DeserializeObject( member.Type, valueSpan );
+                    }
+                    catch ( AdeptarException ex ) { throw new AdeptarException( $"Failed to deserialize value for member '{targetMemberName}' (source key '{sourceKey}'). Input: '{PreviewSpan( valueSpan )}'. Reason: {ex.Message}", ex ); }
+                    catch ( Exception ex ) { throw new AdeptarException( $"Failed to deserialize value for member '{targetMemberName}' (source key '{sourceKey}'). Input: '{PreviewSpan( valueSpan )}'.", ex ); }
+
+                    try
+                    {
+                        accessor[targetInstance, targetMemberName] = deserializedValue;
+                    }
+                    catch ( Exception ex ) { throw new AdeptarException( $"Failed to set member '{targetMemberName}' (source key '{sourceKey}') on type '{targetType.Name}'. Value type: '{deserializedValue?.GetType().Name ?? "null"}'.", ex ); }
+                }
+            } );
+
+            return targetInstance;
         }
 
         /// <summary>
-        /// Deserializes the Adeptar string of a class or a struct to a .NET object. Accepts a <see cref="Dictionary{TKey, TValue}"/> map
-        /// that is used for name mapping.
+        /// Parses key-value pairs from object content span and invokes action for each.
         /// </summary>
-        /// <param name="text">The Adeptar string representation of the object.</param>
-        /// <param name="type">The type of the class or struct.</param>
-        /// <param name="map">The map to use for names.</param>
-        /// <returns>The .NET version of the class or struct.</returns>
-        internal static object DeserializeClassStructWithMap( ReadOnlySpan<char> text, Type type, Dictionary<string, string> map )
+        /// <exception cref="AdeptarException">For format errors.</exception>
+        private static void ParseKeyValuePairs( ReadOnlySpan<char> objectContentSpan, KeyValueSpanAction processPairAction )
         {
-            int level = 0;
-            int i = 0;
-            int w = 0;
-            int j = 0;
+            ArgumentNullException.ThrowIfNull( processPairAction );
+            int currentPos = 0;
+            bool expectingValue = false;
 
-            object target = Activator.CreateInstance( type );
-
-            TypeAccessor accessor = TypeAccessor.Create( type, true );
-            MemberSet members = accessor.GetMembers();
-
-            List<String> ids = new( members.Count );
-
-            foreach ( Member item in members )
+            while ( currentPos < objectContentSpan.Length )
             {
-                ids.Add( item.Name );
-            }
-
-            bool nested = false;
-            bool inString = false;
-            bool falseEnd = false;
-
-            text = text.Slice( 1 );
-            string name = "";
-
-            foreach ( char item in text )
-            {
-                switch ( item )
+                int colonPos = FindNextTopLevelDelimiter(objectContentSpan, currentPos, out _, ':', ',');
+                if ( colonPos == -1 && !expectingValue )
                 {
-                    case '\'':
-                        break;
-                    case '"':
-                        if ( falseEnd && inString )
-                        {
-                            falseEnd = false;
-                        }
-                        else if ( !falseEnd )
-                            inString = !inString;
-                        break;
-                    case '[':
-                        if ( !inString )
-                        {
-                            level++; nested = true;
-                        }
-                        else if ( !inString )
-                            level++;
-                        break;
-                    case ']':
-                        if ( level - 1 == 0 && !inString )
-                        {
-                            nested = false;
-                        }
-                        level--;
-                        break;
-                    case '\\':
-                        if ( inString )
-                        {
-                            falseEnd = true;
-                        }
-                        else
-                        {
-                            throw new AdeptarException( "Invalid character '\\', such a character can appear only inside a string." );
-                        }
-                        break;
-                    case ',':
-                        if ( !nested && !inString )
-                        {
-                            if ( ids.Contains( map[name] ) )
-                            {
-                                accessor[target, map[name]] = DeserializeObject( members[ids.IndexOf( map[name] )].Type, text.Slice( j, w - j ) );
-                                i++;
-                            }
-                            j = w + 1;
-                        }
-                        break;
-                    case '{':
-                        if ( !inString )
-                        {
-                            level++;
-                            nested = true;
-                        }
-                        break;
-                    case '}':
-                        if ( level - 1 == 0 && !inString )
-                        {
-                            nested = false;
-                        }
-                        else if ( level - 1 == -1 && !inString && w == text.Length - 1 && members.Count > 0 && ids.Contains( map[name] ) )
-                        {
-                            accessor[target, map[name]] = DeserializeObject( members[ids.IndexOf( map[name] )].Type, text.Slice( j, w - j ) );
-                        }
-                        level--;
-                        break;
-                    case '(':
-                        if ( !inString )
-                        {
-                            level++;
-                            nested = true;
-                        }
-                        break;
-                    case ')':
-                        if ( level - 1 == 0 && !inString )
-                        {
-                            nested = false;
-                            level--;
-                        }
-                        break;
-                    case ':':
-                        if ( !nested && !inString )
-                        {
-                            name = text.Slice( j, w - j ).ToString();
-                            j = w + 1;
-                        }
-                        break;
-                    default:
-                        if ( !inString &&
-                            item != '_' &&
-                            item != '-' &&
-                            !char.IsLetter( item ) &&
-                            !char.IsDigit( item ) )
-                        {
-                            throw new AdeptarException( $"Invalid character \"{item}\" outside of string at position {i} ( indentation removed )." );
-                        }
-                        break;
+                    if ( !objectContentSpan.Slice( currentPos ).Trim().IsEmpty )
+                        throw new AdeptarException( $"Invalid object format. Unexpected content '{PreviewSpan( objectContentSpan.Slice( currentPos ) )}' found." );
+                    break;
                 }
-                w++;
-            }
+                if ( colonPos == -1 && expectingValue )
+                {
+                    throw new AdeptarException( "Invalid object format. Dangling key without colon found at end." );
+                }
 
-            return target;
+                ReadOnlySpan<char> keySpan = objectContentSpan.Slice(currentPos, colonPos - currentPos).Trim();
+                if ( keySpan.IsEmpty ) throw new AdeptarException( $"Invalid object format. Missing property name before ':' near position {colonPos}." );
+
+                currentPos = colonPos + 1;
+
+                int commaPos = FindNextTopLevelDelimiter(objectContentSpan, currentPos, out _, ',');
+                int valueEndPos = (commaPos == -1) ? objectContentSpan.Length : commaPos;
+                ReadOnlySpan<char> valueSpan = objectContentSpan.Slice(currentPos, valueEndPos - currentPos).Trim();
+
+                processPairAction( keySpan, valueSpan );
+
+                if ( commaPos == -1 ) break;
+                currentPos = commaPos + 1;
+                expectingValue = false;
+            }
+        }
+
+        /// <summary>
+        /// Retrieves a cached <see cref="TypeAccessor"/> for the specified type, creating it if necessary.
+        /// Uses FastMember library for reflection optimization.
+        /// </summary>
+        /// <param name="type">The target <see cref="Type"/>.</param>
+        /// <returns>A <see cref="TypeAccessor"/> for the given type.</returns>
+        private static TypeAccessor GetOrCreateAccessor( Type type ) => _accessorCache.GetOrAdd( type, t => TypeAccessor.Create( t, true ) );
+
+        /// <summary>
+        /// Retrieves a cached map of member names to <see cref="Member"/> objects for the specified type, creating it if necessary.
+        /// Uses FastMember to get members and stores them in a dictionary for quick lookups.
+        /// </summary>
+        /// <param name="type">The target <see cref="Type"/>.</param>
+        /// <returns>A dictionary mapping member names (case-sensitive, ordinal) to their corresponding <see cref="Member"/> objects.</returns>
+        private static Dictionary<string, Member> GetOrCreateMemberMap( Type type )
+        {
+            return _memberMapCache.GetOrAdd( type, t => TypeAccessor.Create( t, true ).GetMembers().ToDictionary( m => m.Name, m => m, StringComparer.Ordinal ) );
+        }
+
+        /// <summary>
+        /// Retrieves or compiles and caches a delegate (<see cref="Func{Object}"/>) that invokes the parameterless constructor for the specified type.
+        /// </summary>
+        /// <param name="type">The target <see cref="Type"/>.</param>
+        /// <returns>A delegate that, when invoked, creates and returns a new instance of the specified type (boxed if it's a value type).</returns>
+        /// <exception cref="MissingMethodException">Thrown via the factory delegate if no accessible parameterless constructor is found for a non-struct type.</exception>
+        private static Func<object> GetOrCreateDefaultConstructor( Type type )
+        {
+            return _defaultConstructorCache.GetOrAdd( type, t =>
+                {
+                    ConstructorInfo ctor = t.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, Type.EmptyTypes, null);
+                    if ( ctor == null && t.IsValueType ) return () => Activator.CreateInstance( t )!;
+                    if ( ctor == null ) throw new MissingMethodException( $"No parameterless constructor for {t.FullName}." );
+                    NewExpression ne = Expression.New(ctor);
+                    Expression body = t.IsValueType ? Expression.Convert(ne, typeof(object)) : (Expression)ne;
+                    return Expression.Lambda<Func<object>>( body ).Compile();
+                }
+            );
+        }
+
+        /// <summary>
+        /// Creates a new instance of the specified type using its cached parameterless constructor delegate.
+        /// </summary>
+        /// <param name="type">The <see cref="Type"/> to instantiate.</param>
+        /// <returns>A new object instance.</returns>
+        private static object CreateInstance( Type type )
+        {
+            try
+            {
+                return GetOrCreateDefaultConstructor( type )();
+            }
+            catch ( Exception ex )
+            {
+                throw new AdeptarException( $"Failed to create instance of type '{type.FullName}'.", ex );
+            }
         }
     }
 }

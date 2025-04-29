@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using static Adeptar.AdeptarDebugger;
 
 namespace Adeptar
 {
@@ -63,6 +65,26 @@ namespace Adeptar
         /// Cached type for <see cref="double"/>.
         /// </summary>
         private static Type _doubleType = typeof( double );
+
+        /// <summary>
+        /// Cached type for <see cref="IList"/>.
+        /// </summary>
+        internal static readonly Type _IListType = typeof(IList);
+
+        /// <summary>
+        /// Cached type for <see cref="object"/>.
+        /// </summary>
+        internal static readonly Type _objectType = typeof(object);
+
+        /// <summary>
+        /// Cached type for <see cref="IEnumerable{T}"/>.
+        /// </summary>
+        internal static readonly Type _IEnumerableType = typeof(IEnumerable<>);
+
+        /// <summary>
+        /// Cached type for <see cref="List{T}"/>.
+        /// </summary>
+        internal static readonly Type _listType = typeof(List<>);
 
         /// <summary>
         /// Private enumeration for determining the type of a number.
@@ -140,6 +162,66 @@ namespace Adeptar
             }
 
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// Validates that the provided span represents an Adeptar object structure,
+        /// meaning it is not null, has at least two characters, starts with '{', and ends with '}'.
+        /// </summary>
+        /// <param name="span">The span representing the potential object data.</param>
+        /// <exception cref="AdeptarException">Thrown if the span does not meet the required object format criteria (minimum length, start '{', end '}').</exception>
+        internal static void ValidateSurroundingBraces( ReadOnlySpan<char> span )
+        {
+            if ( span.Length < 2 || span[0] != '{' || span[span.Length - 1] != '}' )
+                throw new AdeptarException( $"Invalid object format. Expected content enclosed in braces '{{}}'. Received start: '{AdeptarDebugger.PreviewSpan( span, 50 )}'" );
+        }
+
+        /// <summary>
+        /// Validates that the provided span represents an Adeptar array or list structure,
+        /// meaning it is not null, has at least two characters, starts with '[', and ends with ']'.
+        /// </summary>
+        /// <param name="span">The span representing the potential array or list data.</param>
+        /// <exception cref="AdeptarException">Thrown if the span does not meet the required array/list format criteria (minimum length, start '[', end ']').</exception>
+        internal static void ValidateSurroundingBrackets( ReadOnlySpan<char> span )
+        {
+            if ( span.Length < 2 || span[0] != '[' || span[span.Length - 1] != ']' )
+            {
+                throw new AdeptarException( $"Invalid array/list format. Expected content enclosed in square brackets '[]'. Received start: '{AdeptarDebugger.PreviewSpan( span, 50 )}'" );
+            }
+        }
+
+        /// <summary>
+        /// Finds the index of the next top-level delimiter (defaulting to ',') not nested within strings or structures.
+        /// Can optionally stop at a specific closing character.
+        /// </summary>
+        internal static int FindNextTopLevelDelimiter( ReadOnlySpan<char> span, int startIndex, out char delimiterFound, char primaryDelimiter = ',', char stopChar = '\0' )
+        {
+            delimiterFound = '\0';
+            int level = 0;
+            bool inString = false;
+            bool escapeNext = false;
+
+            for ( int i = startIndex; i < span.Length; i++ )
+            {
+                char c = span[i];
+                if ( escapeNext ) { escapeNext = false; continue; }
+                if ( c == '\\' ) { escapeNext = true; continue; }
+                if ( c == '"' ) { inString = !inString; continue; }
+                if ( inString ) continue;
+
+                if ( c == stopChar && level == 0 ) return -1;
+
+                switch ( c )
+                {
+                    case '(': case '[': case '{': level++; break;
+                    case ')': case ']': case '}': level--; break;
+                    case var del when del == primaryDelimiter:
+                        if ( level == 0 ) { delimiterFound = c; return i; }
+                        break;
+                }
+                if ( level < 0 ) throw new AdeptarException( $"Mismatched nesting level near index {i} in '{PreviewSpan( span )}'." );
+            }
+            return -1;
         }
 
         /// <summary>
