@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using static Adeptar.ArrayReader;
 using static Adeptar.ClassDeserializer;
 using static Adeptar.DeserializationHelpers;
@@ -30,11 +31,11 @@ namespace Adeptar
             {
                 DeserializableType.Numeric => NumericResolver( type, text.ToString() ),
                 DeserializableType.String => StringResolver( text ),
-                DeserializableType.Boolean => Convert.ToBoolean( text.ToString() ),
-                DeserializableType.Char => Convert.ToChar( text.Slice( 1, 1 ).ToString() ),
+                DeserializableType.Boolean => Convert.ToBoolean( text.ToString(), CultureInfo.InvariantCulture ),
+                DeserializableType.Char => Convert.ToChar( text.Slice( 1, 1 ).ToString(), CultureInfo.InvariantCulture ),
                 DeserializableType.Enum => ParseEnum( type, text ),
                 DeserializableType.NULL => null,
-                DeserializableType.DateTime => DateTime.Parse( StringResolver( text ) ),
+                DeserializableType.DateTime => DateTime.Parse( StringResolver( text ), CultureInfo.InvariantCulture ),
                 DeserializableType.Class => DeserializeClassStruct( text, type ),
                 DeserializableType.Array => DeserializeArray( text, type ),
                 DeserializableType.List => DeserializeList( text, type ),

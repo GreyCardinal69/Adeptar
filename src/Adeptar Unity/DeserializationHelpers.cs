@@ -8,7 +8,7 @@ namespace Adeptar.Unity
     /// <summary>
     /// A class that contains methods for deserialization of .Adeptar objects.
     /// </summary>
-    public class DeserializationHelpers
+    public static class DeserializationHelpers
     {
         /// <summary>
         /// Cached type for <see cref="sbyte"/>.
@@ -171,25 +171,23 @@ namespace Adeptar.Unity
         /// <param name="typeOf">The type to convert to.</param>
         /// <param name="value">The string representation of the number.</param>
         /// <returns>The adeptar string converted to a .NET object.</returns>
-        internal static object NumericResolver( Type typeOf, string value )
+        internal static object NumericResolver( Type typeOf, string value ) =>
+        GetNumericType( typeOf ) switch
         {
-            return GetNumericType( typeOf ) switch
-            {
-                NumericType.Byte => Convert.ToByte( value ),
-                NumericType.Sbyte => Convert.ToSByte( value ),
-                NumericType.Short => Convert.ToInt16( value ),
-                NumericType.Ushort => Convert.ToUInt16( value ),
-                NumericType.Long => Convert.ToInt64( value ),
-                NumericType.Ulong => Convert.ToUInt64( value ),
-                NumericType.Single => float.Parse( value, CultureInfo.InvariantCulture ),
-                NumericType.Decimal => Convert.ToDecimal( value ),
-                NumericType.Double => Convert.ToDouble( value ),
-                NumericType.Uint => Convert.ToUInt64( value ),
-                NumericType.Int => int.Parse( value, CultureInfo.InvariantCulture ),
-                NumericType.NotNumeric => null,
-                _ => null
-            };
-        }
+            NumericType.Byte => Convert.ToByte( value, CultureInfo.InvariantCulture ),
+            NumericType.Sbyte => Convert.ToSByte( value, CultureInfo.InvariantCulture ),
+            NumericType.Short => Convert.ToInt16( value, CultureInfo.InvariantCulture ),
+            NumericType.Ushort => Convert.ToUInt16( value, CultureInfo.InvariantCulture ),
+            NumericType.Long => Convert.ToInt64( value, CultureInfo.InvariantCulture ),
+            NumericType.Ulong => Convert.ToUInt64( value, CultureInfo.InvariantCulture ),
+            NumericType.Single => float.Parse( value, CultureInfo.InvariantCulture ),
+            NumericType.Decimal => Convert.ToDecimal( value, CultureInfo.InvariantCulture ),
+            NumericType.Double => Convert.ToDouble( value, CultureInfo.InvariantCulture ),
+            NumericType.Uint => Convert.ToUInt64( value, CultureInfo.InvariantCulture ),
+            NumericType.Int => int.Parse( value, CultureInfo.InvariantCulture ),
+            NumericType.NotNumeric => null,
+            _ => null
+        };
 
         /// <summary>
         /// Gets the <see cref="NumericType"/> of the specified <see cref="Type"/>

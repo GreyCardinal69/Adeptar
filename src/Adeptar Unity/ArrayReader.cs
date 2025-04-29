@@ -10,7 +10,7 @@ namespace Adeptar.Unity
     /// Internal class containing method(s) for deserialization of <see cref="List{T}"/>, <see cref="Array"/>
     /// and two or more dimensional arrays.
     /// </summary>
-    internal class ArrayReader
+    internal sealed class ArrayReader
     {
         /// <summary>
         /// Deserializes the Adeptar string of type <see cref="Array"/> to a .NET object.

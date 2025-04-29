@@ -287,8 +287,7 @@ namespace Adeptar.Unity
         /// <exception cref="ArgumentException">Thrown if <paramref name="enumType"/> is not an enum type, or if <paramref name="value"/> cannot be parsed.</exception>
         public static object ParseEnum( Type enumType, ReadOnlySpan<char> value, bool ignoreCase = false )
         {
-            if ( enumType == null ) throw new ArgumentNullException( nameof( enumType ) );
-
+            ArgumentNullException.ThrowIfNull( enumType );
             return Enum.Parse( enumType, value.ToString(), ignoreCase );
         }
     }

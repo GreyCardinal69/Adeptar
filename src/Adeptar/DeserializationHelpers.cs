@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace Adeptar
@@ -150,17 +151,17 @@ namespace Adeptar
         /// <returns>The adeptar string converted to a .NET object.</returns>
         internal static object NumericResolver( Type typeOf, string value ) => GetNumericType( typeOf ) switch
         {
-            NumericType.Byte => Convert.ToByte( value ),
-            NumericType.Sbyte => Convert.ToSByte( value ),
-            NumericType.Short => Convert.ToInt16( value ),
-            NumericType.Ushort => Convert.ToUInt16( value ),
-            NumericType.Long => Convert.ToInt64( value ),
-            NumericType.Ulong => Convert.ToUInt64( value ),
-            NumericType.Single => Convert.ToSingle( value ),
-            NumericType.Decimal => Convert.ToDecimal( value ),
-            NumericType.Double => Convert.ToDouble( value ),
-            NumericType.Uint => Convert.ToUInt64( value ),
-            NumericType.Int => Convert.ToInt32( value ),
+            NumericType.Byte => Convert.ToByte( value, CultureInfo.InvariantCulture ),
+            NumericType.Sbyte => Convert.ToSByte( value, CultureInfo.InvariantCulture ),
+            NumericType.Short => Convert.ToInt16( value, CultureInfo.InvariantCulture ),
+            NumericType.Ushort => Convert.ToUInt16( value, CultureInfo.InvariantCulture ),
+            NumericType.Long => Convert.ToInt64( value, CultureInfo.InvariantCulture ),
+            NumericType.Ulong => Convert.ToUInt64( value, CultureInfo.InvariantCulture ),
+            NumericType.Single => Convert.ToSingle( value, CultureInfo.InvariantCulture ),
+            NumericType.Decimal => Convert.ToDecimal( value, CultureInfo.InvariantCulture ),
+            NumericType.Double => Convert.ToDouble( value, CultureInfo.InvariantCulture ),
+            NumericType.Uint => Convert.ToUInt64( value, CultureInfo.InvariantCulture ),
+            NumericType.Int => Convert.ToInt32( value, CultureInfo.InvariantCulture ),
             NumericType.NotNumeric => null
         };
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using static Adeptar.ArrayWriter;
@@ -294,7 +295,7 @@ namespace Adeptar
                         mainBuilder.Append( name ).Append( ':' ).Append( ' ' );
                     }
                     mainBuilder.Append( '"' );
-                    string str = Convert.ToString( toSerialize );
+                    string str = Convert.ToString( toSerialize, CultureInfo.InvariantCulture );
                     for ( int i = 0; i < str.Length; i++ )
                     {
                         switch ( str[i] )
@@ -468,7 +469,7 @@ namespace Adeptar
                         mainBuilder.Append( name ).Append( ':' ).Append( ' ' );
                     }
                     mainBuilder.Append( '"' );
-                    string str = Convert.ToString( toSerialize );
+                    string str = Convert.ToString( toSerialize, CultureInfo.InvariantCulture );
                     for ( int i = 0; i < str.Length; i++ )
                     {
                         switch ( str[i] )

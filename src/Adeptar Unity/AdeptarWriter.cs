@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using static Adeptar.Unity.ArrayWriter;
@@ -292,7 +293,7 @@ namespace Adeptar.Unity
                     }
                     mainBuilder.Append( '"' );
                     mainBuilder.Append(
-                        Convert.ToString( toSerialize )
+                        Convert.ToString( toSerialize, CultureInfo.InvariantCulture )
                         .Replace( "\t", "\\t" )
                         .Replace( "\n", "\\n" )
                         .Replace( "\"", "\\\"" )
@@ -457,7 +458,7 @@ namespace Adeptar.Unity
                     mainBuilder.Append( '"' );
 
                     mainBuilder.Append(
-                        Convert.ToString( toSerialize )
+                        Convert.ToString( toSerialize, CultureInfo.InvariantCulture )
                         .Replace( "\t", "\\t" )
                         .Replace( "\n", "\\n" )
                         .Replace( "\"", "\\\"" )

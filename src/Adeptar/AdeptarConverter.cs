@@ -9,7 +9,7 @@ namespace Adeptar
     /// <summary>
     /// Provides methods for converting between .NET and .Adeptar types
     /// </summary>
-    public class AdeptarConverter
+    public static class AdeptarConverter
     {
         /// <summary>
         /// Deserializes the Adeptar string from the file at the specified path to the .NET <see cref="Type"/>.
