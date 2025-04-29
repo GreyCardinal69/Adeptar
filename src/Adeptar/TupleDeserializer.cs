@@ -43,7 +43,7 @@ namespace Adeptar
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="tupleType"/> is null (though typically checked before calling).</exception>
         internal static object DeserializeTuple( ReadOnlySpan<char> sourceText, Type tupleType )
         {
-            if ( tupleType == null ) throw new ArgumentNullException( nameof( tupleType ) ); // Added explicit null check
+            ArgumentNullException.ThrowIfNull( tupleType );
 
             if ( sourceText.Length < 2 || sourceText[0] != '(' || sourceText[sourceText.Length - 1] != ')' )
             {

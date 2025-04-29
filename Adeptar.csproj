@@ -15,6 +15,10 @@
 
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 
+		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+
+		<AnalysisLevel>latest-all</AnalysisLevel>
+
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">

@@ -148,24 +148,21 @@ namespace Adeptar
         /// <param name="typeOf">The type to convert to.</param>
         /// <param name="value">The string representation of the number.</param>
         /// <returns>The adeptar string converted to a .NET object.</returns>
-        internal static object NumericResolver( Type typeOf, string value )
+        internal static object NumericResolver( Type typeOf, string value ) => GetNumericType( typeOf ) switch
         {
-            return GetNumericType( typeOf ) switch
-            {
-                NumericType.Byte => Convert.ToByte( value ),
-                NumericType.Sbyte => Convert.ToSByte( value ),
-                NumericType.Short => Convert.ToInt16( value ),
-                NumericType.Ushort => Convert.ToUInt16( value ),
-                NumericType.Long => Convert.ToInt64( value ),
-                NumericType.Ulong => Convert.ToUInt64( value ),
-                NumericType.Single => Convert.ToSingle( value ),
-                NumericType.Decimal => Convert.ToDecimal( value ),
-                NumericType.Double => Convert.ToDouble( value ),
-                NumericType.Uint => Convert.ToUInt64( value ),
-                NumericType.Int => Convert.ToInt32( value ),
-                NumericType.NotNumeric => null
-            };
-        }
+            NumericType.Byte => Convert.ToByte( value ),
+            NumericType.Sbyte => Convert.ToSByte( value ),
+            NumericType.Short => Convert.ToInt16( value ),
+            NumericType.Ushort => Convert.ToUInt16( value ),
+            NumericType.Long => Convert.ToInt64( value ),
+            NumericType.Ulong => Convert.ToUInt64( value ),
+            NumericType.Single => Convert.ToSingle( value ),
+            NumericType.Decimal => Convert.ToDecimal( value ),
+            NumericType.Double => Convert.ToDouble( value ),
+            NumericType.Uint => Convert.ToUInt64( value ),
+            NumericType.Int => Convert.ToInt32( value ),
+            NumericType.NotNumeric => null
+        };
 
         /// <summary>
         /// Gets the <see cref="NumericType"/> of the specified <see cref="Type"/>

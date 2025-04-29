@@ -20,7 +20,7 @@ namespace Adeptar
         /// <summary>
         /// Default empty instance of an <see cref="AdeptarConfiguration"/> class.
         /// </summary>
-        private static AdeptarConfiguration _defaultConfig = new() { ToIgnore = new string[] { } };
+        private static AdeptarConfiguration _defaultConfig = new() { ToIgnore = Array.Empty<string>() };
 
         /// <summary>
         /// Cached type for <see cref="AdeptarIgnoreAttribute"/>.

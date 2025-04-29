@@ -21,8 +21,8 @@ namespace Adeptar
         /// <exception cref="AdeptarException">Thrown if an error occurs during file access (e.g., file not found, permissions error), wrapping the original IO exception.</exception>
         private static bool ContainsId( string path, string id )
         {
-            if ( path == null ) throw new ArgumentNullException( nameof( path ) );
-            if ( id == null ) throw new ArgumentNullException( nameof( id ) );
+            ArgumentNullException.ThrowIfNull( path  );
+            ArgumentNullException.ThrowIfNull( id );
             if ( string.IsNullOrWhiteSpace( path ) ) throw new ArgumentException( "File path cannot be empty or whitespace.", nameof( path ) );
             if ( string.IsNullOrWhiteSpace( id ) ) throw new ArgumentException( "ID cannot be empty or whitespace.", nameof( id ) );
 
