@@ -197,14 +197,14 @@ namespace Adeptar
                     case '>':
                         if ( inDimensions )
                         {
-                            dimensionSizes.Add( (int)NumericResolver( _intType, sourceSpan.Slice( j, i - j ).ToString() ) );
+                            dimensionSizes.Add( (int)ConvertToNumeric( _intType, sourceSpan.Slice( j, i - j ).ToString() ) );
                             j = i + 1;
                             inDimensions = false;
                             leaveLoop = true;
                         }
                         break;
                     case ',':
-                        dimensionSizes.Add( (int)NumericResolver( _intType, sourceSpan.Slice( j, i - j ).ToString() ) );
+                        dimensionSizes.Add( (int)ConvertToNumeric( _intType, sourceSpan.Slice( j, i - j ).ToString() ) );
                         j = i + 1;
                         break;
                 }

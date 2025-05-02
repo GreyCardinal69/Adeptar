@@ -7,7 +7,7 @@ namespace Adeptar
     /// <summary>
     /// A class containing helper methods for different use cases.
     /// </summary>
-    public class AdeptarHelpers
+    public static class AdeptarHelpers
     {
         /// <summary>
         /// Checks if the specified file contains an Adeptar object marker with the given ID (e.g., "~ObjectID~").

@@ -29,13 +29,13 @@ namespace Adeptar
 
             return deserializableType switch
             {
-                DeserializableType.Numeric => NumericResolver( type, text.ToString() ),
-                DeserializableType.String => StringResolver( text ),
+                DeserializableType.Numeric => ConvertToNumeric( type, text.ToString() ),
+                DeserializableType.String => RemoveQuotationMarksFromString( text ),
                 DeserializableType.Boolean => Convert.ToBoolean( text.ToString(), CultureInfo.InvariantCulture ),
                 DeserializableType.Char => Convert.ToChar( text.Slice( 1, 1 ).ToString(), CultureInfo.InvariantCulture ),
-                DeserializableType.Enum => ParseEnum( type, text ),
+                DeserializableType.Enum => ParseToEnum( type, text ),
                 DeserializableType.NULL => null,
-                DeserializableType.DateTime => DateTime.Parse( StringResolver( text ), CultureInfo.InvariantCulture ),
+                DeserializableType.DateTime => DateTime.Parse( RemoveQuotationMarksFromString( text ), CultureInfo.InvariantCulture ),
                 DeserializableType.Class => DeserializeObjectInstance( text, type ),
                 DeserializableType.Array => DeserializeArray( text, type ),
                 DeserializableType.List => DeserializeList( text, type ),

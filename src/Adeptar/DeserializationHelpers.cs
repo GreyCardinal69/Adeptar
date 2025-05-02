@@ -231,7 +231,7 @@ namespace Adeptar
         /// <param name="typeOf">The type to convert to.</param>
         /// <param name="value">The string representation of the number.</param>
         /// <returns>The adeptar string converted to a .NET object.</returns>
-        internal static object NumericResolver( Type typeOf, string value ) => GetNumericType( typeOf ) switch
+        internal static object ConvertToNumeric( Type typeOf, string value ) => GetNumericType( typeOf ) switch
         {
             NumericType.Byte => Convert.ToByte( value, CultureInfo.InvariantCulture ),
             NumericType.Sbyte => Convert.ToSByte( value, CultureInfo.InvariantCulture ),
@@ -337,11 +337,26 @@ namespace Adeptar
         }
 
         /// <summary>
-        /// Removes first and last quatation marks of the string.
+        /// Removes first and last quotation marks of the string.
         /// </summary>
         /// <param name="text">The string to resolve.</param>
         /// <returns>The string with first and last quotation marks removed.</returns>
-        internal static string StringResolver( ReadOnlySpan<char> text ) => text.Slice( 1, text.Length - 2 ).ToString();
+        internal static string RemoveQuotationMarksFromString( ReadOnlySpan<char> text ) => text.Slice( 1, text.Length - 2 ).ToString();
+
+        /// <summary>
+        /// Parses a span containing an enum member name into the specified enum type (non-generic).
+        /// </summary>
+        /// <param name="enumType">The enum type to parse into.</param>
+        /// <param name="value">The span containing the member name to parse.</param>
+        /// <param name="ignoreCase">Whether to ignore case during parsing.</param>
+        /// <returns>The parsed enum value as an object.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="enumType"/> is null.</exception>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="enumType"/> is not an enum type, or if <paramref name="value"/> cannot be parsed.</exception>
+        public static object ParseToEnum( Type enumType, ReadOnlySpan<char> value, bool ignoreCase = false )
+        {
+            ArgumentNullException.ThrowIfNull( enumType );
+            return Enum.Parse( enumType, value.ToString(), ignoreCase );
+        }
 
         /// <summary>
         /// Increments an array with a binary style.
