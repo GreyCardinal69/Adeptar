@@ -8,7 +8,7 @@ namespace Adeptar.Unity
     /// <summary>
     /// Internal class containing method(s) for deserialization of tuples
     /// </summary>
-    internal class TupleReader
+    internal static class TupleReader
     {
         /// <summary>
         /// Deserializes the Adeptar string of a tuple to a .NET object.

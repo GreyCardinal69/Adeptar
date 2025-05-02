@@ -9,7 +9,7 @@ namespace Adeptar.Unity
     /// <summary>
     /// Class that handles serialization of class and struct objects.
     /// </summary>
-    internal class ClassWriter
+    internal static class ClassWriter
     {
         /// <summary>
         /// Cached <see cref="Type"/> for <see cref="AdeptarConfiguration"/> class.

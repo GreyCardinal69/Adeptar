@@ -9,7 +9,7 @@ namespace Adeptar.Unity
     /// <summary>
     /// Internal class containing method(s) for deserialization of <see cref="Dictionary{TKey, TValue}"/>
     /// </summary>
-    internal class DictionaryReader
+    internal static class DictionaryReader
     {
         /// <summary>
         /// Deserializes the Adeptar string of type <see cref="Dictionary{TKey, TValue}"/> to a .NET object.
