@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Adeptar.Unity;
+using static Adeptar.AdeptarDebugger;
 using static Adeptar.AdeptarDeserializer;
 using static Adeptar.DeserializationHelpers;
 using static Adeptar.ObjectDeserializer;
@@ -21,20 +23,34 @@ namespace Adeptar
         /// </summary>
         public AdeptarDynamic()
         {
-            _keyMaps = new();
+            _keyValueMap = new();
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="AdeptarDynamic"/> with no mappings.
+        /// </summary>
+        public AdeptarDynamic( string adeptarString )
+        {
+            _keyValueMap = new();
+            _cleanedAdeptarObjectString = adeptarString;
         }
 
         /// <summary>
         /// A private field of a <see cref="Dictionary{TKey, TValue}"/>. Keys are the
         /// property/field names, and the values are their .Adeptar strings.
         /// </summary>
-        private Dictionary<string, string> _keyMaps;
+        private readonly Dictionary<string, string> _keyValueMap = new(StringComparer.Ordinal);
 
         /// <summary>
-        /// Fetches the <see cref="Dictionary{TKey, TValue}"/> where the keys are the
+        /// The original full .Adeptar cleaned string.
+        /// </summary>
+        private readonly string _cleanedAdeptarObjectString;
+
+        /// <summary>
+        /// Returns a <see cref="IReadOnlyDictionary{TKey, TValue}"/> where the keys are the
         /// property/field names, and the values are their .Adeptar strings.
         /// </summary>
-        public Dictionary<string, string> KeyMaps => _keyMaps;
+        public IReadOnlyDictionary<string, string> KeyValueMap => _keyValueMap;
 
         /// <summary>
         /// A property that gets the total string length of all the key and values of the cleaned .Adeptar string.
@@ -44,7 +60,7 @@ namespace Adeptar
             get
             {
                 int len = 0;
-                foreach ( KeyValuePair<string, string> item in _keyMaps )
+                foreach ( KeyValuePair<string, string> item in _keyValueMap )
                 {
                     len += item.Key.Length + item.Value.Length;
                 }
@@ -53,34 +69,185 @@ namespace Adeptar
         }
 
         /// <summary>
-        /// Clears the <see cref="AdeptarDynamic"/> object's key and value maps.
+        /// Creates and populates a new <see cref="AdeptarDynamic"/> object by parsing Adeptar object data from a file path.
         /// </summary>
-        public void Clear() => _keyMaps.Clear();
-
-        /// <summary>
-        /// Checks if the <see cref="AdeptarDynamic"/> object contains the field/property with the given name.
-        /// </summary>
-        /// <param name="key">The key name to check for.</param>
-        /// <returns>True if the <see cref="AdeptarDynamic"/> object contains a field/property with the provided name.</returns>
-        public bool ContainsKey( string key ) => _keyMaps.ContainsKey( key );
-
-        /// <summary>
-        /// Takes a key name of a field/property. If the key is not found throws an exception.
-        /// If the key is found deserializes its .Adeptar string to the provided type.
-        /// </summary>
-        /// <typeparam name="T">The type to deserialize to.</typeparam>
-        /// <param name="key">The key to deserialize for.</param>
-        /// <returns>
-        /// The deserialized .NET object.
-        /// </returns>
-        public T GetValue<T>( string key )
+        /// <param name="path">The path to the file containing Adeptar object data (must represent an object starting with '{').</param>
+        /// <returns>A populated <see cref="AdeptarDynamic"/> instance.</returns>
+        /// <exception cref="ArgumentNullException">If <paramref name="path"/> is null.</exception>
+        /// <exception cref="ArgumentException">If <paramref name="path"/> is empty or whitespace.</exception>
+        /// <exception cref="AdeptarException">For file IO errors or format errors during parsing.</exception>
+        public static AdeptarDynamic FromFile( string path )
         {
-            if ( !_keyMaps.ContainsKey( key ) )
+            ArgumentNullException.ThrowIfNull( path );
+            if ( string.IsNullOrWhiteSpace( path ) ) throw new ArgumentException( "File path cannot be empty.", nameof( path ) );
+
+            string fileContent;
+            try
             {
-                throw new AdeptarException( $"Invalid variable name {key}, no property or field with such a name exists." );
+                fileContent = File.ReadAllText( path, Encoding.UTF8 );
+            }
+            catch ( Exception ex ) when ( ex is IOException || ex is UnauthorizedAccessException || ex is DirectoryNotFoundException || ex is FileNotFoundException || ex is System.Security.SecurityException )
+            { throw new AdeptarException( $"Failed to read file '{path}'. See inner exception.", ex ); }
+            catch ( Exception ex ) { throw new AdeptarException( $"An unexpected error occurred reading file '{path}'. See inner exception.", ex ); }
+
+            return FromString( fileContent, false );
+        }
+
+        /// <summary>
+        /// Creates and populates a new <see cref="AdeptarDynamic"/> object by parsing Adeptar object data from a string.
+        /// </summary>
+        /// <param name="adeptarObjectString">The Adeptar string content representing an object (must start with '{' and end with '}').</param>
+        /// <param name="textIsClean">Indicates whether the string is already free of insignificant whitespace and other indentation.</param>
+        /// <returns>A populated <see cref="AdeptarDynamic"/> instance.</returns>
+        /// <exception cref="ArgumentNullException">If <paramref name="adeptarObjectString"/> is null.</exception>
+        /// <exception cref="AdeptarException">For format errors during parsing.</exception>
+        public static AdeptarDynamic FromString( string adeptarObjectString, bool textIsClean )
+        {
+            ArgumentNullException.ThrowIfNull( adeptarObjectString );
+
+            ReadOnlySpan<char> cleanedSpan;
+            AdeptarDynamic result;
+
+            if ( textIsClean )
+            {
+                result = new AdeptarDynamic( adeptarObjectString );
+                cleanedSpan = adeptarObjectString;
+            }
+            else
+            {
+                var cleanText =  DeserializationHelpers.CleanText( adeptarObjectString.AsSpan() );
+                result = new AdeptarDynamic( cleanText.ToString() );
+                cleanedSpan = cleanText;
             }
 
-            return (T)DeserializeObject( typeof( T ), _keyMaps[key] );
+            if ( cleanedSpan.Length < 1 || cleanedSpan[0] != '{' )
+            {
+                throw new AdeptarException( $"Invalid dynamic object format after cleaning. Expected content starting with '{{'. Preview: '{PreviewSpan( cleanedSpan )}'" );
+            }
+
+            PopulateMapFromSpan( cleanedSpan.Slice( 1 ), result._keyValueMap );
+            return result;
+        }
+
+        /// <summary>
+        /// Clears the <see cref="AdeptarDynamic"/> object's key and value maps.
+        /// </summary>
+        public void Clear() => _keyValueMap.Clear();
+
+        /// <summary>
+        /// Checks if the dynamic object contains data for the specified key (property/field name). Comparison is case-sensitive (Ordinal).
+        /// </summary>
+        /// <param name="key">The key name to check for.</param>
+        /// <returns><c>true</c> if the key exists; otherwise, <c>false</c>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> is null.</exception>
+        public bool ContainsKey( string key )
+        {
+            ArgumentNullException.ThrowIfNull( key );
+            return _keyValueMap.ContainsKey( key );
+        }
+
+
+        /// <summary>
+        /// Gets the raw Adeptar string value associated with the specified key.
+        /// </summary>
+        /// <param name="key">The key name.</param>
+        /// <returns>The raw string value.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> is null.</exception>
+        /// <exception cref="KeyNotFoundException">Thrown if the key is not found.</exception>
+        public string GetRawValue( string key )
+        {
+            ArgumentNullException.ThrowIfNull( key );
+            if ( !_keyValueMap.TryGetValue( key, out string value ) )
+            {
+                throw new KeyNotFoundException( $"The key '{key}' was not found in the AdeptarDynamic object." );
+            }
+            return value;
+        }
+
+        /// <summary>
+        /// Deserializes the raw string value associated with the specified key into the requested type <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">The target .NET type to deserialize the value into.</typeparam>
+        /// <param name="key">The key (property/field name) whose value should be deserialized.</param>
+        /// <returns>The deserialized .NET object.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="key"/> is null.</exception>
+        /// <exception cref="KeyNotFoundException">Thrown if the key is not found.</exception>
+        /// <exception cref="AdeptarException">Thrown if the raw string value cannot be deserialized into type <typeparamref name="T"/>.</exception>
+        public T GetValue<T>( string key )
+        {
+            string rawValue = GetRawValue(key);
+            ReadOnlySpan<char> valueSpan = rawValue.AsSpan();
+
+            try
+            {
+                return (T)AdeptarReader.DeserializeObject( typeof( T ), valueSpan );
+            }
+            catch ( AdeptarException ) { throw; }
+            catch ( Exception ex )
+            {
+                throw new AdeptarException( $"Failed to deserialize value for key '{key}' into type '{typeof( T ).Name}'. Raw value: '{PreviewSpan( valueSpan )}'.", ex );
+            }
+        }
+
+        /// <summary>
+        /// Populates the key-value map by parsing Adeptar object data.
+        /// Assumes input span represents content *immediately after* opening '{', but includes closing '}'.
+        /// </summary>
+        /// <param name="contentSpanAfterOpeningBrace">Span starting after '{', ending with '}'.</param>
+        /// <param name="targetMap">The dictionary to populate.</param>
+        private static void PopulateMapFromSpan( ReadOnlySpan<char> contentSpanAfterOpeningBrace, Dictionary<string, string> targetMap )
+        {
+            if ( contentSpanAfterOpeningBrace.IsEmpty || contentSpanAfterOpeningBrace[contentSpanAfterOpeningBrace.Length - 1] != '}' )
+            {
+                throw new AdeptarException( $"Invalid dynamic object format. Input to PopulateMapFromSpan should end with '}}'. Preview: '{{{PreviewSpan( contentSpanAfterOpeningBrace )}'." );
+            }
+            ReadOnlySpan<char> contentSpan = contentSpanAfterOpeningBrace.Slice(0, contentSpanAfterOpeningBrace.Length - 1);
+
+            if ( contentSpan.IsEmpty ) return;
+
+            ParseKeyValuePairs( contentSpan, ( keySpan, valueSpan ) =>
+            {
+                string key = keySpan.ToString();
+                if ( targetMap.ContainsKey( key ) ) { /* Overwrite duplicate silently */ }
+                targetMap[key] = valueSpan.ToString();
+            } );
+        }
+
+        private delegate void KeyValueSpanAction( ReadOnlySpan<char> key, ReadOnlySpan<char> value );
+
+        /// <summary>
+        /// Parses key-value pairs from object content span and invokes action for each.
+        /// </summary>
+        /// <exception cref="AdeptarException">For format errors.</exception>
+        private static void ParseKeyValuePairs( ReadOnlySpan<char> objectContentSpan, KeyValueSpanAction processPairAction )
+        {
+            ArgumentNullException.ThrowIfNull( processPairAction );
+            int currentPos = 0;
+
+            while ( currentPos < objectContentSpan.Length )
+            {
+                int colonPos = FindNextTopLevelDelimiter(objectContentSpan, currentPos, out _, primaryDelimiter: ':');
+                if ( colonPos == -1 )
+                {
+                    if ( !objectContentSpan.Slice( currentPos ).Trim().IsEmpty )
+                        throw new AdeptarException( $"Invalid object format. Unexpected content '{PreviewSpan( objectContentSpan.Slice( currentPos ) )}' found. Expected 'Key : Value' pairs." );
+                    break;
+                }
+
+                ReadOnlySpan<char> keySpan = objectContentSpan.Slice(currentPos, colonPos - currentPos).Trim();
+                if ( keySpan.IsEmpty ) throw new AdeptarException( $"Invalid object format. Missing property name before ':' near position {colonPos}. Input: '{{{PreviewSpan( objectContentSpan )}}}'." );
+
+                currentPos = colonPos + 1;
+
+                int commaPos = FindNextTopLevelDelimiter(objectContentSpan, currentPos, out _, primaryDelimiter: ',');
+                int valueEndPos = (commaPos == -1) ? objectContentSpan.Length : commaPos;
+                ReadOnlySpan<char> valueSpan = objectContentSpan.Slice(currentPos, valueEndPos - currentPos).Trim();
+
+                processPairAction( keySpan, valueSpan );
+
+                if ( commaPos == -1 ) break;
+                currentPos = commaPos + 1;
+            }
         }
 
         /// <summary>
@@ -91,27 +258,7 @@ namespace Adeptar
         /// <returns>
         /// The deserialized .Net object.
         /// </returns>
-        public T Deserialize<T>() where T : class
-        {
-            StringBuilder str = new( _textLength );
-            int i = 0;
-
-            str.Append( '{' );
-            foreach ( KeyValuePair<string, string> value in _keyMaps )
-            {
-                str.Append( value.Key );
-                str.Append( ':' );
-                str.Append( CleanText( value.Value ) );
-                if ( i != _keyMaps.Count - 1 )
-                {
-                    str.Append( ',' );
-                    i++;
-                }
-            }
-            str.Append( '}' );
-
-            return (T)DeserializeObject( typeof( T ), str.ToString() );
-        }
+        public T Deserialize<T>() where T : class => (T)DeserializeObject( typeof( T ), _cleanedAdeptarObjectString );
 
         /// <summary>
         /// Deserializes the <see cref="AdeptarDynamic"/> object to a .Net object.
@@ -121,27 +268,7 @@ namespace Adeptar
         /// <returns>
         /// The deserialized .Net object.
         /// </returns>
-        public T Deserialize<T>( object ignore = null ) where T : struct
-        {
-            StringBuilder str = new( _textLength );
-            int i = 0;
-
-            str.Append( '{' );
-            foreach ( KeyValuePair<string, string> value in _keyMaps )
-            {
-                str.Append( value.Key );
-                str.Append( ':' );
-                str.Append( CleanText( value.Value ) );
-                if ( i != _keyMaps.Count - 1 )
-                {
-                    str.Append( ',' );
-                    i++;
-                }
-            }
-            str.Append( '}' );
-
-            return (T)DeserializeObject( typeof( T ), str.ToString() );
-        }
+        public T Deserialize<T>( object ignore = null ) where T : struct => (T)DeserializeObject( typeof( T ), _cleanedAdeptarObjectString );
 
         /// <summary>
         /// Deserializes the <see cref="AdeptarDynamic"/> object to a .Net object.
@@ -151,164 +278,7 @@ namespace Adeptar
         /// <returns>
         /// The deserialized .Net object.
         /// </returns>
-        public T DeserializeWithMap<T>( Dictionary<string, string> map )
-        {
-            StringBuilder str = new( _textLength );
-            int i = 0;
-
-            str.Append( '{' );
-            foreach ( KeyValuePair<string, string> value in _keyMaps )
-            {
-                str.Append( value.Key );
-                str.Append( ':' );
-                str.Append( CleanText( value.Value ) );
-                if ( i != _keyMaps.Count - 1 )
-                {
-                    str.Append( ',' );
-                    i++;
-                }
-            }
-            str.Append( '}' );
-
-            return (T)DeserializeObjectInstance( str.ToString(), typeof( T ), map );
-        }
-
-        /// <summary>
-        /// Creates a <see cref="AdeptarDynamic"/> object from a file that contains
-        /// a .Adeptar object.
-        /// </summary>
-        /// <param name="path">The path of the file.</param>
-        /// <returns>
-        /// A <see cref="AdeptarDynamic"/> object that contains the data of the given .Adeptar string.
-        /// </returns>
-        public static AdeptarDynamic FromFile( string path )
-        {
-            AdeptarDynamic result = new();
-            PopulateMaps( ( CleanText( File.ReadAllText( path ) ) ).Slice( 1 ), ref result );
-            return result;
-        }
-
-        /// <summary>
-        /// Creates a <see cref="AdeptarDynamic"/> object from the .Adeptar string.
-        /// </summary>
-        /// <param name="str">The .Adeptar string to convert to a <see cref="AdeptarDynamic"/> object.</param>
-        /// <returns>
-        /// A <see cref="AdeptarDynamic"/> object that contains the data of the given .Adeptar string.
-        /// </returns>
-        public static AdeptarDynamic FromString( string str )
-        {
-            AdeptarDynamic result = new();
-            PopulateMaps( ( CleanText( str ) ).Slice( 1 ), ref result );
-            return result;
-        }
-
-        /// <summary>
-        /// Handles the process of populating the <see cref="AdeptarDynamic.KeyMaps"/>.
-        /// </summary>
-        /// <param name="str">The <see cref="ReadOnlySpan{T}"/> text.</param>
-        /// <param name="result">The <see cref="AdeptarDynamic"/> to populate.</param>
-        private static void PopulateMaps( ReadOnlySpan<char> str, ref AdeptarDynamic result )
-        {
-            int level = 0;
-            int i = 0;
-            int j = 0;
-            int w = 0;
-
-            bool nested = false;
-            bool inString = false;
-            bool falseEnd = false;
-
-            string name = "";
-
-            foreach ( char item in str )
-            {
-                switch ( item )
-                {
-                    case '"':
-                        if ( falseEnd && inString )
-                        {
-                            falseEnd = false;
-                        }
-                        else if ( !falseEnd )
-                            inString = !inString;
-                        break;
-                    case '[':
-                        if ( !inString )
-                        {
-                            level++; nested = true;
-                        }
-                        else if ( !inString )
-                            level++;
-                        break;
-                    case ']':
-                        if ( level - 1 == 0 && !inString )
-                        {
-                            nested = false;
-                        }
-                        level--;
-                        break;
-                    case '\\':
-                        if ( inString )
-                        {
-                            falseEnd = true;
-                        }
-                        else
-                        {
-                            throw new AdeptarException( "Invalid character '\\', such a character can appear only inside a string." );
-                        }
-                        break;
-                    case ',':
-                        if ( !nested && !inString )
-                        {
-                            result._keyMaps.Add( name, str.Slice( j, w - j ).ToString() );
-                            j = w + 1;
-                            i++;
-                        }
-                        break;
-                    case '{':
-                        if ( !inString )
-                        {
-                            level++;
-                            nested = true;
-                        }
-                        break;
-                    case '}':
-                        if ( level - 1 == 0 && !inString )
-                        {
-                            nested = false;
-                        }
-                        level--;
-                        break;
-                    case '(':
-                        if ( !inString )
-                        {
-                            level++;
-                            nested = true;
-                        }
-                        break;
-                    case ')':
-                        if ( level - 1 == 0 && !inString )
-                        {
-                            nested = false;
-                            level--;
-                        }
-                        break;
-                    case ':':
-                        if ( !nested && !inString )
-                        {
-                            name = str.Slice( j, w - j ).ToString();
-                            j = w + 1;
-                        }
-                        break;
-                }
-                if ( level - 1 == -2 && !inString )
-                {
-                    if ( w == str.Length - 1 )
-                        result._keyMaps.Add( name, str.Slice( j, w - j ).ToString() );
-                }
-                w++;
-            }
-        }
+        public T DeserializeWithMap<T>( Dictionary<string, string> map ) => (T)DeserializeObjectInstance( _cleanedAdeptarObjectString, typeof( T ), map );
     }
 }
 
