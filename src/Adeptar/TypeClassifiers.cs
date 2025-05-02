@@ -121,7 +121,9 @@ namespace Adeptar
                     return SerializableType.Dictionary;
             }
             if ( type.IsArray )
-                return SerializableType.DimensionalArray;
+                return type.GetArrayRank() > 1 ? SerializableType.DimensionalArray : SerializableType.Array;
+            if ( type.IsEnum )
+                return SerializableType.Simple;
 
             return SerializableType.Class;
         }
