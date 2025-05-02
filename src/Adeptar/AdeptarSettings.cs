@@ -6,6 +6,17 @@
     public sealed class AdeptarSettings
     {
         /// <summary>
+        /// The default <see cref="AdeptarSettings"/> configuration.
+        /// </summary>
+        public static readonly AdeptarSettings DefaultAdeptarSettings = new AdeptarSettings()
+        {
+            CheckClassAttributes = false,
+            UseIndentation = true,
+            IgnoreDefaultValues = false,
+            IgnoreNullValues = false,
+        };
+
+        /// <summary>
         /// Gets a value indicating whether the <see cref="AdeptarWriter"/> should check for Adeptar attributes
         /// (like <see cref="AdeptarIgnoreAttribute"/>) on fields or properties during serialization.
         /// </summary>
