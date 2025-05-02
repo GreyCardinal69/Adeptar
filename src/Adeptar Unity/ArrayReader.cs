@@ -132,7 +132,7 @@ namespace Adeptar.Unity
             nested = false;
             firstCase = 0;
 
-            text = text.Slice( 1, text.Length - 1 );
+            text = text.Slice( 1 );
 
             foreach ( char Char in text )
             {
@@ -257,7 +257,7 @@ namespace Adeptar.Unity
             Type childType = type.GetGenericArguments()[0];
             IList main = ( IList ) Activator.CreateInstance( type );
 
-            text = text.Slice( 1, text.Length - 1 );
+            text = text.Slice( 1 );
 
             foreach ( char Char in text )
             {

@@ -12,7 +12,7 @@ namespace Adeptar
     /// <summary>
     /// Internal central dispatcher for deserializing Adeptar objects from ReadOnlySpan.
     /// </summary>
-    internal class AdeptarDeserializer
+    internal static class AdeptarDeserializer
     {
         /// <summary>
         /// Deserializes a ReadOnlySpan containing Adeptar data into an object of the specified type.
@@ -42,7 +42,7 @@ namespace Adeptar
                 DeserializableType.Dictionary => DeserializeDictionary( text, type ),
                 DeserializableType.DimensionalArray => DeserializeDimensionalArray( text, type ),
                 DeserializableType.Tuple => DeserializeTuple( text, type ),
-                _ => throw new AdeptarException( $"Internal Error: Deserialization not implemented or type '{type.FullName}'." )
+                _ => throw new AdeptarException( $"Internal Error: Deserialization not implemented for type '{type.FullName}'." )
             };
         }
     }

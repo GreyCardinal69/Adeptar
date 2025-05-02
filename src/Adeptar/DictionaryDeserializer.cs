@@ -9,7 +9,7 @@ namespace Adeptar
     /// <summary>
     /// Internal class containing method(s) for deserialization of <see cref="Dictionary{TKey, TValue}"/>
     /// </summary>
-    internal sealed class DictionaryDeserializer
+    internal static class DictionaryDeserializer
     {
         /// <summary>
         /// Deserializes the Adeptar string of type <see cref="Dictionary{TKey, TValue}"/> to a .NET object.

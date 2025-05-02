@@ -12,7 +12,6 @@ namespace Adeptar
     /// </summary>
     internal static class TupleDeserializer
     {
-        // --- Caches ---
         /// <summary>
         /// Cache for tuple FieldInfo objects keyed by tuple Type and then by field name ("Item1"..."Rest").
         /// </summary>
@@ -218,7 +217,6 @@ namespace Adeptar
                         break;
                 }
 
-                // Check for invalid nesting (e.g., closing more levels than opened)
                 if ( level < 0 )
                 {
                     throw new AdeptarException( $"Mismatched nesting level (negative) detected near index {i}. Check for unbalanced parentheses, brackets, or braces. Input: '{PreviewSpan( span )}'." );
