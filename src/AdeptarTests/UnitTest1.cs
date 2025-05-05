@@ -1,7 +1,7 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Adeptar;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using Adeptar;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace AdeptarTests
 {
@@ -40,7 +40,7 @@ namespace AdeptarTests
         }
 
         [TestMethod]
-        public void EmptyClassTest ()
+        public void EmptyClassTest()
         {
             Assert.AreEqual(
                 AdeptarConverter.Serialize( new MyClass(), Formatting.NoIndentation ),
@@ -48,7 +48,7 @@ namespace AdeptarTests
         }
 
         [TestMethod]
-        public void ClassWithAdeptarConfiguration ()
+        public void ClassWithAdeptarConfiguration()
         {
             Assert.AreEqual(
                 AdeptarConverter.Serialize( new MyClassWithConfig(), Formatting.NoIndentation ),
@@ -56,7 +56,7 @@ namespace AdeptarTests
         }
 
         [TestMethod]
-        public void HeavyClassTest ()
+        public void HeavyClassTest()
         {
             Assert.AreEqual(
                 AdeptarConverter.Serialize( new MyClass()
@@ -72,7 +72,7 @@ namespace AdeptarTests
         }
 
         [TestMethod]
-        public void HeavyTupleTest ()
+        public void HeavyTupleTest()
         {
             Assert.AreEqual(
                 AdeptarConverter.Serialize( (1, 4, new MyClass(), "hello world", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, 3, '3', true, 0.00001), Formatting.NoIndentation ),
@@ -80,23 +80,23 @@ namespace AdeptarTests
         }
 
         [TestMethod]
-        public void SimpleClassTest ()
+        public void SimpleClassTest()
         {
             Assert.AreEqual(
-                AdeptarConverter.Serialize(new SimpleClass(), Formatting.NoIndentation ),
+                AdeptarConverter.Serialize( new SimpleClass(), Formatting.NoIndentation ),
                 @"{Number:5,Number2:5,Number3:5}" );
         }
 
         [TestMethod]
-        public void NestedDictionaryTest ()
+        public void NestedDictionaryTest()
         {
             Assert.AreEqual(
-                AdeptarConverter.Serialize( new Dictionary<int, int[]> { { 1, new int[] { 1, 2, 3, 4 } }, { 2, new int[] { 3, 4, 5, 6 } } }, Formatting.NoIndentation),
+                AdeptarConverter.Serialize( new Dictionary<int, int[]> { { 1, new int[] { 1, 2, 3, 4 } }, { 2, new int[] { 3, 4, 5, 6 } } }, Formatting.NoIndentation ),
                 @"[1:[1,2,3,4],2:[3,4,5,6]]" );
         }
 
         [TestMethod]
-        public void DictionaryTest ()
+        public void DictionaryTest()
         {
             Assert.AreEqual(
                 AdeptarConverter.Serialize( new Dictionary<int, int> { { 1, 2 }, { 3, 4 } }, Formatting.NoIndentation ),
@@ -104,7 +104,7 @@ namespace AdeptarTests
         }
 
         [TestMethod]
-        public void FourDimensionalArrayTest ()
+        public void FourDimensionalArrayTest()
         {
             Assert.AreEqual(
                 AdeptarConverter.Serialize( new int[2, 2, 2, 2] { { { { 1, 2 }, { 3, 4 } }, { { 5, 6 }, { 7, 8 } } }, { { { 1, 2 }, { 3, 4 } }, { { 5, 6 }, { 7, 8 } } } }, Formatting.NoIndentation ),
@@ -112,15 +112,15 @@ namespace AdeptarTests
         }
 
         [TestMethod]
-        public void FourDimensionalArrayWithClassTest ()
+        public void FourDimensionalArrayWithClassTest()
         {
             Assert.AreEqual(
-                AdeptarConverter.Serialize( new MyClass[2, 2, 2, 2] { { { { new(), new() }, { new(), new() } }, { { new(), new() }, { new(), new() } } }, { { { new(), new() }, { new(), new() } }, { { new(), new() }, { new(), new()} } } }, Formatting.NoIndentation ),
-                @"[<2,2,2,2>{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore}]");
+                AdeptarConverter.Serialize( new MyClass[2, 2, 2, 2] { { { { new(), new() }, { new(), new() } }, { { new(), new() }, { new(), new() } } }, { { { new(), new() }, { new(), new() } }, { { new(), new() }, { new(), new() } } } }, Formatting.NoIndentation ),
+                @"[<2,2,2,2>{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore}]" );
         }
 
         [TestMethod]
-        public void NestedListTest ()
+        public void NestedListTest()
         {
             Assert.AreEqual(
                 AdeptarConverter.Serialize( new List<List<int>>() { new List<int>() { 1, 2, 3, 4 }, new List<int>() { 5, 6, 7, 8 } }, Formatting.NoIndentation ),
@@ -128,14 +128,15 @@ namespace AdeptarTests
         }
 
         [TestMethod]
-        public void NestedListWithClassTest ()
+        public void NestedListWithClassTest()
         {
             Assert.AreEqual(
                 AdeptarConverter.Serialize( new List<List<MyClass>>() { new List<MyClass>() { new(), new(), new(), new() }, new List<MyClass>() { new(), new(), new(), new() } }, Formatting.NoIndentation ),
-                @"[[{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore}],[{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore}]]");        }
+                @"[[{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore}],[{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore}]]" );
+        }
 
         [TestMethod]
-        public void ArrayTest ()
+        public void ArrayTest()
         {
             Assert.AreEqual(
                 AdeptarConverter.Serialize( new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, }, Formatting.NoIndentation ),
@@ -143,7 +144,7 @@ namespace AdeptarTests
         }
 
         [TestMethod]
-        public void ListTest ()
+        public void ListTest()
         {
             Assert.AreEqual(
                 AdeptarConverter.Serialize( new List<string>() { "Some", "Random", "Words", "Words" }, Formatting.NoIndentation ),
@@ -151,7 +152,7 @@ namespace AdeptarTests
         }
 
         [TestMethod]
-        public void StringTest ()
+        public void StringTest()
         {
             Assert.AreEqual(
                 AdeptarConverter.Serialize( @"hello world", Formatting.NoIndentation ),
@@ -159,31 +160,31 @@ namespace AdeptarTests
         }
 
         [TestMethod]
-        public void LongTest ()
+        public void LongTest()
         {
             Assert.AreEqual(
-                AdeptarConverter.Serialize( 12414124124 , Formatting.NoIndentation ),
+                AdeptarConverter.Serialize( 12414124124, Formatting.NoIndentation ),
                 @"12414124124" );
         }
 
         [TestMethod]
-        public void BoolTest ()
+        public void BoolTest()
         {
             Assert.AreEqual(
-                AdeptarConverter.Serialize( true , Formatting.NoIndentation ),
+                AdeptarConverter.Serialize( true, Formatting.NoIndentation ),
                 @"True" );
         }
 
         [TestMethod]
-        public void DoubleTest ()
+        public void DoubleTest()
         {
             Assert.AreEqual(
-                AdeptarConverter.Serialize( 5521355.124 , Formatting.NoIndentation ),
+                AdeptarConverter.Serialize( 5521355.124, Formatting.NoIndentation ),
                 @"5521355.124" );
         }
 
         [TestMethod]
-        public void EnumTest ()
+        public void EnumTest()
         {
             Assert.AreEqual(
                 AdeptarConverter.Serialize( Formatting.Indented, Formatting.NoIndentation ),
@@ -191,7 +192,7 @@ namespace AdeptarTests
         }
 
         [TestMethod]
-        public void SimpleClassTestDeserialize ()
+        public void SimpleClassTestDeserialize()
         {
             string text = AdeptarConverter.Serialize( new SimpleClass(), Formatting.NoIndentation );
             Assert.AreEqual(
@@ -201,7 +202,7 @@ namespace AdeptarTests
         }
 
         [TestMethod]
-        public void NestedDictionaryTestDeserialize ()
+        public void NestedDictionaryTestDeserialize()
         {
             string text = AdeptarConverter.Serialize( new Dictionary<int, int[]> { { 1, new int[] { 1, 2, 3, 4 } }, { 2, new int[] { 3, 4, 5, 6 } } }, Formatting.NoIndentation );
             Assert.AreEqual(
@@ -211,7 +212,7 @@ namespace AdeptarTests
         }
 
         [TestMethod]
-        public void DictionaryTestDeserialize ()
+        public void DictionaryTestDeserialize()
         {
             string text = AdeptarConverter.Serialize( new Dictionary<int, int> { { 1, 2 }, { 3, 4 } }, Formatting.NoIndentation );
             Assert.AreEqual(
@@ -221,7 +222,7 @@ namespace AdeptarTests
         }
 
         [TestMethod]
-        public void FourDimensionalArrayTestDeserialize ()
+        public void FourDimensionalArrayTestDeserialize()
         {
             string text = AdeptarConverter.Serialize( new int[2, 2, 2, 2] { { { { 1, 2 }, { 3, 4 } }, { { 5, 6 }, { 7, 8 } } }, { { { 1, 2 }, { 3, 4 } }, { { 5, 6 }, { 7, 8 } } } }, Formatting.NoIndentation );
             Assert.AreEqual(
@@ -231,7 +232,7 @@ namespace AdeptarTests
         }
 
         [TestMethod]
-        public void NestedListTestDeserialize ()
+        public void NestedListTestDeserialize()
         {
             string text = AdeptarConverter.Serialize( new List<List<int>>() { new List<int>() { 1, 2, 3, 4 }, new List<int>() { 5, 6, 7, 8 } }, Formatting.NoIndentation );
             Assert.AreEqual(
@@ -241,7 +242,7 @@ namespace AdeptarTests
         }
 
         [TestMethod]
-        public void ArrayTestDeserialize ()
+        public void ArrayTestDeserialize()
         {
             string text = AdeptarConverter.Serialize( new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, }, Formatting.NoIndentation );
             Assert.AreEqual(
@@ -251,7 +252,7 @@ namespace AdeptarTests
         }
 
         [TestMethod]
-        public void ListTestDeserialize ()
+        public void ListTestDeserialize()
         {
             string text = AdeptarConverter.Serialize( new List<string>() { "Some", "Random", "Words", "Words" }, Formatting.NoIndentation );
             Assert.AreEqual(
@@ -261,7 +262,7 @@ namespace AdeptarTests
         }
 
         [TestMethod]
-        public void StringTestDeserialize ()
+        public void StringTestDeserialize()
         {
             string text = AdeptarConverter.Serialize( @"hello world", Formatting.NoIndentation );
             Assert.AreEqual(
@@ -271,7 +272,7 @@ namespace AdeptarTests
         }
 
         [TestMethod]
-        public void LongTestDeserialize ()
+        public void LongTestDeserialize()
         {
             string text = AdeptarConverter.Serialize( 12414124124, Formatting.NoIndentation );
             Assert.AreEqual(
@@ -281,7 +282,7 @@ namespace AdeptarTests
         }
 
         [TestMethod]
-        public void BoolTestDeserialize ()
+        public void BoolTestDeserialize()
         {
             string text = AdeptarConverter.Serialize( true, Formatting.NoIndentation );
             Assert.AreEqual(
@@ -291,7 +292,7 @@ namespace AdeptarTests
         }
 
         [TestMethod]
-        public void DoubleTestDeserialize ()
+        public void DoubleTestDeserialize()
         {
             string text = AdeptarConverter.Serialize( 5521355.124, Formatting.NoIndentation );
             Assert.AreEqual(
@@ -301,7 +302,7 @@ namespace AdeptarTests
         }
 
         [TestMethod]
-        public void EnumTestDeserialize ()
+        public void EnumTestDeserialize()
         {
             string text = AdeptarConverter.Serialize( Formatting.Indented, Formatting.NoIndentation );
             Assert.AreEqual(
@@ -311,7 +312,7 @@ namespace AdeptarTests
         }
 
         [TestMethod]
-        public void EmptyClassTestDeserialize ()
+        public void EmptyClassTestDeserialize()
         {
             string text = AdeptarConverter.Serialize( new MyClass(), Formatting.NoIndentation );
             Assert.AreEqual(
@@ -321,7 +322,7 @@ namespace AdeptarTests
         }
 
         [TestMethod]
-        public void ClassWithAdeptarConfigurationDeserialize ()
+        public void ClassWithAdeptarConfigurationDeserialize()
         {
             string text = AdeptarConverter.Serialize( new MyClassWithConfig(), Formatting.NoIndentation );
             Assert.AreEqual(
@@ -331,7 +332,7 @@ namespace AdeptarTests
         }
 
         [TestMethod]
-        public void HeavyClassTestDeserialize ()
+        public void HeavyClassTestDeserialize()
         {
             string text = AdeptarConverter.Serialize( new MyClass()
             {
@@ -349,7 +350,7 @@ namespace AdeptarTests
         }
 
         [TestMethod]
-        public void HeavyTupleTestDeserialize ()
+        public void HeavyTupleTestDeserialize()
         {
             string text = AdeptarConverter.Serialize( (1, 4, new MyClass(), "hello world", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, 3, '3', true, 0.00001), Formatting.NoIndentation );
             Assert.AreEqual(
@@ -359,7 +360,7 @@ namespace AdeptarTests
         }
 
         [TestMethod]
-        public void NestedListWithClassDeserialize ()
+        public void NestedListWithClassDeserialize()
         {
             string text = AdeptarConverter.Serialize( new List<List<MyClass>>() { new List<MyClass>() { new(), new(), new(), new() }, new List<MyClass>() { new(), new(), new(), new() } }, Formatting.NoIndentation );
             Assert.AreEqual(
@@ -369,7 +370,7 @@ namespace AdeptarTests
         }
 
         [TestMethod]
-        public void FourDimensionalArrayWithClassDeserialize ()
+        public void FourDimensionalArrayWithClassDeserialize()
         {
             string text = AdeptarConverter.Serialize( new MyClass[2, 2, 2, 2] { { { { new(), new() }, { new(), new() } }, { { new(), new() }, { new(), new() } } }, { { { new(), new() }, { new(), new() } }, { { new(), new() }, { new(), new() } } } }, Formatting.NoIndentation );
             Assert.AreEqual(
