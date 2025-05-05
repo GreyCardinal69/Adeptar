@@ -44,7 +44,7 @@ namespace AdeptarTests
         {
             Assert.AreEqual(
                 AdeptarConverter.Serialize( new MyClass(), Formatting.NoIndentation ),
-                "{date: \"1/1/0001 12:00:00 AM\",Maps: [],Number: 0,Number3: 0,Odds: [],type: Ignore}" );
+                "{date:\"1/1/0001 12:00:00 AM\",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore}" );
         }
 
         [TestMethod]
@@ -52,7 +52,7 @@ namespace AdeptarTests
         {
             Assert.AreEqual(
                 AdeptarConverter.Serialize( new MyClassWithConfig(), Formatting.NoIndentation ),
-               @"{date: ""1/1/0001 12:00:00 AM"",Number: 0,Number3: 0,type: Ignore}" );
+               @"{date:""1/1/0001 12:00:00 AM"",Number:0,Number3:0,type:Ignore}" );
         }
 
         [TestMethod]
@@ -68,7 +68,7 @@ namespace AdeptarTests
                     Odds = new int[] { 1, 3, 5, 7, 9 },
                     type = SerializableType.Tuple
                 }, Formatting.NoIndentation ),
-                @"{date: """ + $"{DateTime.Now}" + @""",Maps: [1:""Hello"",2:""World""],Number: 4,Number3: -444,Odds: [1,3,5,7,9],type: Tuple}" );
+                @"{date:""" + $"{DateTime.Now}" + @""",Maps:[1:""Hello"",2:""World""],Number:4,Number3:-444,Odds:[1,3,5,7,9],type:Tuple}" );
         }
 
         [TestMethod]
@@ -76,7 +76,7 @@ namespace AdeptarTests
         {
             Assert.AreEqual(
                 AdeptarConverter.Serialize( (1, 4, new MyClass(), "hello world", new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, 3, '3', true, 0.00001), Formatting.NoIndentation ),
-                @"(Item1: 1,Item2: 4,Item3: {date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: Ignore},Item4: ""hello world"",Item5: [1,2,3,4,5,6,7,8,9],Item6: 3,Item7: '3',Rest: (Item1: True,Item2: 1E-05))" );
+                @"(Item1:1,Item2:4,Item3:{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},Item4:""hello world"",Item5:[1,2,3,4,5,6,7,8,9],Item6:3,Item7:'3',Rest:(Item1:True,Item2:1E-05))" );
         }
 
         [TestMethod]
@@ -84,7 +84,7 @@ namespace AdeptarTests
         {
             Assert.AreEqual(
                 AdeptarConverter.Serialize(new SimpleClass(), Formatting.NoIndentation ),
-                @"{Number: 5,Number2: 5,Number3: 5}" );
+                @"{Number:5,Number2:5,Number3:5}" );
         }
 
         [TestMethod]
@@ -116,7 +116,7 @@ namespace AdeptarTests
         {
             Assert.AreEqual(
                 AdeptarConverter.Serialize( new MyClass[2, 2, 2, 2] { { { { new(), new() }, { new(), new() } }, { { new(), new() }, { new(), new() } } }, { { { new(), new() }, { new(), new() } }, { { new(), new() }, { new(), new()} } } }, Formatting.NoIndentation ),
-                @"[<2,2,2,2>{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: Ignore},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: Ignore},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: Ignore},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: Ignore},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: Ignore},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: Ignore},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: Ignore},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: Ignore},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: Ignore},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: Ignore},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: Ignore},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: Ignore},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: Ignore},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: Ignore},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: Ignore},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: Ignore}]" );
+                @"[<2,2,2,2>{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore}]");
         }
 
         [TestMethod]
@@ -132,8 +132,7 @@ namespace AdeptarTests
         {
             Assert.AreEqual(
                 AdeptarConverter.Serialize( new List<List<MyClass>>() { new List<MyClass>() { new(), new(), new(), new() }, new List<MyClass>() { new(), new(), new(), new() } }, Formatting.NoIndentation ),
-                @"[[{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: Ignore},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: Ignore},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: Ignore},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: Ignore}],[{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: Ignore},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: Ignore},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: Ignore},{date: ""1/1/0001 12:00:00 AM"",Maps: [],Number: 0,Number3: 0,Odds: [],type: Ignore}]]" );
-        }
+                @"[[{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore}],[{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore},{date:""1/1/0001 12:00:00 AM"",Maps:[],Number:0,Number3:0,Odds:[],type:Ignore}]]");        }
 
         [TestMethod]
         public void ArrayTest ()
