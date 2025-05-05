@@ -43,7 +43,7 @@ namespace Adeptar
                                         keyType != SerializableType.Char &&
                                         keyType != SerializableType.DateTime;
 
-                    context.SurpressNewLineOnce = true;
+                    context.SuppressNewLineOnce = true;
                     Write( key, keyType, null, ref context, true, isComplexKey );
                 }
                 catch ( AdeptarException ) { throw; }
@@ -57,7 +57,7 @@ namespace Adeptar
 
                 // at this point we have "...key:"
                 // we dont want full indentation applied here, only a single space.
-                context.SurpessFullIndentationOnce = true;
+                context.SuppressFullIndentationOnce = true;
 
                 try
                 {
