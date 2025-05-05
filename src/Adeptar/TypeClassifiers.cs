@@ -63,7 +63,7 @@ namespace Adeptar
         /// </summary>
         /// <param name="type">The <see cref="Type"/> instance to classify, typically representing a field or property type during serialization.</param>
         /// <returns>
-        /// The cached or calculated <see cref="SerializableType"/> corresponding to the input <paramref name="type"/>.
+        /// The cached or found <see cref="SerializableType"/> corresponding to the input <paramref name="type"/>.
         /// Returns <see cref="SerializableType.Class"/> as a default if the type cannot be determined by the internal logic.
         /// </returns>
         /// <remarks>
@@ -92,7 +92,7 @@ namespace Adeptar
         /// </summary>
         /// <param name="type">The <see cref="Type"/> instance to classify.</param>
         /// <returns>
-        /// The calculated <see cref="SerializableType"/> based on the type's characteristics.
+        /// The found <see cref="SerializableType"/> based on the type's characteristics.
         /// Returns <see cref="SerializableType.Class"/> as a fallback if the type doesn't match any specific classification rules.
         /// </returns>
         /// <remarks>

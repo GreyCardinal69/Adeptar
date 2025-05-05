@@ -1,161 +1,77 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-using static Adeptar.AdeptarWriter;
+using System.Globalization;
+using static Adeptar.AdeptarSerializer;
 using static Adeptar.TypeClassifiers;
 
 namespace Adeptar
 {
     /// <summary>
-    /// Contains methods for serializing arrays, lists and 2 or more dimensional arrays into .Adeptar strings.
+    /// Serializes IList (arrays, lists) and multi-dimensional Array instances
+    /// into their Adeptar string representations.
     /// </summary>
-    internal sealed class ArrayWriter
+    internal static class ArrayWriter
     {
         /// <summary>
-        /// Writes arrays and lists into a .Adeptar string, appends to the builder instance.
+        /// Writes the elements of an IList (like T[] or ListT).
         /// </summary>
-        /// <param name="target">The array of list to serialize.</param>
-        /// <param name="indent">The amount of indentation.</param>
-        /// <param name="builder">The <see cref="StringBuilder"/> instance to append to.</param>
-        internal static void WriteArray( object target, int indent, StringBuilder builder )
+        /// <param name="list">The IList containing the elements to serialize.</param>
+        /// <param name="context">The current serialization context.</param>
+        internal static void WriteListElements( IList list, ref SerializationContext context )
         {
-            if ( target is null )
-            {
-                return;
-            }
+            if ( list == null || list.Count == 0 ) return;
 
-            IList tempList = target as IList;
-            SerializableType type = FetchSerializableTypeOf( tempList[0] );
-            int count = tempList.Count;
+            int count = list.Count;
+            for ( int i = 0; i < count; i++ )
+            {
+                object element = list[i];
+                bool isLastElement = (i == count - 1);
 
-            if ( !CurrentSettings.UseIndentation )
-            {
-                for ( int i = 0; i < count; i++ )
-                {
-                    if ( tempList[i] is IList )
-                    {
-                        if ( indent >= 1 )
-                        {
-                            builder.Append( '[' );
-                        }
-                        WriteArray( tempList[i], 0, builder );
-                        builder.Append( ']' );
-                        if ( i != count - 1 )
-                        {
-                            builder.Append( ',' );
-                        }
-                    }
-                    else
-                    {
-                        WriteNoIndentation( tempList[i], type, builder, i == count - 1, false );
-                    }
-                }
-            }
-            else
-            {
-                bool isIntended = indent > 0;
-                for ( int i = 0; i < count; i++ )
-                {
-                    if ( tempList[i] is IList )
-                    {
-                        for ( int w = 1; w <= indent; w++ )
-                        {
-                            builder.Append( '\t' );
-                        }
-                        if ( indent >= 1 )
-                        {
-                            builder.Append( '[' ).Append( '\n' );
-                        }
-                        WriteArray( tempList[i], indent + 2, builder );
-                        for ( int w = 1; w <= indent; w++ )
-                        {
-                            builder.Append( '\t' );
-                        }
-                        builder.Append( ']' );
-                        if ( i != count - 1 )
-                        {
-                            builder.Append( ',' );
-                        }
-                        builder.Append( '\n' );
-                    }
-                    else
-                    {
-                        Write( tempList[i], type, builder, isIntended ? indent - 1 : indent, i == count - 1, false );
-                        builder.Append( '\n' );
-                    }
-                }
+                SerializableType elementType = FetchSerializableTypeOf(element);
+                Write( element, elementType, null, ref context, isLastElement, false );
             }
         }
 
         /// <summary>
-        /// Serializes 2 or more dimensional arrays by flattening them into a one dimensional array.
+        /// Writes a multi-dimensional array..
+        /// Handles the dimensions prefix and flattening the elements.
         /// </summary>
-        /// <param name="target">The object to serialize.</param>
-        /// <param name="indent">The amount of indentation.</param>
-        /// <param name="builder">The <see cref="StringBuilder"/> to append to.</param>
-        internal static void WriteDimensionalArray( object target, int indent, StringBuilder builder )
+        /// <param name="array">The multi-dimensional <see cref="Array"/> to serialize.</param>
+        /// <param name="context">The current serialization context.</param>
+        internal static void WriteDimensionalArray( object array, ref SerializationContext context )
         {
-            if ( target is null )
+            Array mdArray = array as Array;
+
+            if ( mdArray == null || mdArray.Length == 0 )
             {
                 return;
             }
 
-            Array array = target as Array;
-            Stack<IEnumerator> stack = new();
-            stack.Push( array.GetEnumerator() );
-            int count = 0;
-            int len = array.Length;
-
-            if ( CurrentSettings.UseIndentation )
+            int rank = mdArray.Rank;
+            // format
+            // <i1, i2....in>element1, element2....
+            context.Builder.Append( '<' );
+            for ( int i = 0; i < rank; i++ )
             {
-                builder.Append( '\t' );
-            }
-
-            builder.Append( '<' );
-
-            for ( int i = 0; i < array.Rank; i++ )
-            {
-                builder.Append( array.GetLength( i ) );
-                if ( i < array.Rank - 1 )
+                context.Builder.Append( mdArray.GetLength( i ).ToString( CultureInfo.InvariantCulture ) );
+                if ( i < rank - 1 )
                 {
-                    builder.Append( ',' );
+                    context.Builder.Append( ',' );
                 }
             }
+            context.Builder.Append( '>' );
 
-            builder.Append( '>' );
+            if ( context.Settings.UseIndentation ) context.Builder.Append( '\n' );
 
-            if ( CurrentSettings.UseIndentation )
+            int elementCount = mdArray.Length;
+            int currentElementIndex = 0;
+
+            foreach ( var element in mdArray )
             {
-                for ( int i = 0; i < indent; i++ )
-                {
-                    builder.Append( '\n' );
-                }
-                do
-                {
-                    for ( IEnumerator iterator = stack.Pop(); iterator.MoveNext(); )
-                    {
-                        Write( iterator.Current, FetchSerializableTypeOf( iterator.Current ), builder, indent, count == len - 1, false );
-                        for ( int i = 0; i < indent; i++ )
-                        {
-                            builder.Append( '\n' );
-                        }
-                        count++;
-                    }
-                }
-                while ( stack.Count > 0 );
-            }
-            else
-            {
-                do
-                {
-                    for ( IEnumerator iterator = stack.Pop(); iterator.MoveNext(); )
-                    {
-                        WriteNoIndentation( iterator.Current, FetchSerializableTypeOf( iterator.Current ), builder, count == len - 1, false );
-                        count++;
-                    }
-                }
-                while ( stack.Count > 0 );
+                currentElementIndex++;
+                bool isLastElement = (currentElementIndex == elementCount);
+                SerializableType elementType = FetchSerializableTypeOf(element);
+                Write( element, elementType, null, ref context, isLastElement, false );
             }
         }
     }

@@ -15,7 +15,7 @@ namespace Adeptar
         /// Writes the key-value pairs of a dictionary to the StringBuilder using the provided context.
         /// </summary>
         /// <param name="dict">The <see cref="IDictionary"/> instance to serialize elements from.</param>
-        /// <param name="context">The current serialization context (passed by ref).</param>
+        /// <param name="context">The current serialization context.</param>
         /// <exception cref="AdeptarException">Wraps exceptions from underlying serialization calls.</exception>
         internal static void WriteDictionaryElements( IDictionary dict, ref SerializationContext context )
         {
