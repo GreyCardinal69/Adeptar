@@ -1,5 +1,5 @@
-﻿using System.Text;
-using System;
+﻿using System;
+using System.Text;
 
 namespace Adeptar
 {
@@ -16,6 +16,19 @@ namespace Adeptar
 
         /// <summary>The current indentation level (number of tabs).</summary>
         public int IndentLevel;
+
+        /// <summary>
+        /// Instructs <see cref="AdeptarSerializer.Write(object, SerializableType, string, ref SerializationContext, bool, bool)"/> method not to add a new line
+        /// character, but only once.
+        /// </summary>
+        public bool SuppressNewLineOnce;
+
+        /// <summary>
+        /// Instructs the <see cref="AdeptarSerializer.Write(object, SerializableType, string, ref SerializationContext, bool, bool)"/> method to not
+        /// apply full indentation, rather to only apply one singular space regardless of indentation level. Used for writing dictionary values after
+        /// the key's ":".
+        /// </summary>
+        public bool SuppressFullIndentationOnce;
 
         /// <summary>Initializes a new serialization context.</summary>
         public SerializationContext( StringBuilder builder, AdeptarSettings settings )

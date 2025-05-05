@@ -1,137 +1,72 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-
-using static Adeptar.AdeptarWriter;
+﻿using System;
+using System.Collections;
+using static Adeptar.AdeptarSerializer;
 using static Adeptar.TypeClassifiers;
 
 namespace Adeptar
 {
+    /// <summary>
+    /// Serializes the elements of an IDictionary into the Adeptar format Key:Value,...
+    /// Called by AdeptarWriter when processing dictionaries.
+    /// </summary>
     internal static class DictionaryWriter
     {
         /// <summary>
-        /// Serializes <see cref="Dictionary{TKey, TValue}"/>s to.Adeptar strings.
+        /// Writes the key-value pairs of a dictionary to the StringBuilder using the provided context.
         /// </summary>
-        /// <param name="data">The <see cref="Dictionary{TKey, TValue}"/> to serialize.</param>
-        /// <param name="Indent">The indentation amount.</param>
-        /// <param name="Builder">Main instance of <see cref="StringBuilder"/> to append to.</param>
-        internal static void WriteDictionary( object data, int Indent, StringBuilder Builder )
+        /// <param name="dict">The <see cref="IDictionary"/> instance to serialize elements from.</param>
+        /// <param name="context">The current serialization context (passed by ref).</param>
+        /// <exception cref="AdeptarException">Wraps exceptions from underlying serialization calls.</exception>
+        internal static void WriteDictionaryElements( IDictionary dict, ref SerializationContext context )
         {
-            if ( data is null )
+            if ( dict == null || dict.Count == 0 )
             {
                 return;
             }
 
-            bool isIndended = Indent > 1;
-            IDictionary dict = data as IDictionary;
+            int elementIndex = 0;
+            int totalCount = dict.Count;
 
-            (object, object)[] keyVals = new (object, object)[dict.Count];
-
-            int count = 0;
-
-            foreach ( object item in dict.Keys )
+            foreach ( DictionaryEntry entry in dict )
             {
-                keyVals[count] = (item, dict[item]);
-                count++;
-            }
-            count = 0;
+                object key = entry.Key;
+                object value = entry.Value;
+                bool isLastElement = (elementIndex == totalCount - 1);
 
-            if ( !AdeptarWriter.CurrentSettings.UseIndentation )
-            {
-                for ( int i = 0; i < dict.Count; i++ )
+                SerializableType keyType = FetchSerializableTypeOf( key );
+                SerializableType valueType = FetchSerializableTypeOf( value );
+
+                try
                 {
-                    if ( dict[i] is IDictionary )
-                    {
-                        WriteNoIndentation( keyVals[i].Item1, FetchSerializableTypeOf( keyVals[i].Item1 ), Builder, true, true );
-                        Builder.Append( ':' );
-                        if ( Indent >= 1 )
-                        {
-                            Builder.Append( '[' );
-                        }
-                        WriteDictionary( keyVals[i].Item2, 0, Builder );
-                        Builder.Append( ']' );
-                        if ( count != keyVals.Length - 1 )
-                        {
-                            Builder.Append( ',' );
-                        }
-                    }
-                    else
-                    {
-                        SerializableType RootType = FetchSerializableTypeOf( keyVals[i].Item2 );
-                        if ( RootType == SerializableType.Array )
-                        {
-                            WriteNoIndentation( keyVals[i].Item1, FetchSerializableTypeOf( keyVals[i].Item1 ), Builder, true, true );
-                            Builder.Append( ':' );
-                            WriteNoIndentation( keyVals[i].Item2, RootType, Builder, true, false );
-                            if ( count != keyVals.Length - 1 )
-                            {
-                                Builder.Append( ',' );
-                            }
-                        }
-                        else
-                        {
-                            WriteNoIndentation( keyVals[i].Item1, FetchSerializableTypeOf( keyVals[i].Item1 ), Builder, true, true );
-                            Builder.Append( ':' );
-                            WriteNoIndentation( keyVals[i].Item2, RootType, Builder, count == dict.Count - 1, false );
-                        }
-                    }
-                    count++;
-                }
-            }
-            else
-            {
-                for ( int i = 0; i < keyVals.Length; i++ )
-                {
-                    if ( keyVals[i].Item2 is IDictionary )
-                    {
-                        Write( keyVals[i].Item1, FetchSerializableTypeOf( keyVals[i].Item1 ), Builder, Indent, true, true );
-                        Builder.Append( ':' ).Append( '\n' );
-                        if ( Indent >= 1 )
-                        {
-                            for ( int w = 0; w < Indent; w++ )
-                            {
-                                Builder.Append( '\t' );
-                            }
-                            Builder.Append( '[' ).Append( '\n' );
-                        }
-                        isIndended = true;
-                        WriteDictionary( keyVals[i].Item2, Indent + 1, Builder );
-                        for ( int w = 0; w < Indent; w++ )
-                        {
-                            Builder.Append( '\t' );
-                        }
-                        Builder.Append( ']' );
-                        if ( count != keyVals.Length - 1 )
-                        {
-                            Builder.Append( ',' );
-                        }
-                        Builder.Append( '\n' );
-                    }
-                    else
-                    {
-                        SerializableType RootType = FetchSerializableTypeOf( keyVals[i].Item2 );
-                        if ( RootType == SerializableType.Array )
-                        {
-                            Write( keyVals[i].Item1, FetchSerializableTypeOf( keyVals[i].Item1 ), Builder, Indent, true, false );
-                            Builder.Append( ':' );
-                            Builder.Append( '\n' );
-                            Write( keyVals[i].Item2, RootType, Builder, Indent, true, false );
-                            if ( count != keyVals.Length - 1 )
-                            {
-                                Builder.Append( ',' );
-                            }
-                        }
-                        else
-                        {
-                            Write( keyVals[i].Item1, FetchSerializableTypeOf( keyVals[i].Item1 ), Builder, isIndended ? Indent : 0, true, false );
-                            Builder.Append( ':' );
-                            Write( keyVals[i].Item2, RootType, Builder, 0, count == dict.Count - 1, false );
-                        }
-                        Builder.Append( '\n' );
+                    bool isComplexKey = keyType != SerializableType.Simple &&
+                                        keyType != SerializableType.String &&
+                                        keyType != SerializableType.Char &&
+                                        keyType != SerializableType.DateTime;
 
-                    }
-                    count++;
+                    context.SurpressNewLineOnce = true;
+                    Write( key, keyType, null, ref context, true, isComplexKey );
                 }
+                catch ( AdeptarException ) { throw; }
+                catch ( Exception ex ) { throw new AdeptarException( $"Failed to serialize dictionary key. Key: '{key ?? "null"}'.", ex ); }
+
+                context.Builder.Append( ':' );
+                if ( context.Settings.UseIndentation )
+                {
+                    context.Builder.Append( ' ' );
+                }
+
+                // at this point we have "...key:"
+                // we dont want full indentation applied here, only a single space.
+                context.SurpessFullIndentationOnce = true;
+
+                try
+                {
+                    Write( value, valueType, null, ref context, isLastElement, false );
+                }
+                catch ( AdeptarException ) { throw; }
+                catch ( Exception ex ) { throw new AdeptarException( $"Failed to serialize value for dictionary key '{key ?? "null"}'. Value Type: '{value?.GetType().Name ?? "null"}'.", ex ); }
+
+                elementIndex++;
             }
         }
     }
